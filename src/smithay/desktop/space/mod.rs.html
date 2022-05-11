@@ -1210,7 +1210,7 @@
         <span class="kw">let</span> <span class="ident">point</span> <span class="op">=</span> <span class="ident">point</span>.<span class="ident">into</span>();
         <span class="kw">for</span> <span class="ident">window</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">rev</span>() {
             <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">elem_location</span>(<span class="self">self</span>.<span class="ident">id</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">bbox</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">bbox_with_popups</span>();
             <span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">loc</span>;
 
             <span class="kw">if</span> <span class="op">!</span><span class="ident">geo</span>.<span class="ident">to_f64</span>().<span class="ident">contains</span>(<span class="ident">point</span>) {
@@ -2132,5 +2132,5 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (88860d547 2022-05-09)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (ecd44958e 2022-05-10)" ></div>
 </body></html>
