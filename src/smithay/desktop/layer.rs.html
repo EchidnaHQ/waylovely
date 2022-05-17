@@ -3,7 +3,9 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
+                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -645,6 +647,54 @@
 <span id="640">640</span>
 <span id="641">641</span>
 <span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer</span>::{<span class="ident">utils::draw_surface_tree</span>, <span class="ident">ImportAll</span>, <span class="ident">Renderer</span>},
     <span class="ident">desktop</span>::{<span class="ident">utils</span>::<span class="kw-2">*</span>, <span class="ident">PopupManager</span>, <span class="ident">Space</span>},
@@ -826,14 +876,62 @@
     }
 
     <span class="doccomment">/// Returns the [`LayerSurface`] matching a given [`WlSurface`], if any.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">layer_for_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">LayerSurface</span><span class="op">&gt;</span> {
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `surface_type` can be used to limit the types of surfaces queried for equality.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">layer_for_surface</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>,
+        <span class="ident">surface_type</span>: <span class="ident">WindowSurfaceType</span>,
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">LayerSurface</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
-        <span class="self">self</span>.<span class="ident">layers</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::TOPLEVEL</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">layer</span>) <span class="op">=</span> <span class="self">self</span>
+                .<span class="ident">layers</span>
+                .<span class="ident">iter</span>()
+                .<span class="ident">find</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+            {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">layer</span>);
+            }
+        }
+
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::SUBSURFACE</span>) {
+            <span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>};
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">layer</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">layers</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">toplevel</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">get_surface</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="ident">AtomicBool::new</span>(<span class="bool-val">false</span>);
+                <span class="ident">with_surface_tree_downward</span>(
+                    <span class="ident">toplevel</span>,
+                    <span class="ident">surface</span>,
+                    <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="ident">search</span><span class="op">|</span> <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">search</span>),
+                    <span class="op">|</span><span class="ident">s</span>, <span class="kw">_</span>, <span class="ident">search</span><span class="op">|</span> {
+                        <span class="ident">found</span>.<span class="ident">fetch_or</span>(<span class="ident">s</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">search</span>, <span class="ident">Ordering::SeqCst</span>);
+                    },
+                    <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="op">!</span><span class="ident">found</span>.<span class="ident">load</span>(<span class="ident">Ordering::SeqCst</span>),
+                );
+                <span class="ident">found</span>.<span class="ident">load</span>(<span class="ident">Ordering::SeqCst</span>)
+            }) {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">layer</span>);
+            }
+        }
+
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::POPUP</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">layer</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">layers</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> {
+                <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">l</span>.<span class="ident">get_surface</span>().<span class="ident">unwrap</span>())
+                    .<span class="ident">ok</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">popups</span><span class="op">|</span> {
+                        <span class="ident">popups</span>.<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+                    })
+                    .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+            }) {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">layer</span>);
+            }
+        }
+
+        <span class="prelude-val">None</span>
     }
 
     <span class="doccomment">/// Force re-arranging the layer surfaces, e.g. when the output size changes.</span>
@@ -1288,5 +1386,5 @@
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (a5ad0d29a 2022-05-12)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (c52b9c10b 2022-05-16)" ></div>
 </body></html>

@@ -3,7 +3,9 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
+                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1067,6 +1069,60 @@
 <span id="1062">1062</span>
 <span id="1063">1063</span>
 <span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
+<span id="1118">1118</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the [`Space`] helper class as well has related</span>
 <span class="doccomment">//! rendering helpers to add custom elements or different clients to a space.</span>
 
@@ -1080,7 +1136,7 @@
     },
     <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Transform</span>},
     <span class="ident">wayland</span>::{
-        <span class="ident">compositor</span>::{<span class="ident">get_parent</span>, <span class="ident">is_sync_subsurface</span>},
+        <span class="ident">compositor</span>::{<span class="ident">get_parent</span>, <span class="ident">is_sync_subsurface</span>, <span class="ident">with_surface_tree_downward</span>, <span class="ident">TraversalAction</span>},
         <span class="ident">output::Output</span>,
     },
 };
@@ -1245,25 +1301,79 @@
         })
     }
 
-    <span class="doccomment">/// Returns the window matching a given surface, if any</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">window_for_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Window</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Returns the window matching a given surface, if any.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `surface_type` can be used to limit the types of surfaces queried for equality.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">window_for_surface</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>,
+        <span class="ident">surface_type</span>: <span class="ident">WindowSurfaceType</span>,
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Window</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
-        <span class="self">self</span>.<span class="ident">windows</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::TOPLEVEL</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>
+                .<span class="ident">windows</span>
+                .<span class="ident">iter</span>()
+                .<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+            {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>);
+            }
+        }
+
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::SUBSURFACE</span>) {
+            <span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>};
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">toplevel</span> <span class="op">=</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="ident">AtomicBool::new</span>(<span class="bool-val">false</span>);
+                <span class="ident">with_surface_tree_downward</span>(
+                    <span class="ident">toplevel</span>,
+                    <span class="ident">surface</span>,
+                    <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="ident">search</span><span class="op">|</span> <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">search</span>),
+                    <span class="op">|</span><span class="ident">s</span>, <span class="kw">_</span>, <span class="ident">search</span><span class="op">|</span> {
+                        <span class="ident">found</span>.<span class="ident">fetch_or</span>(<span class="ident">s</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">search</span>, <span class="ident">Ordering::SeqCst</span>);
+                    },
+                    <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="op">!</span><span class="ident">found</span>.<span class="ident">load</span>(<span class="ident">Ordering::SeqCst</span>),
+                );
+                <span class="ident">found</span>.<span class="ident">load</span>(<span class="ident">Ordering::SeqCst</span>)
+            }) {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>);
+            }
+        }
+
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::POPUP</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> {
+                <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">unwrap</span>())
+                    .<span class="ident">ok</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">popups</span><span class="op">|</span> {
+                        <span class="ident">popups</span>.<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+                    })
+                    .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+            }) {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>);
+            }
+        }
+
+        <span class="prelude-val">None</span>
     }
 
-    <span class="doccomment">/// Returns the layer matching a given surface, if any</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">layer_for_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LayerSurface</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Returns the layer matching a given surface, if any.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `surface_type` can be used to limit the types of surfaces queried for equality.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">layer_for_surface</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>,
+        <span class="ident">surface_type</span>: <span class="ident">WindowSurfaceType</span>,
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LayerSurface</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
         <span class="self">self</span>.<span class="ident">outputs</span>.<span class="ident">iter</span>().<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">layer_map_for_output</span>(<span class="ident">o</span>);
-            <span class="ident">map</span>.<span class="ident">layer_for_surface</span>(<span class="ident">surface</span>).<span class="ident">cloned</span>()
+            <span class="ident">map</span>.<span class="ident">layer_for_surface</span>(<span class="ident">surface</span>, <span class="ident">surface_type</span>).<span class="ident">cloned</span>()
         })
     }
 
@@ -2132,5 +2242,5 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (a5ad0d29a 2022-05-12)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (c52b9c10b 2022-05-16)" ></div>
 </body></html>
