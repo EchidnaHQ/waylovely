@@ -695,6 +695,11 @@
 <span id="688">688</span>
 <span id="689">689</span>
 <span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer</span>::{<span class="ident">utils::draw_surface_tree</span>, <span class="ident">ImportAll</span>, <span class="ident">Renderer</span>},
     <span class="ident">desktop</span>::{<span class="ident">utils</span>::<span class="kw-2">*</span>, <span class="ident">PopupManager</span>, <span class="ident">Space</span>},
@@ -1357,34 +1362,39 @@
     <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">into</span>();
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">layer</span>.<span class="ident">get_surface</span>() {
         <span class="ident">draw_surface_tree</span>(<span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">surface</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)<span class="question-mark">?</span>;
-        <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">p_location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
-            .<span class="ident">ok</span>()
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">flatten</span>()
-        {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-                <span class="kw">let</span> <span class="ident">damage</span> <span class="op">=</span> <span class="ident">damage</span>
-                    .<span class="ident">iter</span>()
-                    .<span class="ident">cloned</span>()
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">geo</span><span class="op">|</span> {
-                        <span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">-</span><span class="op">=</span> <span class="ident">p_location</span>;
-                        <span class="ident">geo</span>
-                    })
-                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-                <span class="ident">draw_surface_tree</span>(
-                    <span class="ident">renderer</span>,
-                    <span class="ident">frame</span>,
-                    <span class="ident">surface</span>,
-                    <span class="ident">scale</span>,
-                    <span class="ident">location</span> <span class="op">+</span> <span class="ident">p_location</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">damage</span>,
-                    <span class="ident">log</span>,
-                )<span class="question-mark">?</span>;
-            }
-        }
+    }
+    <span class="prelude-val">Ok</span>(())
+}
+
+<span class="doccomment">/// Renders popups of a given [`LayerSurface`] using a provided renderer and frame</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - `scale` needs to be equivalent to the fractional scale the rendered result should have.</span>
+<span class="doccomment">/// - `location` is the position the layer surface would be drawn at (popups will be drawn relative to that coordiante).</span>
+<span class="doccomment">/// - `damage` is the set of regions of the layer surface that should be drawn.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Note: This function will render nothing, if you are not using</span>
+<span class="doccomment">/// [`crate::backend::renderer::utils::on_commit_buffer_handler`]</span>
+<span class="doccomment">/// to let smithay handle buffer management.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">draw_layer_popups</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">P</span><span class="op">&gt;</span>(
+    <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">R</span>,
+    <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
+    <span class="ident">layer</span>: <span class="kw-2">&amp;</span><span class="ident">LayerSurface</span>,
+    <span class="ident">scale</span>: <span class="ident">f64</span>,
+    <span class="ident">location</span>: <span class="ident">P</span>,
+    <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>],
+    <span class="ident">log</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
+) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">R</span>: <span class="ident">Renderer</span> <span class="op">+</span> <span class="ident">ImportAll</span>,
+    <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>: <span class="lifetime">&#39;static</span>,
+    <span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+{
+    <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">into</span>();
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">layer</span>.<span class="ident">get_surface</span>() {
+        <span class="ident"><span class="kw">super</span>::popup::draw_popups</span>(<span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">surface</span>, <span class="ident">location</span>, (<span class="number">0</span>, <span class="number">0</span>), <span class="ident">scale</span>, <span class="ident">damage</span>, <span class="ident">log</span>)<span class="question-mark">?</span>;
     }
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (c06728704 2022-05-19)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (4cbaac699 2022-05-25)" ></div>
 </body></html>
