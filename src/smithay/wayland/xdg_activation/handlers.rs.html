@@ -208,7 +208,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">token_constructed</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
         <span class="kw">move</span> <span class="op">|</span><span class="ident">id</span>, <span class="ident">req</span>, <span class="kw">_</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">token_constructed</span> {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">token_constructed</span> <span class="op">|</span><span class="op">|</span> <span class="macro">matches!</span>(<span class="ident">req</span>, <span class="ident">xdg_activation_token_v1::Request::Destroy</span>) {
                 <span class="kw">match</span> <span class="ident">req</span> {
                     <span class="ident">xdg_activation_token_v1::Request::SetSerial</span> { <span class="ident">serial</span>, <span class="ident">seat</span> } =&gt; {
                         <span class="ident">token_serial</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">serial</span>.<span class="ident">into</span>(), <span class="ident">seat</span>));
@@ -300,5 +300,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e71440575 2022-06-02)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (4e725bad7 2022-06-04)" ></div>
 </body></html>
