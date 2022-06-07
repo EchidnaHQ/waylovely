@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["get_bpp","Returns the bits per pixel of the specified format."],["get_opaque","Returns the opaque alternative of the specified format."],["has_alpha","Returns true if the format has an alpha channel."]]});
+initSidebarItems({"fn":[["get_bpp","Returns the bits per pixel of the specified format."],["get_depth","Returns the depth of the specified format."],["get_opaque","Returns the opaque alternative of the specified format."],["has_alpha","Returns true if the format has an alpha channel."]]});

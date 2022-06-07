@@ -396,6 +396,61 @@
 <span id="389">389</span>
 <span id="390">390</span>
 <span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Format info tables for DRM formats.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module provides three functions, [`get_opaque`], [`has_alpha`] and [`get_bpp`].</span>
@@ -424,6 +479,16 @@
 <span class="doccomment">//! # use smithay::backend::allocator::format::get_bpp;</span>
 <span class="doccomment">//! assert_eq!(get_bpp(Fourcc::Argb8888), Some(32));</span>
 <span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! [`get_depth`] returns the number of used bits per pixel of a format</span>
+<span class="doccomment">//! (excluding padding or non-alpha &quot;X&quot; parts of the format).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # use smithay::backend::allocator::Fourcc;</span>
+<span class="doccomment">//! # use smithay::backend::allocator::format::get_depth;</span>
+<span class="doccomment">//! assert_eq!(get_depth(Fourcc::Argb8888), Some(32));</span>
+<span class="doccomment">//! assert_eq!(get_depth(Fourcc::Xrgb8888), Some(24));</span>
+<span class="doccomment">//! ```</span>
 
 <span class="doccomment">/// Macro to generate table lookup functions for formats.</span>
 <span class="doccomment">///</span>
@@ -433,7 +498,8 @@
         $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fourcc</span>: <span class="ident">ident</span> {
             $(<span class="ident">opaque</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opaque</span>: <span class="ident">ident</span>,)<span class="question-mark">?</span>
             <span class="ident">alpha</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">alpha</span>: <span class="ident">expr</span>,
-            <span class="ident">bpp</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bpp</span>: <span class="ident">expr</span> $(,)<span class="question-mark">?</span>
+            <span class="ident">bpp</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bpp</span>: <span class="ident">expr</span>,
+            <span class="ident">depth</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">depth</span>: <span class="ident">expr</span> $(,)<span class="question-mark">?</span>
         }),<span class="op">*</span>
     ) =&gt; {
         <span class="doccomment">/// Returns the opaque alternative of the specified format.</span>
@@ -480,6 +546,18 @@
             }
         }
 
+        <span class="doccomment">/// Returns the depth of the specified format.</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// Unknown formats will always return [`None`].</span>
+        <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">get_depth</span>(
+            <span class="ident">fourcc</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::allocator::Fourcc</span>,
+        ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+            <span class="kw">match</span> <span class="ident">fourcc</span> {
+                $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::allocator::Fourcc</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fourcc</span> =&gt; <span class="prelude-val">Some</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">depth</span>),)<span class="op">*</span>
+                <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+            }
+        }
+
         <span class="kw">fn</span> <span class="ident">_impl_formats</span>() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::allocator::Fourcc</span>] {
             <span class="kw-2">&amp;</span>[
                 $(
@@ -492,139 +570,151 @@
 
 <span class="macro">format_tables!</span> {
     <span class="comment">// 8-bit bpp Red</span>
-    <span class="ident">R8</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">8</span> },
+    <span class="ident">R8</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">8</span>, <span class="ident">depth</span>: <span class="number">8</span> },
 
     <span class="comment">// TODO: Update drm-fourcc</span>
     <span class="comment">// 16-bit bpp Red with padding (x:R)</span>
-    <span class="comment">// R10 { bpp: 16 },</span>
-    <span class="comment">// R12 { bpp: 16 },</span>
+    <span class="comment">// R10 { bpp: 16, depth: 10 },</span>
+    <span class="comment">// R12 { bpp: 16, depth: 12 },</span>
 
     <span class="comment">// 16-bit bpp Red</span>
-    <span class="ident">R16</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">R16</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">16</span> },
 
     <span class="comment">// 16-bit bpp RG</span>
-    <span class="ident">Rg88</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Rg88</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">16</span> },
 
-    <span class="ident">Gr88</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Gr88</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">16</span> },
 
     <span class="comment">// 32-bit bpp RG</span>
-    <span class="ident">Rg1616</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Rg1616</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">32</span> },
 
-    <span class="ident">Gr1616</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Gr1616</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">32</span> },
 
     <span class="comment">// 8-bit bpp RGB</span>
-    <span class="ident">Rgb332</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">8</span> },
+    <span class="ident">Rgb332</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">8</span>, <span class="ident">depth</span>: <span class="number">8</span> },
 
-    <span class="ident">Bgr233</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">8</span> },
+    <span class="ident">Bgr233</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">8</span>, <span class="ident">depth</span>: <span class="number">8</span> },
 
     <span class="comment">// 16-bit bpp RGB, 4 bits per channel</span>
     <span class="ident">Argb4444</span> {
         <span class="ident">opaque</span>: <span class="ident">Xrgb4444</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Xrgb4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Xrgb4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">12</span> },
 
     <span class="ident">Abgr4444</span> {
         <span class="ident">opaque</span>: <span class="ident">Xbgr4444</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Xbgr4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Xbgr4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">12</span> },
 
     <span class="ident">Rgba4444</span> {
         <span class="ident">opaque</span>: <span class="ident">Rgbx4444</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Rgbx4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Rgbx4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">12</span> },
 
     <span class="ident">Bgra4444</span> {
         <span class="ident">opaque</span>: <span class="ident">Bgrx4444</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Bgrx4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Bgrx4444</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">12</span> },
 
     <span class="comment">// 16-bit bpp RGB, 5 bits per color channel, 1 bit for alpha channel</span>
     <span class="ident">Argb1555</span> {
         <span class="ident">opaque</span>: <span class="ident">Xrgb1555</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>
     },
 
-    <span class="ident">Xrgb1555</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Xrgb1555</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">15</span> },
 
     <span class="ident">Abgr1555</span> {
         <span class="ident">opaque</span>: <span class="ident">Xbgr1555</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Xbgr1555</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Xbgr1555</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">15</span> },
 
     <span class="ident">Rgba5551</span> {
         <span class="ident">opaque</span>: <span class="ident">Rgbx5551</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Rgbx5551</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Rgbx5551</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">15</span> },
 
     <span class="ident">Bgra5551</span> {
         <span class="ident">opaque</span>: <span class="ident">Bgrx5551</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">16</span>,
+        <span class="ident">depth</span>: <span class="number">16</span>,
     },
 
-    <span class="ident">Bgrx5551</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Bgrx5551</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">15</span> },
 
     <span class="comment">// 16-bit bpp RGB, no alpha, 6 bits for green channel and 5 bits for blue and red</span>
-    <span class="ident">Rgb565</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Rgb565</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">16</span> },
 
-    <span class="ident">Bgr565</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span> },
+    <span class="ident">Bgr565</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">16</span>, <span class="ident">depth</span>: <span class="number">16</span> },
 
     <span class="comment">// 24-bit bpp RGB</span>
-    <span class="ident">Rgb888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">24</span> },
+    <span class="ident">Rgb888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">24</span>, <span class="ident">depth</span>: <span class="number">24</span> },
 
-    <span class="ident">Bgr888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">24</span> },
+    <span class="ident">Bgr888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">24</span>, <span class="ident">depth</span>: <span class="number">24</span> },
 
     <span class="comment">// 32-bit bpp RGB, 8 bits per channel</span>
     <span class="ident">Argb8888</span> {
         <span class="ident">opaque</span>: <span class="ident">Xrgb8888</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Xrgb8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Xrgb8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">24</span> },
 
     <span class="ident">Abgr8888</span> {
         <span class="ident">opaque</span>: <span class="ident">Xbgr8888</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Xbgr8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Xbgr8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">24</span> },
 
     <span class="ident">Rgba8888</span> {
         <span class="ident">opaque</span>: <span class="ident">Rgbx8888</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Rgbx8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Rgbx8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">24</span> },
 
     <span class="ident">Bgra8888</span> {
         <span class="ident">opaque</span>: <span class="ident">Bgrx8888</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Bgrx8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Bgrx8888</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">24</span> },
 
     <span class="comment">// 32-bit bpp RGB with 10-bits per color channel</span>
 
@@ -632,33 +722,37 @@
         <span class="ident">opaque</span>: <span class="ident">Xrgb2101010</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Xrgb2101010</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Xrgb2101010</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">30</span> },
 
     <span class="ident">Abgr2101010</span> {
         <span class="ident">opaque</span>: <span class="ident">Xbgr2101010</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Xbgr2101010</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Xbgr2101010</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">30</span> },
 
     <span class="ident">Rgba1010102</span> {
         <span class="ident">opaque</span>: <span class="ident">Rgbx1010102</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Rgbx1010102</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Rgbx1010102</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">30</span> },
 
     <span class="ident">Bgra1010102</span> {
         <span class="ident">opaque</span>: <span class="ident">Bgrx1010102</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">32</span>,
+        <span class="ident">depth</span>: <span class="number">32</span>,
     },
 
-    <span class="ident">Bgrx1010102</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span> },
+    <span class="ident">Bgrx1010102</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">32</span>, <span class="ident">depth</span>: <span class="number">30</span> },
 
     <span class="comment">// 64-bit RGB, 16-bits per channel</span>
     <span class="comment">// TODO: Update drm-fourcc</span>
@@ -666,14 +760,16 @@
     <span class="comment">//     opaque: Xrgb16161616,</span>
     <span class="comment">//     alpha: true,</span>
     <span class="comment">//     bpp: 64,</span>
+    <span class="comment">//     depth: 64,</span>
     <span class="comment">// },</span>
-    <span class="comment">// Xrgb16161616 { alpha: false, bpp: 64 },</span>
+    <span class="comment">// Xrgb16161616 { alpha: false, bpp: 64, depth: 48 },</span>
     <span class="comment">// Abgr16161616 {</span>
     <span class="comment">//     opaque: Xbgr16161616,</span>
     <span class="comment">//     alpha: true,</span>
     <span class="comment">//     bpp: 64,</span>
+    <span class="comment">//     depth: 64,</span>
     <span class="comment">// },</span>
-    <span class="comment">// Xbgr16161616 { alpha: false, bpp: 64 },</span>
+    <span class="comment">// Xbgr16161616 { alpha: false, bpp: 64, depth: 48 },</span>
 
     <span class="comment">// Floating point 64bpp RGB</span>
     <span class="comment">// IEEE 754-2008 binary16 half-precision float</span>
@@ -681,29 +777,31 @@
         <span class="ident">opaque</span>: <span class="ident">Xrgb16161616f</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">64</span>,
+        <span class="ident">depth</span>: <span class="number">64</span>
     },
 
-    <span class="ident">Xrgb16161616f</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">64</span> },
+    <span class="ident">Xrgb16161616f</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">64</span>, <span class="ident">depth</span>: <span class="number">48</span> },
 
     <span class="ident">Abgr16161616f</span> {
         <span class="ident">opaque</span>: <span class="ident">Xbgr16161616f</span>,
         <span class="ident">alpha</span>: <span class="bool-val">true</span>,
         <span class="ident">bpp</span>: <span class="number">64</span>,
+        <span class="ident">depth</span>: <span class="number">64</span>,
     },
 
-    <span class="ident">Xbgr16161616f</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">64</span> },
+    <span class="ident">Xbgr16161616f</span> { <span class="ident">alpha</span>: <span class="bool-val">false</span>, <span class="ident">bpp</span>: <span class="number">64</span>, <span class="ident">depth</span>: <span class="number">48</span> },
 
     <span class="comment">// RGBA with 10-bit components packed in 64-bits per pixel, with 6-bits of unused padding per component</span>
 
     <span class="comment">// Axbxgxrx106106106106 has no direct non-alpha alternative.</span>
-    <span class="ident">Axbxgxrx106106106106</span> { <span class="ident">alpha</span>: <span class="bool-val">true</span>, <span class="ident">bpp</span>: <span class="number">64</span> }
+    <span class="ident">Axbxgxrx106106106106</span> { <span class="ident">alpha</span>: <span class="bool-val">true</span>, <span class="ident">bpp</span>: <span class="number">64</span>, <span class="ident">depth</span>: <span class="number">40</span> }
 
     <span class="comment">// TODO: YUV and other formats</span>
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">_impl_formats</span>, <span class="ident">get_bpp</span>, <span class="ident">get_opaque</span>, <span class="ident">has_alpha</span>};
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">_impl_formats</span>, <span class="ident">get_bpp</span>, <span class="ident">get_depth</span>, <span class="ident">get_opaque</span>, <span class="ident">has_alpha</span>};
 
     <span class="doccomment">/// Tests that opaque alternatives are not the same as the variant with alpha.</span>
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -786,7 +884,19 @@
             }
         }
     }
+
+    <span class="comment">// A format&#39;s depth should always be equal or small to it&#39;s bits-per-pixel</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">format_bpp_greater_or_equal_than_depth</span>() {
+        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">format</span> <span class="kw">in</span> <span class="ident">_impl_formats</span>() {
+            <span class="macro">assert!</span>(
+                <span class="ident">get_depth</span>(<span class="ident">format</span>) <span class="op">&lt;</span><span class="op">=</span> <span class="ident">get_bpp</span>(<span class="ident">format</span>),
+                <span class="string">&quot;{} has a depth higher than its bpp&quot;</span>,
+                <span class="ident">format</span>
+            );
+        }
+    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (4e725bad7 2022-06-04)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (50b00252a 2022-06-06)" ></div>
 </body></html>
