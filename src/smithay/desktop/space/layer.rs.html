@@ -95,13 +95,29 @@
 <span id="88">88</span>
 <span id="89">89</span>
 <span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer</span>::{<span class="ident">ImportAll</span>, <span class="ident">Renderer</span>},
     <span class="ident">desktop</span>::{
         <span class="ident">layer</span>::{<span class="ident">layer_state</span> <span class="kw">as</span> <span class="ident">output_layer_state</span>, <span class="kw-2">*</span>},
         <span class="ident">space::Space</span>,
     },
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>},
+    <span class="ident">utils</span>::{<span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>},
     <span class="ident">wayland</span>::{<span class="ident">output::Output</span>, <span class="ident">shell::wlr_layer::Layer</span>},
 };
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -135,18 +151,34 @@
         <span class="ident">TypeId::of</span>::<span class="op">&lt;</span><span class="ident">LayerSurface</span><span class="op">&gt;</span>()
     }
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_geometry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_space_id</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bbox</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bbox_with_popups</span>();
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_location</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">_space_id</span>: <span class="ident">usize</span>,
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">output_layer_state</span>(<span class="self">self</span>);
-        <span class="ident">bbox</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">state</span>.<span class="ident">location</span>;
-        <span class="ident">bbox</span>
+        <span class="ident">state</span>.<span class="ident">location</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>)
+    }
+
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_geometry</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">_space_id</span>: <span class="ident">usize</span>,
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">output_layer_state</span>(<span class="self">self</span>);
+        <span class="self">self</span>.<span class="ident">physical_bbox_with_popups</span>(<span class="ident">state</span>.<span class="ident">location</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>), <span class="ident">scale</span>)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_accumulated_damage</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">_space_id</span>: <span class="ident">usize</span>,
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
         <span class="ident">for_values</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">Space</span>, <span class="kw-2">&amp;</span><span class="ident">Output</span>)<span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">accumulated_damage</span>(<span class="ident">for_values</span>)
+    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">output_layer_state</span>(<span class="self">self</span>);
+        <span class="self">self</span>.<span class="ident">accumulated_damage</span>(<span class="ident">state</span>.<span class="ident">location</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>), <span class="ident">scale</span>, <span class="ident">for_values</span>)
     }
 
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
@@ -155,9 +187,9 @@
         <span class="ident">space_id</span>: <span class="ident">usize</span>,
         <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">R</span>,
         <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
-        <span class="ident">scale</span>: <span class="ident">f64</span>,
-        <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>],
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span>,
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span>],
         <span class="ident">log</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -186,5 +218,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (7466d5492 2022-06-08)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
 </body></html>

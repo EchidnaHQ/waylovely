@@ -107,6 +107,7 @@
 <span id="100">100</span>
 <span id="101">101</span>
 <span id="102">102</span>
+<span id="103">103</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * OpenGL Shaders
  */</span>
@@ -195,7 +196,8 @@ mat2 scale(vec2 scale_vec){
 void main() {
     vec2 transform_translation = position.xy;
     vec2 transform_scale = position.zw;
-    gl_Position = vec4(matrix * vec3((vert * scale(transform_scale)) + transform_translation, 1.0), 1.0);
+    vec3 position = vec3(vert * scale(transform_scale) + transform_translation, 1.0);
+    gl_Position = vec4(matrix * position, 1.0);
 }
 &quot;#</span>;
 
@@ -210,5 +212,5 @@ void main() {
 }
 &quot;#</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (7466d5492 2022-06-08)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
 </body></html>

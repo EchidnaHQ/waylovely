@@ -142,21 +142,42 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer</span>::{<span class="ident">utils::draw_surface_tree</span>, <span class="ident">ImportAll</span>, <span class="ident">Renderer</span>},
     <span class="ident">desktop</span>::{
-        <span class="ident">layer::LayerSurface</span>,
+        <span class="ident">layer</span>::{<span class="ident">layer_state</span>, <span class="ident">LayerSurface</span>},
         <span class="ident">popup</span>::{<span class="ident">PopupKind</span>, <span class="ident">PopupManager</span>},
         <span class="ident">space::Space</span>,
-        <span class="ident">utils</span>::{<span class="ident">bbox_from_surface_tree</span>, <span class="ident">damage_from_surface_tree</span>},
+        <span class="ident">utils</span>::{<span class="ident">damage_from_surface_tree</span>, <span class="ident">physical_bbox_from_surface_tree</span>},
         <span class="ident">window::Window</span>,
     },
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>},
+    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>},
     <span class="ident">wayland</span>::{<span class="ident">output::Output</span>, <span class="ident">shell::wlr_layer::Layer</span>},
 };
 <span class="kw">use</span> <span class="ident">std::any::TypeId</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::RenderZindex</span>;
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">window::window_loc</span>, <span class="ident">RenderZindex</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RenderPopup</span> {
@@ -167,8 +188,7 @@
 
 <span class="kw">impl</span> <span class="ident">Window</span> {
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">popup_elements</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">space_id</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">RenderPopup</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elem_location</span>(<span class="ident">space_id</span>);
-        <span class="kw">let</span> <span class="ident">geo_loc</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
+        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">window_loc</span>(<span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">space_id</span>);
         <span class="self">self</span>.<span class="ident">toplevel</span>()
             .<span class="ident">get_surface</span>()
             .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">surface</span><span class="op">|</span> {
@@ -177,7 +197,7 @@
                     .<span class="ident">into_iter</span>()
                     .<span class="ident">flatten</span>()
                     .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">popup</span>, <span class="ident">location</span>)<span class="op">|</span> {
-                        <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">loc</span> <span class="op">+</span> <span class="ident">geo_loc</span> <span class="op">+</span> <span class="ident">location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
+                        <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
                         <span class="ident">RenderPopup</span> {
                             <span class="ident">location</span>: <span class="ident">offset</span>,
                             <span class="ident">popup</span>,
@@ -191,8 +211,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">LayerSurface</span> {
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">popup_elements</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">space_id</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">RenderPopup</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elem_geometry</span>(<span class="ident">space_id</span>).<span class="ident">loc</span>;
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">popup_elements</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_space_id</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">RenderPopup</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">layer_state</span>(<span class="self">self</span>).<span class="ident">location</span>;
         <span class="self">self</span>.<span class="ident">get_surface</span>()
             .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">surface</span><span class="op">|</span> {
                 <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
@@ -235,39 +255,61 @@
         <span class="ident">TypeId::of</span>::<span class="op">&lt;</span><span class="ident">RenderPopup</span><span class="op">&gt;</span>()
     }
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_geometry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_space_id</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-            <span class="ident">bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="self">self</span>.<span class="ident">location</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">0</span>))
-        }
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_location</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">_space_id</span>: <span class="ident">usize</span>,
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">location</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>)
+    }
+
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_geometry</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">_space_id</span>: <span class="ident">usize</span>,
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">popup</span>.<span class="ident">get_surface</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">surface</span>) =&gt; <span class="ident">surface</span>,
+            <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="ident">Rectangle::default</span>(),
+        };
+        <span class="ident">physical_bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="self">self</span>.<span class="ident">location</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>), <span class="ident">scale</span>)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_accumulated_damage</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">_space_id</span>: <span class="ident">usize</span>,
+        <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
         <span class="ident">for_values</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">Space</span>, <span class="kw-2">&amp;</span><span class="ident">Output</span>)<span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-            <span class="ident">damage_from_surface_tree</span>(<span class="ident">surface</span>, (<span class="number">0</span>, <span class="number">0</span>), <span class="ident">for_values</span>)
+            <span class="ident">damage_from_surface_tree</span>(
+                <span class="ident">surface</span>,
+                <span class="self">self</span>.<span class="ident">location</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>),
+                <span class="ident">scale</span>,
+                <span class="ident">for_values</span>,
+            )
         } <span class="kw">else</span> {
             <span class="ident">Vec::new</span>()
         }
     }
 
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_draw</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span>(
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">elem_draw</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">S</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">_space_id</span>: <span class="ident">usize</span>,
         <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">R</span>,
         <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
-        <span class="ident">scale</span>: <span class="ident">f64</span>,
-        <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>],
+        <span class="ident">scale</span>: <span class="ident">S</span>,
+        <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span>,
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span>],
         <span class="ident">log</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">R</span>: <span class="ident">Renderer</span> <span class="op">+</span> <span class="ident">ImportAll</span>,
         <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>: <span class="lifetime">&#39;static</span>,
+        <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">popup</span>.<span class="ident">get_surface</span>() {
             <span class="ident">draw_surface_tree</span>(<span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">surface</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)<span class="question-mark">?</span>;
@@ -280,5 +322,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (7466d5492 2022-06-08)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
 </body></html>

@@ -335,16 +335,117 @@
 <span id="328">328</span>
 <span id="329">329</span>
 <span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Helper functions to ease dealing with surface trees</span>
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer::utils::SurfaceState</span>,
     <span class="ident">desktop::Space</span>,
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>},
+    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>},
     <span class="ident">wayland</span>::{
         <span class="ident">compositor</span>::{
-            <span class="ident">with_surface_tree_downward</span>, <span class="ident">with_surface_tree_upward</span>, <span class="ident">SubsurfaceCachedState</span>, <span class="ident">SurfaceAttributes</span>,
-            <span class="ident">TraversalAction</span>,
+            <span class="ident">with_surface_tree_downward</span>, <span class="ident">with_surface_tree_upward</span>, <span class="ident">SurfaceAttributes</span>, <span class="ident">TraversalAction</span>,
         },
         <span class="ident">output::Output</span>,
     },
@@ -358,7 +459,7 @@
 <span class="kw">impl</span> <span class="ident">SurfaceState</span> {
     <span class="kw">fn</span> <span class="ident">contains_point</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attrs</span>: <span class="kw-2">&amp;</span><span class="ident">SurfaceAttributes</span>, <span class="ident">point</span>: <span class="ident">P</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="ident">point</span> <span class="op">=</span> <span class="ident">point</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">surface_size</span>() {
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">surface_view</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">view</span><span class="op">|</span> <span class="ident">view</span>.<span class="ident">dst</span>) {
             <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="bool-val">false</span>, <span class="comment">// If the surface has no size, it can&#39;t have an input region.</span>
             <span class="prelude-val">Some</span>(<span class="ident">size</span>) =&gt; <span class="ident">size</span>,
         };
@@ -404,16 +505,65 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loc</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">loc</span>;
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceState</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">size</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_size</span>()) {
-                <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) {
-                    <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceCachedState</span><span class="op">&gt;</span>();
-                    <span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">current</span>.<span class="ident">location</span>;
-                }
-
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_view</span>) {
+                <span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>;
                 <span class="comment">// Update the bounding box.</span>
-                <span class="ident">bounding_box</span> <span class="op">=</span> <span class="ident">bounding_box</span>.<span class="ident">merge</span>(<span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">loc</span>, <span class="ident">size</span>));
+                <span class="ident">bounding_box</span> <span class="op">=</span> <span class="ident">bounding_box</span>.<span class="ident">merge</span>(<span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">loc</span>, <span class="ident">surface_view</span>.<span class="ident">dst</span>));
 
                 <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">loc</span>)
+            } <span class="kw">else</span> {
+                <span class="comment">// If the parent surface is unmapped, then the child surfaces are hidden as</span>
+                <span class="comment">// well, no need to consider them here.</span>
+                <span class="ident">TraversalAction::SkipChildren</span>
+            }
+        },
+        <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {},
+        <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="bool-val">true</span>,
+    );
+    <span class="ident">bounding_box</span>
+}
+
+<span class="doccomment">/// Returns the physical bounding box of a given surface and all its subsurfaces.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - `location` can be set to offset the returned bounding box.</span>
+<span class="doccomment">/// - `scale` needs to be equivalent to the fractional scale the rendered result should have.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This differs from using [`bbox_from_surface_tree`] and translating the returned [`Rectangle`]</span>
+<span class="doccomment">/// to [`Physical`] space as it internally uses the same rounding algorithm as [`damage_from_surface_tree`]</span>
+<span class="doccomment">/// and [`crate::backend::renderer::utils::draw_surface_tree`].</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">physical_bbox_from_surface_tree</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">S</span><span class="op">&gt;</span>(
+    <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>,
+    <span class="ident">location</span>: <span class="ident">P</span>,
+    <span class="ident">scale</span>: <span class="ident">S</span>,
+) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+{
+    <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">into</span>();
+    <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounding_box</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">location</span>.<span class="ident">to_i32_round</span>(), (<span class="number">0</span>, <span class="number">0</span>));
+    <span class="ident">with_surface_tree_downward</span>(
+        <span class="ident">surface</span>,
+        <span class="ident">location</span>,
+        <span class="op">|</span><span class="kw">_</span>, <span class="ident">states</span>, <span class="ident">location</span>: <span class="kw-2">&amp;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">location</span>;
+            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceState</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_view</span>) {
+                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>);
+
+                <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>(
+                    <span class="ident">location</span>.<span class="ident">to_i32_round</span>(),
+                    ((<span class="ident">surface_view</span>.<span class="ident">dst</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>).<span class="ident">to_point</span>() <span class="op">+</span> <span class="ident">location</span>).<span class="ident">to_i32_round</span>()
+                        <span class="op">-</span> <span class="ident">location</span>.<span class="ident">to_i32_round</span>())
+                    .<span class="ident">to_size</span>(),
+                );
+
+                <span class="comment">// Update the bounding box.</span>
+                <span class="ident">bounding_box</span> <span class="op">=</span> <span class="ident">bounding_box</span>.<span class="ident">merge</span>(<span class="ident">dst</span>);
+
+                <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">location</span>)
             } <span class="kw">else</span> {
                 <span class="comment">// If the parent surface is unmapped, then the child surfaces are hidden as</span>
                 <span class="comment">// well, no need to consider them here.</span>
@@ -436,25 +586,33 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">damage_from_surface_tree</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>(
     <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>,
     <span class="ident">location</span>: <span class="ident">P</span>,
+    <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">key</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">Space</span>, <span class="kw-2">&amp;</span><span class="ident">Output</span>)<span class="op">&gt;</span>,
-) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>
+) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 {
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::space::SpaceOutputTuple</span>;
 
+    <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">damage</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">SpaceOutputTuple::from</span>(<span class="ident">x</span>).<span class="ident">owned_hash</span>());
     <span class="ident">with_surface_tree_upward</span>(
         <span class="ident">surface</span>,
         <span class="ident">location</span>.<span class="ident">into</span>(),
-        <span class="op">|</span><span class="ident">_surface</span>, <span class="ident">states</span>, <span class="ident">location</span><span class="op">|</span> {
+        <span class="op">|</span><span class="ident">_surface</span>, <span class="ident">states</span>, <span class="ident">location</span>: <span class="kw-2">&amp;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">location</span>;
-            <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) {
-                <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceCachedState</span><span class="op">&gt;</span>();
-                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">current</span>.<span class="ident">location</span>;
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">states</span>
+                .<span class="ident">data_map</span>
+                .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceState</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_view</span>)
+            {
+                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>);
+                <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">location</span>)
+            } <span class="kw">else</span> {
+                <span class="ident">TraversalAction::SkipChildren</span>
             }
-            <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">location</span>)
         },
         <span class="op">|</span><span class="ident">_surface</span>, <span class="ident">states</span>, <span class="ident">location</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">location</span>;
@@ -465,35 +623,69 @@
                     .<span class="ident">map</span>(<span class="op">|</span><span class="ident">key</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">space_seen</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">copied</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="op">&lt;</span> <span class="ident">data</span>.<span class="ident">commit_count</span>)
                     .<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>)
                 {
-                    <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) {
-                        <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceCachedState</span><span class="op">&gt;</span>();
-                        <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">current</span>.<span class="ident">location</span>;
-                    }
-                    <span class="kw">let</span> <span class="ident">new_damage</span> <span class="op">=</span> <span class="ident">key</span>
-                        .<span class="ident">as_ref</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">key</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">damage_since</span>(<span class="ident">data</span>.<span class="ident">space_seen</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">copied</span>()))
-                        .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
-                            <span class="ident">data</span>.<span class="ident">damage</span>.<span class="ident">front</span>().<span class="ident">cloned</span>().<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
-                                <span class="ident">data</span>.<span class="ident">buffer_dimensions</span>
-                                    .<span class="ident">as_ref</span>()
-                                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">size</span><span class="op">|</span> <span class="macro">vec!</span>[<span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), <span class="kw-2">*</span><span class="ident">size</span>)])
-                                    .<span class="ident">unwrap_or_else</span>(<span class="ident">Vec::new</span>)
-                            })
-                        });
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">surface_view</span> {
+                        <span class="comment">// Add the surface offset again to the location as</span>
+                        <span class="comment">// with_surface_tree_upward only passes the updated</span>
+                        <span class="comment">// location to its children</span>
+                        <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>);
 
-                    <span class="ident">damage</span>.<span class="ident">extend</span>(<span class="ident">new_damage</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rect</span><span class="op">|</span> {
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rect</span> <span class="op">=</span> <span class="ident">rect</span>.<span class="ident">to_logical</span>(
-                            <span class="ident">data</span>.<span class="ident">buffer_scale</span>,
-                            <span class="ident">data</span>.<span class="ident">buffer_transform</span>,
-                            <span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">buffer_dimensions</span>.<span class="ident">unwrap</span>(),
+                        <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>(
+                            <span class="ident">location</span>.<span class="ident">to_i32_round</span>(),
+                            ((<span class="ident">surface_view</span>.<span class="ident">dst</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>).<span class="ident">to_point</span>() <span class="op">+</span> <span class="ident">location</span>)
+                                .<span class="ident">to_i32_round</span>()
+                                <span class="op">-</span> <span class="ident">location</span>.<span class="ident">to_i32_round</span>())
+                            .<span class="ident">to_size</span>(),
                         );
-                        <span class="ident">rect</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">location</span>;
-                        <span class="ident">rect</span>
-                    }));
 
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">key</span>) <span class="op">=</span> <span class="ident">key</span> {
-                        <span class="kw">let</span> <span class="ident">current_commit</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">commit_count</span>;
-                        <span class="ident">data</span>.<span class="ident">space_seen</span>.<span class="ident">insert</span>(<span class="ident">key</span>, <span class="ident">current_commit</span>);
+                        <span class="kw">let</span> <span class="ident">new_damage</span> <span class="op">=</span> <span class="ident">key</span>
+                            .<span class="ident">as_ref</span>()
+                            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">key</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">damage_since</span>(<span class="ident">data</span>.<span class="ident">space_seen</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">copied</span>()))
+                            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
+                                <span class="ident">data</span>.<span class="ident">damage</span>.<span class="ident">front</span>().<span class="ident">cloned</span>().<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
+                                    <span class="ident">data</span>.<span class="ident">buffer_dimensions</span>
+                                        .<span class="ident">as_ref</span>()
+                                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">size</span><span class="op">|</span> <span class="macro">vec!</span>[<span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), <span class="kw-2">*</span><span class="ident">size</span>)])
+                                        .<span class="ident">unwrap_or_else</span>(<span class="ident">Vec::new</span>)
+                                })
+                            });
+
+                        <span class="ident">damage</span>.<span class="ident">extend</span>(<span class="ident">new_damage</span>.<span class="ident">into_iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">rect</span><span class="op">|</span> {
+                            <span class="ident">rect</span>.<span class="ident">to_f64</span>()
+                                <span class="comment">// first bring the damage into logical space</span>
+                                <span class="comment">// Note: We use f64 for this as the damage could</span>
+                                <span class="comment">// be not dividable by the buffer scale without</span>
+                                <span class="comment">// a rest</span>
+                                .<span class="ident">to_logical</span>(
+                                    <span class="ident">data</span>.<span class="ident">buffer_scale</span> <span class="kw">as</span> <span class="ident">f64</span>,
+                                    <span class="ident">data</span>.<span class="ident">buffer_transform</span>,
+                                    <span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">buffer_dimensions</span>.<span class="ident">unwrap</span>().<span class="ident">to_f64</span>(),
+                                )
+                                <span class="comment">// then crop by the surface view (viewporter for example could define a src rect)</span>
+                                .<span class="ident">intersection</span>(<span class="ident">surface_view</span>.<span class="ident">src</span>)
+                                <span class="comment">// move and scale the cropped rect (viewporter could define a dst size)</span>
+                                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">rect</span><span class="op">|</span> <span class="ident">surface_view</span>.<span class="ident">rect_to_global</span>(<span class="ident">rect</span>).<span class="ident">to_i32_up</span>::<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>())
+                                <span class="comment">// now bring the damage to physical space</span>
+                                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">rect</span><span class="op">|</span> {
+                                    <span class="comment">// We calculate the scale between to rounded</span>
+                                    <span class="comment">// surface size and the scaled surface size</span>
+                                    <span class="comment">// and use it to scale the damage to the rounded</span>
+                                    <span class="comment">// surface size by multiplying the output scale</span>
+                                    <span class="comment">// with the result.</span>
+                                    <span class="kw">let</span> <span class="ident">surface_scale</span> <span class="op">=</span>
+                                        <span class="ident">dst</span>.<span class="ident">size</span>.<span class="ident">to_f64</span>() <span class="op">/</span> <span class="ident">surface_view</span>.<span class="ident">dst</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">scale</span>);
+                                    <span class="ident">rect</span>.<span class="ident">to_physical_precise_up</span>(<span class="ident">surface_scale</span> <span class="op">*</span> <span class="ident">scale</span>)
+                                })
+                                <span class="comment">// at last move the damage relative to the surface</span>
+                                .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">rect</span><span class="op">|</span> {
+                                    <span class="ident">rect</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dst</span>.<span class="ident">loc</span>;
+                                    <span class="ident">rect</span>
+                                })
+                        }));
+
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">key</span>) <span class="op">=</span> <span class="ident">key</span> {
+                            <span class="kw">let</span> <span class="ident">current_commit</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">commit_count</span>;
+                            <span class="ident">data</span>.<span class="ident">space_seen</span>.<span class="ident">insert</span>(<span class="ident">key</span>, <span class="ident">current_commit</span>);
+                        }
                     }
                 }
             }
@@ -526,26 +718,28 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">location</span>;
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceState</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
-            <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) {
-                <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceCachedState</span><span class="op">&gt;</span>();
-                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">current</span>.<span class="ident">location</span>;
-            }
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_view</span>) {
+                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>;
 
-            <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::TOPLEVEL</span>) {
-                <span class="kw">let</span> <span class="ident">contains_the_point</span> <span class="op">=</span> <span class="ident">data</span>
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
-                        <span class="ident">data</span>.<span class="ident">borrow</span>()
-                            .<span class="ident">contains_point</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>(), <span class="ident">point</span> <span class="op">-</span> <span class="ident">location</span>.<span class="ident">to_f64</span>())
-                    })
-                    .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
-                <span class="kw">if</span> <span class="ident">contains_the_point</span> {
-                    <span class="kw-2">*</span><span class="ident">found</span>.<span class="ident">borrow_mut</span>() <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">wl_surface</span>.<span class="ident">clone</span>(), <span class="ident">location</span>));
+                <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::TOPLEVEL</span>) {
+                    <span class="kw">let</span> <span class="ident">contains_the_point</span> <span class="op">=</span> <span class="ident">data</span>
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
+                            <span class="ident">data</span>.<span class="ident">borrow</span>()
+                                .<span class="ident">contains_point</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>(), <span class="ident">point</span> <span class="op">-</span> <span class="ident">location</span>.<span class="ident">to_f64</span>())
+                        })
+                        .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+                    <span class="kw">if</span> <span class="ident">contains_the_point</span> {
+                        <span class="kw-2">*</span><span class="ident">found</span>.<span class="ident">borrow_mut</span>() <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">wl_surface</span>.<span class="ident">clone</span>(), <span class="ident">location</span>));
+                    }
                 }
-            }
 
-            <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::SUBSURFACE</span>) {
-                <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">location</span>)
+                <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::SUBSURFACE</span>) {
+                    <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">location</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">TraversalAction::SkipChildren</span>
+                }
             } <span class="kw">else</span> {
+                <span class="comment">// We are completely hidden</span>
                 <span class="ident">TraversalAction::SkipChildren</span>
             }
         },
@@ -590,29 +784,39 @@
 ) {
     <span class="ident">with_surface_tree_downward</span>(
         <span class="ident">surface</span>,
-        <span class="ident">location</span>,
-        <span class="op">|</span><span class="kw">_</span>, <span class="ident">states</span>, <span class="ident">location</span><span class="op">|</span> {
+        (<span class="ident">location</span>, <span class="bool-val">false</span>),
+        <span class="op">|</span><span class="kw">_</span>, <span class="ident">states</span>, (<span class="ident">location</span>, <span class="ident">parent_unmapped</span>)<span class="op">|</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">location</span>;
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceState</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
-            <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">is_some</span>() {
-                <span class="kw">if</span> <span class="ident">states</span>.<span class="ident">role</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;subsurface&quot;</span>) {
-                    <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceCachedState</span><span class="op">&gt;</span>();
-                    <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">current</span>.<span class="ident">location</span>;
-                }
-
-                <span class="ident">TraversalAction::DoChildren</span>(<span class="ident">location</span>)
+            <span class="comment">// If the parent is unmapped we still have to traverse</span>
+            <span class="comment">// our children to send a leave events</span>
+            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">parent_unmapped</span> {
+                <span class="ident">TraversalAction::DoChildren</span>((<span class="ident">location</span>, <span class="bool-val">true</span>))
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_view</span>) {
+                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>;
+                <span class="ident">TraversalAction::DoChildren</span>((<span class="ident">location</span>, <span class="bool-val">false</span>))
             } <span class="kw">else</span> {
-                <span class="comment">// If the parent surface is unmapped, then the child surfaces are hidden as</span>
-                <span class="comment">// well, no need to consider them here.</span>
-                <span class="ident">TraversalAction::SkipChildren</span>
+                <span class="comment">// If we are unmapped we still have to traverse</span>
+                <span class="comment">// our children to send leave events</span>
+                <span class="ident">TraversalAction::DoChildren</span>((<span class="ident">location</span>, <span class="bool-val">true</span>))
             }
         },
-        <span class="op">|</span><span class="ident">wl_surface</span>, <span class="ident">states</span>, <span class="kw-2">&amp;</span><span class="ident">loc</span><span class="op">|</span> {
+        <span class="op">|</span><span class="ident">wl_surface</span>, <span class="ident">states</span>, (<span class="ident">location</span>, <span class="ident">parent_unmapped</span>)<span class="op">|</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">location</span>;
+
+            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">parent_unmapped</span> {
+                <span class="comment">// The parent is unmapped, just send a leave event</span>
+                <span class="comment">// if we were previously mapped and exit early</span>
+                <span class="ident">output_leave</span>(<span class="ident">output</span>, <span class="ident">surface_list</span>, <span class="ident">wl_surface</span>, <span class="ident">logger</span>);
+                <span class="kw">return</span>;
+            }
+
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceState</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">size</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_size</span>()) {
-                <span class="kw">let</span> <span class="ident">surface_rectangle</span> <span class="op">=</span> <span class="ident">Rectangle</span> { <span class="ident">loc</span>, <span class="ident">size</span> };
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface_view</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">borrow</span>().<span class="ident">surface_view</span>) {
+                <span class="ident">location</span> <span class="op">+</span><span class="op">=</span> <span class="ident">surface_view</span>.<span class="ident">offset</span>;
+                <span class="kw">let</span> <span class="ident">surface_rectangle</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">location</span>, <span class="ident">surface_view</span>.<span class="ident">dst</span>);
                 <span class="kw">if</span> <span class="ident">output_geometry</span>.<span class="ident">overlaps</span>(<span class="ident">surface_rectangle</span>) {
                     <span class="comment">// We found a matching output, check if we already sent enter</span>
                     <span class="ident">output_enter</span>(<span class="ident">output</span>, <span class="ident">surface_list</span>, <span class="ident">wl_surface</span>, <span class="ident">logger</span>);
@@ -666,5 +870,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (7466d5492 2022-06-08)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
 </body></html>

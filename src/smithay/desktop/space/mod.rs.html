@@ -1123,6 +1123,26 @@
 <span id="1116">1116</span>
 <span id="1117">1117</span>
 <span id="1118">1118</span>
+<span id="1119">1119</span>
+<span id="1120">1120</span>
+<span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the [`Space`] helper class as well has related</span>
 <span class="doccomment">//! rendering helpers to add custom elements or different clients to a space.</span>
 
@@ -1134,7 +1154,7 @@
         <span class="ident">utils</span>::{<span class="ident">output_leave</span>, <span class="ident">output_update</span>},
         <span class="ident">window::Window</span>,
     },
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Transform</span>},
+    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Transform</span>},
     <span class="ident">wayland</span>::{
         <span class="ident">compositor</span>::{<span class="ident">get_parent</span>, <span class="ident">is_sync_subsurface</span>, <span class="ident">with_surface_tree_downward</span>, <span class="ident">TraversalAction</span>},
         <span class="ident">output::Output</span>,
@@ -1265,7 +1285,7 @@
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Window</span>, <span class="ident">WlSurface</span>, <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">point</span> <span class="op">=</span> <span class="ident">point</span>.<span class="ident">into</span>();
         <span class="kw">for</span> <span class="ident">window</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">elem_location</span>(<span class="self">self</span>.<span class="ident">id</span>);
+            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">window_loc</span>(<span class="ident">window</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id</span>) <span class="op">-</span> <span class="ident">window</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">bbox_with_popups</span>();
             <span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">loc</span>;
 
@@ -1285,7 +1305,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">window_under</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">point</span>: <span class="ident">P</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Window</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">point</span> <span class="op">=</span> <span class="ident">point</span>.<span class="ident">into</span>();
         <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">w</span>.<span class="ident">elem_location</span>(<span class="self">self</span>.<span class="ident">id</span>);
+            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">window_loc</span>(<span class="ident">w</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id</span>) <span class="op">-</span> <span class="ident">w</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">w</span>.<span class="ident">bbox</span>();
             <span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">loc</span>;
             <span class="ident">geo</span>.<span class="ident">to_f64</span>().<span class="ident">contains</span>(<span class="ident">point</span>)
@@ -1452,7 +1472,7 @@
                     .<span class="ident">transform_size</span>(<span class="ident">mode</span>.<span class="ident">size</span>)
                     .<span class="ident">to_f64</span>()
                     .<span class="ident">to_logical</span>(<span class="ident">o</span>.<span class="ident">current_scale</span>().<span class="ident">fractional_scale</span>())
-                    .<span class="ident">to_i32_round</span>(),
+                    .<span class="ident">to_i32_ceil</span>(),
             )
         })
     }
@@ -1596,7 +1616,7 @@
         <span class="ident">age</span>: <span class="ident">usize</span>,
         <span class="ident">clear_color</span>: [<span class="ident">f32</span>; <span class="number">4</span>],
         <span class="ident">custom_elements</span>: <span class="kw-2">&amp;</span>[<span class="ident">E</span>],
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">RenderError</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">RenderError</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">R</span>: <span class="ident">Renderer</span> <span class="op">+</span> <span class="ident">ImportAll</span>,
         <span class="ident">R::TextureId</span>: <span class="lifetime">&#39;static</span>,
@@ -1608,15 +1628,13 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">output_state</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output</span>);
         <span class="kw">let</span> <span class="ident">output_size</span> <span class="op">=</span> <span class="ident">output</span>.<span class="ident">current_mode</span>().<span class="ident">ok_or</span>(<span class="ident">RenderError::OutputNoMode</span>)<span class="question-mark">?</span>.<span class="ident">size</span>;
+        <span class="kw">let</span> <span class="ident">output_scale</span> <span class="op">=</span> <span class="ident">output</span>.<span class="ident">current_scale</span>().<span class="ident">fractional_scale</span>();
         <span class="comment">// We explicitly use ceil for the output geometry size to make sure the damage</span>
         <span class="comment">// spans at least the output size. Round and floor would result in parts not drawn as the</span>
         <span class="comment">// frame size could be bigger than the maximum the output_geo would define.</span>
         <span class="kw">let</span> <span class="ident">output_geo</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>(
-            <span class="ident">state</span>.<span class="ident">location</span>,
-            <span class="ident">output_size</span>
-                .<span class="ident">to_f64</span>()
-                .<span class="ident">to_logical</span>(<span class="ident">output</span>.<span class="ident">current_scale</span>().<span class="ident">fractional_scale</span>())
-                .<span class="ident">to_i32_ceil</span>(),
+            <span class="ident">state</span>.<span class="ident">location</span>.<span class="ident">to_physical_precise_round</span>(<span class="ident">output_scale</span>),
+            <span class="ident">output_size</span>,
         );
         <span class="kw">let</span> <span class="ident">layer_map</span> <span class="op">=</span> <span class="ident">layer_map_for_output</span>(<span class="ident">output</span>);
 
@@ -1651,47 +1669,55 @@
         <span class="ident">render_elements</span>.<span class="ident">sort_by_key</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">z_index</span>());
 
         <span class="comment">// This will hold all the damage we need for this rendering step</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">damage</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::new</span>();
-        <span class="comment">// First add damage for windows gone</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">damage</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::new</span>();
 
+        <span class="comment">// First add damage for windows gone</span>
         <span class="kw">for</span> <span class="ident">old_toplevel</span> <span class="kw">in</span> <span class="ident">state</span>
-            .<span class="ident">last_state</span>
+            .<span class="ident">last_toplevel_state</span>
             .<span class="ident">iter</span>()
-            .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">geo</span>)<span class="op">|</span> {
+            .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">state</span>)<span class="op">|</span> {
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">render_elements</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">ToplevelId::from</span>(<span class="ident">e</span>) <span class="op">==</span> <span class="kw-2">*</span><span class="ident">id</span>) {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">geo</span>)
+                    <span class="prelude-val">Some</span>(<span class="ident">state</span>.<span class="number">1</span>)
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
             })
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
         {
             <span class="macro">slog::trace!</span>(<span class="self">self</span>.<span class="ident">logger</span>, <span class="string">&quot;Removing toplevel at: {:?}&quot;</span>, <span class="ident">old_toplevel</span>);
             <span class="ident">damage</span>.<span class="ident">push</span>(<span class="ident">old_toplevel</span>);
         }
 
         <span class="comment">// lets iterate front to back and figure out, what new windows or unmoved windows we have</span>
-        <span class="kw">for</span> <span class="ident">element</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">render_elements</span> {
-            <span class="kw">let</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">geometry</span>(<span class="self">self</span>.<span class="ident">id</span>);
-            <span class="kw">let</span> <span class="ident">old_geo</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">last_state</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">ToplevelId::from</span>(<span class="ident">element</span>)).<span class="ident">cloned</span>();
+        <span class="kw">for</span> (<span class="ident">zindex</span>, <span class="ident">element</span>) <span class="kw">in</span> <span class="ident">render_elements</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
+            <span class="kw">let</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">geometry</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output_scale</span>);
+            <span class="kw">let</span> <span class="ident">old_state</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">last_toplevel_state</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">ToplevelId::from</span>(<span class="ident">element</span>)).<span class="ident">cloned</span>();
+
+            <span class="comment">// add the damage as reported by the element</span>
+            <span class="ident">damage</span>.<span class="ident">extend</span>(
+                <span class="ident">element</span>
+                    .<span class="ident">accumulated_damage</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output_scale</span>, <span class="prelude-val">Some</span>((<span class="self">self</span>, <span class="ident">output</span>)))
+                    .<span class="ident">into_iter</span>(),
+            );
 
             <span class="comment">// window was moved, resized or just appeared</span>
-            <span class="kw">if</span> <span class="ident">old_geo</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">old_geo</span><span class="op">|</span> <span class="ident">old_geo</span> <span class="op">!</span><span class="op">=</span> <span class="ident">geo</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
+            <span class="kw">if</span> <span class="ident">old_state</span>
+                .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">old_zindex</span>, <span class="ident">old_geo</span>)<span class="op">|</span> <span class="ident">old_geo</span> <span class="op">!</span><span class="op">=</span> <span class="ident">geo</span> <span class="op">|</span><span class="op">|</span> <span class="ident">zindex</span> <span class="op">!</span><span class="op">=</span> <span class="ident">old_zindex</span>)
+                .<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>)
+            {
+                <span class="macro">slog::trace!</span>(<span class="self">self</span>.<span class="ident">logger</span>, <span class="string">&quot;Toplevel geometry changed, damaging previous and current geometry. previous geometry: {:?}, current geometry: {:?}&quot;</span>, <span class="ident">old_state</span>, <span class="ident">geo</span>);
                 <span class="comment">// Add damage for the old position of the window</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old_geo</span>) <span class="op">=</span> <span class="ident">old_geo</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="ident">old_geo</span>)) <span class="op">=</span> <span class="ident">old_state</span> {
                     <span class="ident">damage</span>.<span class="ident">push</span>(<span class="ident">old_geo</span>);
                 }
                 <span class="ident">damage</span>.<span class="ident">push</span>(<span class="ident">geo</span>);
-            } <span class="kw">else</span> {
-                <span class="comment">// window stayed at its place</span>
-                <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">location</span>(<span class="self">self</span>.<span class="ident">id</span>);
-                <span class="ident">damage</span>.<span class="ident">extend</span>(<span class="ident">element</span>.<span class="ident">accumulated_damage</span>(<span class="prelude-val">Some</span>((<span class="self">self</span>, <span class="ident">output</span>))).<span class="ident">into_iter</span>().<span class="ident">map</span>(
-                    <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">rect</span><span class="op">|</span> {
-                        <span class="ident">rect</span>.<span class="ident">loc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">loc</span>;
-                        <span class="ident">rect</span>
-                    },
-                ));
             }
+        }
+
+        <span class="kw">if</span> <span class="ident">state</span>.<span class="ident">last_output_geo</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">geo</span><span class="op">|</span> <span class="ident">geo</span> <span class="op">!</span><span class="op">=</span> <span class="ident">output_geo</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
+            <span class="comment">// The output geometry changed, so just damage everything</span>
+            <span class="macro">slog::trace!</span>(<span class="self">self</span>.<span class="ident">logger</span>, <span class="string">&quot;Output geometry changed, damaging whole output geometry. previous geometry: {:?}, current geometry: {:?}&quot;</span>, <span class="ident">state</span>.<span class="ident">last_output_geo</span>, <span class="ident">output_geo</span>);
+            <span class="ident">damage</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">output_geo</span>];
         }
 
         <span class="comment">// That is all completely new damage, which we need to store for subsequent renders</span>
@@ -1728,7 +1754,6 @@
         }
 
         <span class="kw">let</span> <span class="ident">output_transform</span>: <span class="ident">Transform</span> <span class="op">=</span> <span class="ident">output</span>.<span class="ident">current_transform</span>().<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">output_scale</span> <span class="op">=</span> <span class="ident">output</span>.<span class="ident">current_scale</span>().<span class="ident">fractional_scale</span>();
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">renderer</span>.<span class="ident">render</span>(
             <span class="ident">output_transform</span>.<span class="ident">transform_size</span>(<span class="ident">output_size</span>),
             <span class="ident">output_transform</span>,
@@ -1742,21 +1767,14 @@
                         <span class="comment">// Map from global space to output space</span>
                         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">geo</span><span class="op">|</span> <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">-</span> <span class="ident">output_geo</span>.<span class="ident">loc</span>, <span class="ident">geo</span>.<span class="ident">size</span>))
                         <span class="comment">// Map from logical to physical</span>
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">geo</span><span class="op">|</span> <span class="ident">geo</span>.<span class="ident">to_f64</span>().<span class="ident">to_physical</span>(<span class="ident">output_scale</span>))
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">geo</span><span class="op">|</span> <span class="ident">geo</span>.<span class="ident">to_f64</span>())
                         .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(),
                 )<span class="question-mark">?</span>;
                 <span class="comment">// Then re-draw all windows &amp; layers overlapping with a damage rect.</span>
-
                 <span class="kw">for</span> <span class="ident">element</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">render_elements</span> {
-                    <span class="kw">let</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">geometry</span>(<span class="self">self</span>.<span class="ident">id</span>);
+                    <span class="kw">let</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">geometry</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output_scale</span>);
                     <span class="kw">if</span> <span class="ident">damage</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">overlaps</span>(<span class="ident">geo</span>)) {
-                        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">location</span>(<span class="self">self</span>.<span class="ident">id</span>);
-                        <span class="kw">let</span> <span class="ident">damage</span> <span class="op">=</span> <span class="ident">damage</span>
-                            .<span class="ident">iter</span>()
-                            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">intersection</span>(<span class="ident">geo</span>))
-                            <span class="comment">// Map from output space to surface-relative coordinates</span>
-                            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">geo</span><span class="op">|</span> <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">-</span> <span class="ident">loc</span>, <span class="ident">geo</span>.<span class="ident">size</span>))
-                            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+                        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">location</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output_scale</span>);
                         <span class="macro">slog::trace!</span>(
                             <span class="self">self</span>.<span class="ident">logger</span>,
                             <span class="string">&quot;Rendering toplevel at {:?} with damage {:#?}&quot;</span>,
@@ -1768,8 +1786,12 @@
                             <span class="ident">renderer</span>,
                             <span class="ident">frame</span>,
                             <span class="ident">output_scale</span>,
-                            <span class="ident">loc</span> <span class="op">-</span> <span class="ident">output_geo</span>.<span class="ident">loc</span>,
-                            <span class="kw-2">&amp;</span><span class="ident">damage</span>,
+                            <span class="ident">loc</span> <span class="op">-</span> <span class="ident">output_geo</span>.<span class="ident">loc</span>.<span class="ident">to_f64</span>(),
+                            <span class="kw-2">&amp;</span><span class="ident">damage</span>
+                                .<span class="ident">iter</span>()
+                                <span class="comment">// Map from global space to output space</span>
+                                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">geo</span><span class="op">|</span> <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">geo</span>.<span class="ident">loc</span> <span class="op">-</span> <span class="ident">output_geo</span>.<span class="ident">loc</span>, <span class="ident">geo</span>.<span class="ident">size</span>))
+                                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(),
                             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logger</span>,
                         )<span class="question-mark">?</span>;
                     }
@@ -1783,19 +1805,21 @@
             <span class="comment">// if the rendering errors on us, we need to be prepared, that this whole buffer was partially updated and thus now unusable.</span>
             <span class="comment">// thus clean our old states before returning</span>
             <span class="ident">state</span>.<span class="ident">old_damage</span> <span class="op">=</span> <span class="ident">VecDeque::new</span>();
-            <span class="ident">state</span>.<span class="ident">last_state</span> <span class="op">=</span> <span class="ident">IndexMap::new</span>();
+            <span class="ident">state</span>.<span class="ident">last_toplevel_state</span> <span class="op">=</span> <span class="ident">IndexMap::new</span>();
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">RenderError::Rendering</span>(<span class="ident">err</span>));
         }
 
         <span class="comment">// If rendering was successful capture the state and add the damage</span>
-        <span class="ident">state</span>.<span class="ident">last_state</span> <span class="op">=</span> <span class="ident">render_elements</span>
+        <span class="ident">state</span>.<span class="ident">last_toplevel_state</span> <span class="op">=</span> <span class="ident">render_elements</span>
             .<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">elem</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">elem</span>.<span class="ident">geometry</span>(<span class="self">self</span>.<span class="ident">id</span>);
-                (<span class="ident">ToplevelId::from</span>(<span class="ident">elem</span>), <span class="ident">geo</span>)
+            .<span class="ident">enumerate</span>()
+            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">zindex</span>, <span class="ident">elem</span>)<span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">elem</span>.<span class="ident">geometry</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output_scale</span>);
+                (<span class="ident">ToplevelId::from</span>(<span class="ident">elem</span>), (<span class="ident">zindex</span>, <span class="ident">geo</span>))
             })
             .<span class="ident">collect</span>();
         <span class="ident">state</span>.<span class="ident">old_damage</span>.<span class="ident">push_front</span>(<span class="ident">new_damage</span>.<span class="ident">clone</span>());
+        <span class="ident">state</span>.<span class="ident">last_output_geo</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">output_geo</span>);
 
         <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(
             <span class="ident">new_damage</span>
@@ -1911,25 +1935,37 @@
             }
         }
 
-        <span class="kw">fn</span> <span class="ident">geometry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Logical</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">location</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span> {
             <span class="kw">match</span> <span class="self">self</span> {
                 $(
                     $(
                         <span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>]</span>
                     )<span class="op">*</span>
-                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">geometry</span>; <span class="ident">x</span>)
+                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">location</span>; <span class="ident">x</span>, <span class="ident">scale</span>)
                 ),<span class="kw-2">*</span>,
                 <span class="ident"><span class="self">Self</span>::_GenericCatcher</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             }
         }
 
-        <span class="kw">fn</span> <span class="ident">accumulated_damage</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">for_values</span>: <span class="ident">std::option::Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::desktop::space::SpaceOutputTuple</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Logical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">geometry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span> {
             <span class="kw">match</span> <span class="self">self</span> {
                 $(
                     $(
                         <span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>]</span>
                     )<span class="op">*</span>
-                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">accumulated_damage</span>; <span class="ident">x</span>, <span class="ident">for_values</span>)
+                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">geometry</span>; <span class="ident">x</span>, <span class="ident">scale</span>)
+                ),<span class="kw-2">*</span>,
+                <span class="ident"><span class="self">Self</span>::_GenericCatcher</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+            }
+        }
+
+        <span class="kw">fn</span> <span class="ident">accumulated_damage</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">for_values</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::desktop::space::SpaceOutputTuple</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+            <span class="kw">match</span> <span class="self">self</span> {
+                $(
+                    $(
+                        <span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>]</span>
+                    )<span class="op">*</span>
+                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">accumulated_damage</span>; <span class="ident">x</span>, <span class="ident">scale</span>, <span class="ident">for_values</span>)
                 ),<span class="kw-2">*</span>,
                 <span class="ident"><span class="self">Self</span>::_GenericCatcher</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             }
@@ -1952,9 +1988,9 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span>,
             <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::renderer::Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
-            <span class="ident">scale</span>: <span class="ident">f64</span>,
-            <span class="ident">location</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Logical</span><span class="op">&gt;</span>,
-            <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Logical</span><span class="op">&gt;</span>],
+            <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+            <span class="ident">location</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span>,
+            <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span>],
             <span class="ident">log</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
         ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::renderer::Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>
         <span class="kw">where</span>
@@ -1982,9 +2018,9 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>,
             <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span>,
             <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::renderer::Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
-            <span class="ident">scale</span>: <span class="ident">f64</span>,
-            <span class="ident">location</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Logical</span><span class="op">&gt;</span>,
-            <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Logical</span><span class="op">&gt;</span>],
+            <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+            <span class="ident">location</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span>,
+            <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Physical</span><span class="op">&gt;</span>],
             <span class="ident">log</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
         ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::renderer::Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>
         {
@@ -2066,7 +2102,7 @@
 <span class="doccomment">/// use smithay::{</span>
 <span class="doccomment">///     backend::renderer::{Texture, Renderer, ImportAll},</span>
 <span class="doccomment">///     desktop::space::{SurfaceTree, Space, SpaceOutputTuple, RenderElement},</span>
-<span class="doccomment">///     utils::{Point, Size, Rectangle, Transform, Logical},</span>
+<span class="doccomment">///     utils::{Point, Size, Rectangle, Transform, Logical, Scale},</span>
 <span class="doccomment">/// };</span>
 <span class="doccomment">/// use slog::Logger;</span>
 <span class="doccomment">///</span>
@@ -2122,7 +2158,7 @@
 <span class="doccomment">/// #       texture: &amp;Self::TextureId,</span>
 <span class="doccomment">/// #       pos: Point&lt;f64, Physical&gt;,</span>
 <span class="doccomment">/// #       texture_scale: i32,</span>
-<span class="doccomment">/// #       output_scale: f64,</span>
+<span class="doccomment">/// #       output_scale: impl Into&lt;Scale&lt;f64&gt;&gt;,</span>
 <span class="doccomment">/// #       src_transform: Transform,</span>
 <span class="doccomment">/// #       damage: &amp;[Rectangle&lt;f64, Physical&gt;],</span>
 <span class="doccomment">/// #       alpha: f32,</span>
@@ -2132,7 +2168,7 @@
 <span class="doccomment">/// #   fn render_texture_from_to(</span>
 <span class="doccomment">/// #       &amp;mut self,</span>
 <span class="doccomment">/// #       texture: &amp;Self::TextureId,</span>
-<span class="doccomment">/// #       src: Rectangle&lt;i32, Buffer&gt;,</span>
+<span class="doccomment">/// #       src: Rectangle&lt;f64, Buffer&gt;,</span>
 <span class="doccomment">/// #       dst: Rectangle&lt;f64, Physical&gt;,</span>
 <span class="doccomment">/// #       damage: &amp;[Rectangle&lt;f64, Physical&gt;],</span>
 <span class="doccomment">/// #       src_transform: Transform,</span>
@@ -2191,11 +2227,15 @@
 <span class="doccomment">///#        0</span>
 <span class="doccomment">///#    }</span>
 <span class="doccomment">///#</span>
-<span class="doccomment">///#    fn geometry(&amp;self) -&gt; Rectangle&lt;i32, Logical&gt; {</span>
-<span class="doccomment">///#        Rectangle::from_loc_and_size(self.position, self.size)</span>
+<span class="doccomment">///#    fn location(&amp;self, scale: impl Into&lt;Scale&lt;f64&gt;&gt;) -&gt; Point&lt;f64, Physical&gt; {</span>
+<span class="doccomment">///#        self.position.to_f64().to_physical(scale)</span>
 <span class="doccomment">///#    }</span>
 <span class="doccomment">///#</span>
-<span class="doccomment">///#    fn accumulated_damage(&amp;self, _: Option&lt;SpaceOutputTuple&lt;&#39;_, &#39;_&gt;&gt;) -&gt; Vec&lt;Rectangle&lt;i32, Logical&gt;&gt; {</span>
+<span class="doccomment">///#    fn geometry(&amp;self, scale: impl Into&lt;Scale&lt;f64&gt;&gt;) -&gt; Rectangle&lt;i32, Physical&gt; {</span>
+<span class="doccomment">///#        Rectangle::from_loc_and_size(self.position, self.size).to_f64().to_physical(scale).to_i32_round()</span>
+<span class="doccomment">///#    }</span>
+<span class="doccomment">///#</span>
+<span class="doccomment">///#    fn accumulated_damage(&amp;self, _: impl Into&lt;Scale&lt;f64&gt;&gt;, _: Option&lt;SpaceOutputTuple&lt;&#39;_, &#39;_&gt;&gt;) -&gt; Vec&lt;Rectangle&lt;i32, Physical&gt;&gt; {</span>
 <span class="doccomment">///#        vec![]</span>
 <span class="doccomment">///#    }</span>
 <span class="doccomment">///#</span>
@@ -2203,9 +2243,9 @@
 <span class="doccomment">///#        &amp;self,</span>
 <span class="doccomment">///#        _renderer: &amp;mut R,</span>
 <span class="doccomment">///#        frame: &amp;mut &lt;R as Renderer&gt;::Frame,</span>
-<span class="doccomment">///#        scale: f64,</span>
-<span class="doccomment">///#        location: Point&lt;i32, Logical&gt;,</span>
-<span class="doccomment">///#        damage: &amp;[Rectangle&lt;i32, Logical&gt;],</span>
+<span class="doccomment">///#        scale: impl Into&lt;Scale&lt;f64&gt;&gt;,</span>
+<span class="doccomment">///#        location: Point&lt;f64, Physical&gt;,</span>
+<span class="doccomment">///#        damage: &amp;[Rectangle&lt;i32, Physical&gt;],</span>
 <span class="doccomment">///#        _log: &amp;Logger,</span>
 <span class="doccomment">///#    ) -&gt; Result&lt;(), &lt;R as Renderer&gt;::Error&gt; {</span>
 <span class="doccomment">///#        Ok(())</span>
@@ -2242,5 +2282,5 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (7466d5492 2022-06-08)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
 </body></html>

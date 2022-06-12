@@ -60,10 +60,17 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer</span>::{<span class="ident">ImportAll</span>, <span class="ident">Renderer</span>},
     <span class="ident">desktop::space</span>::{<span class="ident">RenderElement</span>, <span class="ident">SpaceElement</span>},
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>},
+    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>},
     <span class="ident">wayland::output::Output</span>,
 };
 <span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
@@ -99,9 +106,16 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OutputState</span> {
     <span class="kw">pub</span> <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>,
 
-    <span class="comment">// damage and last_state are in space coordinate space</span>
-    <span class="kw">pub</span> <span class="ident">old_damage</span>: <span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">last_state</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">ToplevelId</span>, <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="comment">// damage and last_toplevel_state are in space coordinate space</span>
+    <span class="comment">// old_damage represents the damage from the last n render iterations</span>
+    <span class="comment">// used to track the damage for different buffer ages</span>
+    <span class="kw">pub</span> <span class="ident">old_damage</span>: <span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="comment">// z_index and physical geometry of the toplevels from the last render iteration</span>
+    <span class="kw">pub</span> <span class="ident">last_toplevel_state</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">ToplevelId</span>, (<span class="ident">usize</span>, <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span>)<span class="op">&gt;</span>,
+    <span class="comment">// output geometry from the last render iteration</span>
+    <span class="comment">// used to react on output geometry changes, like damaging</span>
+    <span class="comment">// the whole output</span>
+    <span class="kw">pub</span> <span class="ident">last_output_geo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="comment">// surfaces for tracking enter and leave events</span>
     <span class="kw">pub</span> <span class="ident">surfaces</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">WlSurface</span><span class="op">&gt;</span>,
@@ -116,5 +130,5 @@
     })
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (7466d5492 2022-06-08)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
 </body></html>

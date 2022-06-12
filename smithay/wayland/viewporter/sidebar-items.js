@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["ensure_viewport_valid","Ensures that the viewport, if any, is valid accordingly to the protocol specification."],["viewporter_init","Create new `wp_viewporter` global."]],"struct":[["ViewportCachedState","Represents the double-buffered viewport state of a `WlSurface`"]]});
