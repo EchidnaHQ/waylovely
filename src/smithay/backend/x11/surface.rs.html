@@ -147,6 +147,8 @@
 <span id="140">140</span>
 <span id="141">141</span>
 <span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">mem</span>,
     <span class="ident">sync</span>::{<span class="ident">mpsc::Receiver</span>, <span class="ident">Weak</span>},
@@ -258,15 +260,17 @@
                 <span class="ident">mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">next</span>, <span class="ident">current</span>);
             }
 
-            <span class="kw">let</span> <span class="ident">window</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">window</span>().<span class="ident">ok_or</span>(<span class="ident">AllocateBuffersError::WindowDestroyed</span>)<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="ident">pixmap</span> <span class="op">=</span> <span class="ident">PixmapWrapper::with_dmabuf</span>(
-                <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">connection</span>,
-                <span class="ident">window</span>.<span class="ident">as_ref</span>(),
-                <span class="ident">next</span>.<span class="ident">userdata</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Dmabuf</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>(),
-            )<span class="question-mark">?</span>;
+            {
+                <span class="kw">let</span> <span class="ident">window</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">window</span>().<span class="ident">ok_or</span>(<span class="ident">AllocateBuffersError::WindowDestroyed</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">pixmap</span> <span class="op">=</span> <span class="ident">PixmapWrapper::with_dmabuf</span>(
+                    <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">connection</span>,
+                    <span class="ident">window</span>.<span class="ident">as_ref</span>(),
+                    <span class="ident">next</span>.<span class="ident">userdata</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Dmabuf</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>(),
+                )<span class="question-mark">?</span>;
 
-            <span class="comment">// Now present the current buffer</span>
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">pixmap</span>.<span class="ident">present</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">connection</span>, <span class="ident">window</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>;
+                <span class="comment">// Now present the current buffer</span>
+                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">pixmap</span>.<span class="ident">present</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">connection</span>, <span class="ident">window</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>;
+            }
             <span class="self">self</span>.<span class="ident">swapchain</span>.<span class="ident">submitted</span>(<span class="kw-2">&amp;</span><span class="ident">next</span>);
 
             <span class="comment">// Flush the connection after presenting to the window to ensure we don&#39;t run out of buffer space in the X11 connection.</span>
