@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -516,6 +514,43 @@
 <span id="509">509</span>
 <span id="510">510</span>
 <span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Output advertising capabilities</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module provides a type helping you to abstract over various</span>
@@ -529,7 +564,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! You need to instantiate an [`Output`].</span>
 <span class="doccomment">//! To advertise a new output global to clients you then need to use [`Output::create_global`].</span>
-<span class="doccomment">//! The resulting `Global&lt;WlOutput&gt;` can later be destroyed again to stop advertising it</span>
+<span class="doccomment">//! The resulting `GlobalId` can later be destroyed again to stop advertising it</span>
 <span class="doccomment">//! without destroying it&#39;s state. E.g. in case the matching physical output got disabled at runtime.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! You can use the returned [`Output`] to change</span>
@@ -538,18 +573,21 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Additional protocols may piggy-back on this type.</span>
 <span class="doccomment">//! E.g. to also advertise an xdg-output for every wl-output you can use</span>
-<span class="doccomment">//! [`xdg::init_xdg_output_manager`].</span>
+<span class="doccomment">//! [`OutputManagerState::new_with_xdg_output`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! You can attach additional properties to your `Output`s by using [`Output::user_data`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # extern crate wayland_server;</span>
 <span class="doccomment">//! # extern crate smithay;</span>
+<span class="doccomment">//! use smithay::delegate_output;</span>
 <span class="doccomment">//! use smithay::wayland::output::{Output, PhysicalProperties, Scale, Mode};</span>
 <span class="doccomment">//! use wayland_server::protocol::wl_output;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! # let mut display = wayland_server::Display::new();</span>
-<span class="doccomment">//! // Create the Output with given name and physical properties</span>
+<span class="doccomment">//! # struct State;</span>
+<span class="doccomment">//! # let mut display = wayland_server::Display::&lt;State&gt;::new().unwrap();</span>
+<span class="doccomment">//! # let display_handle = display.handle();</span>
+<span class="doccomment">//! // Create the Output with given name and physical properties.</span>
 <span class="doccomment">//! let output = Output::new(</span>
 <span class="doccomment">//!     &quot;output-0&quot;.into(), // the name of this output,</span>
 <span class="doccomment">//!     PhysicalProperties {</span>
@@ -561,8 +599,8 @@
 <span class="doccomment">//!     None // insert a logger here</span>
 <span class="doccomment">//! );</span>
 <span class="doccomment">//! // create a global, if you want to advertise it to clients</span>
-<span class="doccomment">//! let _output_global = output.create_global(</span>
-<span class="doccomment">//!     &amp;mut display,      // the display//!</span>
+<span class="doccomment">//! let _global = output.create_global::&lt;State&gt;(</span>
+<span class="doccomment">//!     &amp;display_handle,      // the display</span>
 <span class="doccomment">//! ); // you can drop the global, if you never intend to destroy it.</span>
 <span class="doccomment">//! // Now you can configure it</span>
 <span class="doccomment">//! output.change_current_state(</span>
@@ -576,30 +614,68 @@
 <span class="doccomment">//! // add other supported modes</span>
 <span class="doccomment">//! output.add_mode(Mode { size: (800, 600).into(), refresh: 60000 });</span>
 <span class="doccomment">//! output.add_mode(Mode { size: (1024, 768).into(), refresh: 60000 });</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! delegate_output!(State);</span>
 <span class="doccomment">//! ```</span>
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">xdg</span>;
+<span class="kw">mod</span> <span class="ident">handlers</span>;
+<span class="kw">mod</span> <span class="ident">xdg</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>},
-    <span class="ident">ops::Deref</span> <span class="kw">as</span> <span class="kw">_</span>,
     <span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>},
 };
 
-<span class="kw">use</span> <span class="ident">wayland_server::protocol</span>::{
-    <span class="ident">wl_output</span>::{<span class="ident">Subpixel</span>, <span class="ident">Transform</span>},
-    <span class="ident">wl_surface</span>,
-};
+<span class="kw">use</span> <span class="ident">wayland_protocols::xdg::xdg_output::zv1::server::zxdg_output_manager_v1::ZxdgOutputManagerV1</span>;
 <span class="kw">use</span> <span class="ident">wayland_server</span>::{
-    <span class="ident">protocol::wl_output</span>::{<span class="ident">Mode</span> <span class="kw">as</span> <span class="ident">WMode</span>, <span class="ident">WlOutput</span>},
-    <span class="ident">Client</span>, <span class="ident">Display</span>, <span class="ident">Filter</span>, <span class="ident">Global</span>, <span class="ident">Main</span>, <span class="ident">UserDataMap</span>,
+    <span class="ident">backend::GlobalId</span>,
+    <span class="ident">protocol</span>::{
+        <span class="ident">wl_output</span>::{<span class="ident">Mode</span> <span class="kw">as</span> <span class="ident">WMode</span>, <span class="ident">Subpixel</span>, <span class="ident">Transform</span>, <span class="ident">WlOutput</span>},
+        <span class="ident">wl_surface</span>,
+    },
+    <span class="ident">Client</span>, <span class="ident">DisplayHandle</span>, <span class="ident">GlobalDispatch</span>, <span class="ident">Resource</span>,
 };
 
-<span class="kw">use</span> <span class="ident">slog</span>::{<span class="ident">info</span>, <span class="ident">o</span>, <span class="ident">trace</span>, <span class="ident">warn</span>};
+<span class="kw">use</span> <span class="ident">slog</span>::{<span class="ident">info</span>, <span class="ident">o</span>};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Raw</span>, <span class="ident">Size</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">user_data::UserDataMap</span>, <span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Raw</span>, <span class="ident">Size</span>};
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::handlers::XdgOutputUserData</span>;
 <span class="kw">use</span> <span class="ident"><span class="self">self</span>::xdg::XdgOutput</span>;
+
+<span class="doccomment">/// State of Smithay output manager</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OutputManagerState</span> {
+    <span class="ident">xdg_output_manager</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GlobalId</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">OutputManagerState</span> {
+    <span class="doccomment">/// Create new output manager</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">xdg_output_manager</span>: <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="doccomment">/// Create new output manager with xdg output support</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_xdg_output</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">display</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) -&gt; <span class="self">Self</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">WlOutput</span>, <span class="ident">OutputData</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">ZxdgOutputManagerV1</span>, ()<span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="kw">let</span> <span class="ident">xdg_output_manager</span> <span class="op">=</span> <span class="ident">display</span>.<span class="ident">create_global</span>::<span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">ZxdgOutputManagerV1</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="number">3</span>, ());
+
+        <span class="self">Self</span> {
+            <span class="ident">xdg_output_manager</span>: <span class="prelude-val">Some</span>(<span class="ident">xdg_output_manager</span>),
+        }
+    }
+
+    <span class="doccomment">/// Get global id of xdg output manager</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xdg_output_manager_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GlobalId</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">xdg_output_manager</span>.<span class="ident">clone</span>()
+    }
+}
 
 <span class="doccomment">/// An output mode</span>
 <span class="doccomment">///</span>
@@ -689,42 +765,20 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">log</span>: <span class="ident">::slog::Logger</span>,
 }
 
-<span class="kw">type</span> <span class="ident">InnerType</span> <span class="op">=</span> <span class="ident">Arc</span><span class="op">&lt;</span>(<span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Inner</span><span class="op">&gt;</span>, <span class="ident">UserDataMap</span>)<span class="op">&gt;</span>;
+<span class="doccomment">/// Data for WlOutput global</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OutputData</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">Arc</span><span class="op">&lt;</span>(<span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Inner</span><span class="op">&gt;</span>, <span class="ident">UserDataMap</span>)<span class="op">&gt;</span>,
+}
+
+<span class="doccomment">/// User data for WlOutput</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OutputUserData</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">global_data</span>: <span class="ident">OutputData</span>,
+}
 
 <span class="kw">impl</span> <span class="ident">Inner</span> {
-    <span class="kw">fn</span> <span class="ident">new_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">output</span>: <span class="ident">WlOutput</span>) {
-        <span class="macro">trace!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;New global instantiated.&quot;</span>);
-
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">modes</span>.<span class="ident">is_empty</span>() {
-            <span class="macro">warn!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;Output is used with no modes set&quot;</span>; <span class="string">&quot;name&quot;</span> =&gt; <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>);
-        }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">current_mode</span>.<span class="ident">is_none</span>() {
-            <span class="macro">warn!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;Output is used with no current mod set&quot;</span>; <span class="string">&quot;name&quot;</span> =&gt; <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>);
-        }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">preferred_mode</span>.<span class="ident">is_none</span>() {
-            <span class="macro">warn!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;Output is used with not preferred mode set&quot;</span>; <span class="string">&quot;name&quot;</span> =&gt; <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>);
-        }
-
-        <span class="self">self</span>.<span class="ident">send_geometry</span>(<span class="kw-2">&amp;</span><span class="ident">output</span>);
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">mode</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">modes</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">WMode::empty</span>();
-            <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">mode</span>) <span class="op">==</span> <span class="self">self</span>.<span class="ident">current_mode</span> {
-                <span class="ident">flags</span> <span class="op">|</span><span class="op">=</span> <span class="ident">WMode::Current</span>;
-            }
-            <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">mode</span>) <span class="op">==</span> <span class="self">self</span>.<span class="ident">preferred_mode</span> {
-                <span class="ident">flags</span> <span class="op">|</span><span class="op">=</span> <span class="ident">WMode::Preferred</span>;
-            }
-            <span class="ident">output</span>.<span class="ident">mode</span>(<span class="ident">flags</span>, <span class="ident">mode</span>.<span class="ident">size</span>.<span class="ident">w</span>, <span class="ident">mode</span>.<span class="ident">size</span>.<span class="ident">h</span>, <span class="ident">mode</span>.<span class="ident">refresh</span>);
-        }
-        <span class="kw">if</span> <span class="ident">output</span>.<span class="ident">as_ref</span>().<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
-            <span class="ident">output</span>.<span class="ident">scale</span>(<span class="self">self</span>.<span class="ident">scale</span>.<span class="ident">integer_scale</span>());
-            <span class="ident">output</span>.<span class="ident">done</span>();
-        }
-
-        <span class="self">self</span>.<span class="ident">instances</span>.<span class="ident">push</span>(<span class="ident">output</span>);
-    }
-
-    <span class="kw">fn</span> <span class="ident">send_geometry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">WlOutput</span>) {
+    <span class="kw">fn</span> <span class="ident">send_geometry_to</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">WlOutput</span>) {
         <span class="ident">output</span>.<span class="ident">geometry</span>(
             <span class="self">self</span>.<span class="ident">location</span>.<span class="ident">x</span>,
             <span class="self">self</span>.<span class="ident">location</span>.<span class="ident">y</span>,
@@ -744,11 +798,15 @@
 <span class="doccomment">/// about any change in the properties of this output.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Output</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">InnerType</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">data</span>: <span class="ident">OutputData</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Output</span> {
-    <span class="doccomment">/// Creates a new output state with the given name and physical properties.</span>
+    <span class="doccomment">/// Create a new output global with given name and physical properties.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The global is directly registered into the event loop, and this function</span>
+    <span class="doccomment">/// returns the state token allowing you to access it, as well as the global handle,</span>
+    <span class="doccomment">/// in case you wish to remove this global in the future.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>(<span class="ident">name</span>: <span class="ident">String</span>, <span class="ident">physical</span>: <span class="ident">PhysicalProperties</span>, <span class="ident">logger</span>: <span class="ident">L</span>) -&gt; <span class="ident">Output</span>
     <span class="kw">where</span>
         <span class="ident">L</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">::slog::Logger</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -757,27 +815,27 @@
 
         <span class="macro">info!</span>(<span class="ident">log</span>, <span class="string">&quot;Creating new wl_output&quot;</span>; <span class="string">&quot;name&quot;</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">name</span>);
 
-        <span class="kw">let</span> <span class="ident">description</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} - {} - {}&quot;</span>, <span class="ident">physical</span>.<span class="ident">make</span>, <span class="ident">physical</span>.<span class="ident">model</span>, <span class="ident">name</span>);
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">OutputData</span> {
+            <span class="ident">inner</span>: <span class="ident">Arc::new</span>((
+                <span class="ident">Mutex::new</span>(<span class="ident">Inner</span> {
+                    <span class="ident">name</span>: <span class="ident">name</span>.<span class="ident">clone</span>(),
+                    <span class="ident">description</span>: <span class="macro">format!</span>(<span class="string">&quot;{} - {} - {}&quot;</span>, <span class="ident">physical</span>.<span class="ident">make</span>, <span class="ident">physical</span>.<span class="ident">model</span>, <span class="ident">name</span>),
+                    <span class="ident">instances</span>: <span class="ident">Vec::new</span>(),
+                    <span class="ident">physical</span>,
+                    <span class="ident">location</span>: (<span class="number">0</span>, <span class="number">0</span>).<span class="ident">into</span>(),
+                    <span class="ident">transform</span>: <span class="ident">Transform::Normal</span>,
+                    <span class="ident">scale</span>: <span class="ident">Scale::Integer</span>(<span class="number">1</span>),
+                    <span class="ident">modes</span>: <span class="ident">Vec::new</span>(),
+                    <span class="ident">current_mode</span>: <span class="prelude-val">None</span>,
+                    <span class="ident">preferred_mode</span>: <span class="prelude-val">None</span>,
+                    <span class="ident">xdg_output</span>: <span class="prelude-val">None</span>,
+                    <span class="ident">log</span>,
+                }),
+                <span class="ident">UserDataMap::default</span>(),
+            )),
+        };
 
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">Arc::new</span>((
-            <span class="ident">Mutex::new</span>(<span class="ident">Inner</span> {
-                <span class="ident">name</span>,
-                <span class="ident">description</span>,
-                <span class="ident">instances</span>: <span class="ident">Vec::new</span>(),
-                <span class="ident">physical</span>,
-                <span class="ident">location</span>: (<span class="number">0</span>, <span class="number">0</span>).<span class="ident">into</span>(),
-                <span class="ident">transform</span>: <span class="ident">Transform::Normal</span>,
-                <span class="ident">scale</span>: <span class="ident">Scale::Integer</span>(<span class="number">1</span>),
-                <span class="ident">modes</span>: <span class="ident">Vec::new</span>(),
-                <span class="ident">current_mode</span>: <span class="prelude-val">None</span>,
-                <span class="ident">preferred_mode</span>: <span class="prelude-val">None</span>,
-                <span class="ident">xdg_output</span>: <span class="prelude-val">None</span>,
-                <span class="ident">log</span>,
-            }),
-            <span class="ident">UserDataMap::default</span>(),
-        ));
-
-        <span class="ident">Output</span> { <span class="ident">inner</span> }
+        <span class="ident">Output</span> { <span class="ident">data</span> }
     }
 
     <span class="doccomment">/// Create a new output global.</span>
@@ -788,37 +846,19 @@
     <span class="doccomment">/// Calling this function multiple times without destroying the global in between,</span>
     <span class="doccomment">/// will result in multiple globals, meaning the output will be advertised to clients</span>
     <span class="doccomment">/// multiple times.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">create_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">display</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Display</span>) -&gt; <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">WlOutput</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
-        <span class="ident">display</span>.<span class="ident">create_global</span>(
-            <span class="number">3</span>,
-            <span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">output</span>, <span class="ident">_version</span>): (<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">WlOutput</span><span class="op">&gt;</span>, <span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">output</span>.<span class="ident">assign_destructor</span>(<span class="ident">Filter::new</span>(<span class="op">|</span><span class="ident">output</span>: <span class="ident">WlOutput</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">output</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">InnerType</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
-                    <span class="ident">inner</span>
-                        .<span class="number">0</span>
-                        .<span class="ident">lock</span>()
-                        .<span class="ident">unwrap</span>()
-                        .<span class="ident">instances</span>
-                        .<span class="ident">retain</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="op">!</span><span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">equals</span>(<span class="ident">output</span>.<span class="ident">as_ref</span>()));
-                }));
-                <span class="ident">output</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">set_threadsafe</span>({
-                    <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">clone</span>();
-                    <span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">inner</span>
-                });
-                <span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">new_global</span>(<span class="ident">output</span>.<span class="ident">deref</span>().<span class="ident">clone</span>());
-            }),
-        )
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">create_global</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">display</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) -&gt; <span class="ident">GlobalId</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">WlOutput</span>, <span class="ident">OutputData</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="ident">display</span>.<span class="ident">create_global</span>::<span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">WlOutput</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="number">4</span>, <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">clone</span>())
     }
 
     <span class="doccomment">/// Attempt to retrieve a [`Output`] from an existing resource</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_resource</span>(<span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">WlOutput</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span> {
-        <span class="ident">output</span>
-            .<span class="ident">as_ref</span>()
-            .<span class="ident">user_data</span>()
-            .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">InnerType</span><span class="op">&gt;</span>()
-            .<span class="ident">cloned</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">inner</span><span class="op">|</span> <span class="ident">Output</span> { <span class="ident">inner</span> })
+        <span class="ident">output</span>.<span class="ident">data</span>::<span class="op">&lt;</span><span class="ident">OutputUserData</span><span class="op">&gt;</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">ud</span><span class="op">|</span> <span class="ident">Output</span> {
+            <span class="ident">data</span>: <span class="ident">ud</span>.<span class="ident">global_data</span>.<span class="ident">clone</span>(),
+        })
     }
 
     <span class="doccomment">/// Sets the preferred mode of this output</span>
@@ -826,7 +866,7 @@
     <span class="doccomment">/// If the provided mode was not previously known to this output, it is added to its</span>
     <span class="doccomment">/// internal list.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_preferred</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mode</span>: <span class="ident">Mode</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="ident">inner</span>.<span class="ident">preferred_mode</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">mode</span>);
         <span class="kw">if</span> <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span> <span class="op">!</span><span class="op">=</span> <span class="ident">mode</span>) {
             <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">push</span>(<span class="ident">mode</span>);
@@ -835,7 +875,7 @@
 
     <span class="doccomment">/// Adds a mode to the list of known modes to this output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_mode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mode</span>: <span class="ident">Mode</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="kw">if</span> <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span> <span class="op">!</span><span class="op">=</span> <span class="ident">mode</span>) {
             <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">push</span>(<span class="ident">mode</span>);
         }
@@ -843,47 +883,47 @@
 
     <span class="doccomment">/// Returns the currently advertised mode of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_mode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mode</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">current_mode</span>
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">current_mode</span>
     }
 
     <span class="doccomment">/// Returns the preferred mode of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">preferred_mode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mode</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">preferred_mode</span>
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">preferred_mode</span>
     }
 
     <span class="doccomment">/// Returns the currently advertised transformation of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_transform</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Transform</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">transform</span>
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">transform</span>
     }
 
     <span class="doccomment">/// Returns the currenly set scale of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_scale</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Scale</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">scale</span>
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">scale</span>
     }
 
     <span class="doccomment">/// Returns the currenly advertised location of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_location</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">location</span>
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">location</span>
     }
 
     <span class="doccomment">/// Returns the name of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">name</span>.<span class="ident">clone</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">name</span>.<span class="ident">clone</span>()
     }
 
     <span class="doccomment">/// Returns the description of the output, if xdg-output is initialized</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">description</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">description</span>.<span class="ident">clone</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">description</span>.<span class="ident">clone</span>()
     }
 
     <span class="doccomment">/// Returns the physical properties of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">physical_properties</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PhysicalProperties</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">physical</span>.<span class="ident">clone</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">physical</span>.<span class="ident">clone</span>()
     }
 
     <span class="doccomment">/// Returns the currently advertised modes of the output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">modes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Mode</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">modes</span>.<span class="ident">clone</span>()
+        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">modes</span>.<span class="ident">clone</span>()
     }
 
     <span class="doccomment">/// Removes a mode from the list of known modes</span>
@@ -891,7 +931,7 @@
     <span class="doccomment">/// It will not de-advertise it from existing clients (the protocol does not</span>
     <span class="doccomment">/// allow it), but it won&#39;t be advertised to now clients from now on.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_mode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mode</span>: <span class="ident">Mode</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span> <span class="op">!</span><span class="op">=</span> <span class="ident">mode</span>);
         <span class="kw">if</span> <span class="ident">inner</span>.<span class="ident">current_mode</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">mode</span>) {
             <span class="ident">inner</span>.<span class="ident">current_mode</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -917,7 +957,7 @@
         <span class="ident">new_scale</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Scale</span><span class="op">&gt;</span>,
         <span class="ident">new_location</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     ) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mode</span>) <span class="op">=</span> <span class="ident">new_mode</span> {
             <span class="kw">if</span> <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span> <span class="op">!</span><span class="op">=</span> <span class="ident">mode</span>) {
                 <span class="ident">inner</span>.<span class="ident">modes</span>.<span class="ident">push</span>(<span class="ident">mode</span>);
@@ -949,14 +989,14 @@
                 <span class="ident">output</span>.<span class="ident">mode</span>(<span class="ident">flags</span>, <span class="ident">mode</span>.<span class="ident">size</span>.<span class="ident">w</span>, <span class="ident">mode</span>.<span class="ident">size</span>.<span class="ident">h</span>, <span class="ident">mode</span>.<span class="ident">refresh</span>);
             }
             <span class="kw">if</span> <span class="ident">new_transform</span>.<span class="ident">is_some</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">new_location</span>.<span class="ident">is_some</span>() {
-                <span class="ident">inner</span>.<span class="ident">send_geometry</span>(<span class="ident">output</span>);
+                <span class="ident">inner</span>.<span class="ident">send_geometry_to</span>(<span class="ident">output</span>);
             }
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">scale</span>) <span class="op">=</span> <span class="ident">new_scale</span> {
-                <span class="kw">if</span> <span class="ident">output</span>.<span class="ident">as_ref</span>().<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
+                <span class="kw">if</span> <span class="ident">output</span>.<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
                     <span class="ident">output</span>.<span class="ident">scale</span>(<span class="ident">scale</span>.<span class="ident">integer_scale</span>());
                 }
             }
-            <span class="kw">if</span> <span class="ident">output</span>.<span class="ident">as_ref</span>().<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
+            <span class="kw">if</span> <span class="ident">output</span>.<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
                 <span class="ident">output</span>.<span class="ident">done</span>();
             }
         }
@@ -964,59 +1004,68 @@
 
     <span class="doccomment">/// Check is given [`wl_output`](WlOutput) instance is managed by this [`Output`].</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">owns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">WlOutput</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>
+        <span class="self">self</span>.<span class="ident">data</span>
+            .<span class="ident">inner</span>
             .<span class="number">0</span>
             .<span class="ident">lock</span>()
             .<span class="ident">unwrap</span>()
             .<span class="ident">instances</span>
             .<span class="ident">iter</span>()
-            .<span class="ident">any</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">equals</span>(<span class="ident">output</span>.<span class="ident">as_ref</span>()))
+            .<span class="ident">any</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">id</span>() <span class="op">==</span> <span class="ident">output</span>.<span class="ident">id</span>())
     }
 
     <span class="doccomment">/// This function allows to run a [FnMut] on every</span>
     <span class="doccomment">/// [WlOutput] matching the same [Client] as provided</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_client_outputs</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">client</span>: <span class="ident">Client</span>, <span class="ident">f</span>: <span class="ident">F</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_client_outputs</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>)
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">WlOutput</span>),
+        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="kw-2">&amp;</span><span class="ident">WlOutput</span>),
     {
-        <span class="self">self</span>.<span class="ident">inner</span>
+        <span class="kw">let</span> <span class="ident">list</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">data</span>
+            .<span class="ident">inner</span>
             .<span class="number">0</span>
             .<span class="ident">lock</span>()
             .<span class="ident">unwrap</span>()
             .<span class="ident">instances</span>
             .<span class="ident">iter</span>()
-            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">output</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">output</span>.<span class="ident">as_ref</span>().<span class="ident">client</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">output_client</span>) =&gt; <span class="ident">output_client</span>.<span class="ident">equals</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>),
-                <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">output</span><span class="op">|</span> {
+                <span class="ident">dh</span>.<span class="ident">get_client</span>(<span class="ident">output</span>.<span class="ident">id</span>())
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">output_client</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">output_client</span> <span class="op">==</span> <span class="ident">client</span>)
+                    .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
             })
-            .<span class="ident">for_each</span>(<span class="ident">f</span>)
+            .<span class="ident">cloned</span>()
+            .<span class="ident">collect</span>();
+
+        <span class="kw">for</span> <span class="ident">o</span> <span class="kw">in</span> <span class="ident">list</span> {
+            <span class="ident">f</span>(<span class="ident">dh</span>, <span class="kw-2">&amp;</span><span class="ident">o</span>);
+        }
     }
 
     <span class="doccomment">/// Sends `wl_surface.enter` for the provided surface</span>
     <span class="doccomment">/// with the matching client output</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">enter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">client</span>) <span class="op">=</span> <span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">client</span>() {
-            <span class="self">self</span>.<span class="ident">with_client_outputs</span>(<span class="ident">client</span>, <span class="op">|</span><span class="ident">output</span><span class="op">|</span> <span class="ident">surface</span>.<span class="ident">enter</span>(<span class="ident">output</span>))
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">enter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">client</span>) <span class="op">=</span> <span class="ident">dh</span>.<span class="ident">get_client</span>(<span class="ident">surface</span>.<span class="ident">id</span>()) {
+            <span class="self">self</span>.<span class="ident">with_client_outputs</span>(<span class="ident">dh</span>, <span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="op">|</span><span class="ident">_dh</span>, <span class="ident">output</span><span class="op">|</span> <span class="ident">surface</span>.<span class="ident">enter</span>(<span class="ident">output</span>))
         }
     }
 
     <span class="doccomment">/// Sends `wl_surface.leave` for the provided surface</span>
     <span class="doccomment">/// with the matching client output</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">leave</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">client</span>) <span class="op">=</span> <span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">client</span>() {
-            <span class="self">self</span>.<span class="ident">with_client_outputs</span>(<span class="ident">client</span>, <span class="op">|</span><span class="ident">output</span><span class="op">|</span> <span class="ident">surface</span>.<span class="ident">leave</span>(<span class="ident">output</span>))
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">leave</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">client</span>) <span class="op">=</span> <span class="ident">dh</span>.<span class="ident">get_client</span>(<span class="ident">surface</span>.<span class="ident">id</span>()) {
+            <span class="self">self</span>.<span class="ident">with_client_outputs</span>(<span class="ident">dh</span>, <span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="op">|</span><span class="ident">_dh</span>, <span class="ident">output</span><span class="op">|</span> <span class="ident">surface</span>.<span class="ident">leave</span>(<span class="ident">output</span>))
         }
     }
 
     <span class="doccomment">/// Returns the user data of this output</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">user_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">UserDataMap</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="number">1</span>
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>.<span class="number">1</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Output</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">Arc::ptr_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">inner</span>)
+        <span class="ident">Arc::ptr_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">data</span>.<span class="ident">inner</span>)
     }
 }
 
@@ -1024,9 +1073,32 @@
 
 <span class="kw">impl</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">Output</span> {
     <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">Hasher</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">H</span>) {
-        <span class="ident">Arc::as_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>).<span class="ident">hash</span>(<span class="ident">state</span>);
+        <span class="ident">Arc::as_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">inner</span>).<span class="ident">hash</span>(<span class="ident">state</span>);
     }
 }
+
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// TODO</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules!</span> <span class="ident">delegate_output</span> {
+    ($(@<span class="op">&lt;</span>$( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">tt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span>:<span class="ident">tt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span>:<span class="ident">tt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span><span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: <span class="ident">ty</span>) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_global_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_server::protocol::wl_output::WlOutput</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputData</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputManagerState</span>);
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_global_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::xdg::xdg_output::zv1::server::zxdg_output_manager_v1::ZxdgOutputManagerV1</span>: ()
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputManagerState</span>);
+
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_server::protocol::wl_output::WlOutput</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputUserData</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputManagerState</span>);
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::xdg::xdg_output::zv1::server::zxdg_output_v1::ZxdgOutputV1</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::XdgOutputUserData</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputManagerState</span>);
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::xdg::xdg_output::zv1::server::zxdg_output_manager_v1::ZxdgOutputManagerV1</span>: ()
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::output::OutputManagerState</span>);
+    };
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

@@ -3,44 +3,99 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"><a href="#">Module dmabuf</a></h2><div class="sidebar-elems"><section><div class="block"><ul><li><a href="#functions">Functions</a></li></ul></div></section><div id="sidebar-vars" data-name="dmabuf" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Module <a href="../../index.html">smithay</a>::<wbr><a href="../index.html">wayland</a>::<wbr><a class="mod" href="#">dmabuf</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../src/smithay/wayland/dmabuf/mod.rs.html#1-481">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Linux DMABUF protocol</p>
+        </a><h2 class="location"><a href="#">Module dmabuf</a></h2><div class="sidebar-elems"><section><div class="block"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div></section><div id="sidebar-vars" data-name="dmabuf" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
+    <h1 class="fqn"><span class="in-band">Module <a href="../../index.html">smithay</a>::<wbr><a href="../index.html">wayland</a>::<wbr><a class="mod" href="#">dmabuf</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../src/smithay/wayland/dmabuf/mod.rs.html#1-499">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Linux DMABUF protocol</p>
 <p>This module provides helper to handle the linux-dmabuf protocol, which allows clients to submit their
 contents as dmabuf file descriptors. These handlers automate the aggregation of the metadata associated
 with a dma buffer, and do some basic checking of the sanity of what the client sends.</p>
 <h3 id="how-to-use"><a href="#how-to-use">How to use</a></h3>
 <p>To setup the dmabuf global, you will need to provide 2 things:</p>
 <ul>
-<li>a list of the dmabuf formats you wish to support</li>
-<li>a closure to test if a dmabuf buffer can be imported by your renderer</li>
+<li>a list of the dmabuf formats you wish to support when creating the <code>Global</code> through <code>DmabufState::create_global</code></li>
+<li>an implementation of <code>DmabufHandler</code> to test if a dmabuf buffer can be imported by your renderer</li>
 </ul>
-<p>The list of supported format is just a <code>Vec&lt;Format&gt;</code>, where you will enter all the (code, modifier)
-couples you support. You can typically receive a list of supported formats for one renderer by calling
+<p>The list of supported formats is a <code>Vec&lt;Format&gt;</code>, where you will enter all the (code, modifier) pairs you
+support. You can typically receive a list of supported formats for one renderer by calling
 <a href="../../backend/renderer/trait.ImportDma.html#method.dmabuf_formats"><code>ImportDma::dmabuf_formats</code></a>.</p>
+<p>Accessing a <a href="../../backend/allocator/dmabuf/struct.Dmabuf.html" title="Dmabuf"><code>Dmabuf</code></a> associated with a <a href="../../../wayland_server/protocol/wl_buffer/struct.WlBuffer.html"><code>WlBuffer</code></a>
+may be achieved using <a href="fn.get_dmabuf.html" title="get_dmabuf"><code>get_dmabuf</code></a>.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">smithay</span>::{
+    <span class="ident">delegate_dmabuf</span>,
     <span class="ident">backend::allocator::dmabuf::Dmabuf</span>,
     <span class="ident">reexports</span>::{<span class="ident">wayland_server::protocol::wl_buffer::WlBuffer</span>},
-    <span class="ident">wayland::dmabuf::init_dmabuf_global</span>,
+    <span class="ident">wayland</span>::{
+        <span class="ident">buffer::BufferHandler</span>,
+        <span class="ident">dmabuf</span>::{<span class="ident">DmabufGlobal</span>, <span class="ident">DmabufHandler</span>, <span class="ident">DmabufState</span>, <span class="ident">ImportError</span>}
+    },
 };
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">State</span> {
+    <span class="ident">dmabuf_state</span>: <span class="ident">DmabufState</span>,
+    <span class="ident">dmabuf_global</span>: <span class="ident">DmabufGlobal</span>,
+}
+
+<span class="comment">// Smithay&#39;s &quot;DmabufHandler&quot; also requires the buffer management utilities, you need to implement</span>
+<span class="comment">// &quot;BufferHandler&quot;.</span>
+<span class="kw">impl</span> <span class="ident">BufferHandler</span> <span class="kw">for</span> <span class="ident">State</span> {
+    <span class="kw">fn</span> <span class="ident">buffer_destroyed</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::protocol::wl_buffer::WlBuffer</span>) {
+        <span class="comment">// All renderers can handle buffer destruction at this point. Some parts of window management may</span>
+        <span class="comment">// also use this function.</span>
+        <span class="comment">//</span>
+        <span class="comment">// If you need to mark a dmabuf elsewhere in your state as destroyed, you use the &quot;get_dmabuf&quot;</span>
+        <span class="comment">// function defined in this module to access the dmabuf associated the &quot;Buffer&quot;.</span>
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">DmabufHandler</span> <span class="kw">for</span> <span class="ident">State</span> {
+    <span class="kw">fn</span> <span class="ident">dmabuf_state</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">DmabufState</span> {
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">dmabuf_state</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">dmabuf_imported</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::DisplayHandle</span>, <span class="ident">global</span>: <span class="kw-2">&amp;</span><span class="ident">DmabufGlobal</span>, <span class="ident">dmabuf</span>: <span class="ident">Dmabuf</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ImportError</span><span class="op">&gt;</span> {
+        <span class="comment">// Here you should import the dmabuf into your renderer.</span>
+        <span class="comment">//</span>
+        <span class="comment">// The return value indicates whether import was successful. If the return value is Err, then</span>
+        <span class="comment">// the client is told dmabuf import has failed.</span>
+        <span class="prelude-val">Ok</span>(())
+    }
+}
+
+<span class="comment">// Delegate dmabuf handling for State to DmabufState.</span>
+<span class="macro">delegate_dmabuf!</span>(<span class="ident">State</span>);
+
+<span class="comment">// First a DmabufState must be created. This type is used to create some &quot;DmabufGlobal&quot;s</span>
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dmabuf_state</span> <span class="op">=</span> <span class="ident">DmabufState::new</span>();
 
 <span class="comment">// define your supported formats</span>
 <span class="kw">let</span> <span class="ident">formats</span> <span class="op">=</span> <span class="macro">vec!</span>[
     <span class="comment">/* ... */</span>
 ];
-<span class="kw">let</span> <span class="ident">dmabuf_global</span> <span class="op">=</span> <span class="ident">init_dmabuf_global</span>(
-    <span class="kw-2">&amp;mut</span> <span class="ident">display</span>,
+
+<span class="comment">// And create the dmabuf global.</span>
+<span class="kw">let</span> <span class="ident">dmabuf_global</span> <span class="op">=</span> <span class="ident">dmabuf_state</span>.<span class="ident">create_global</span>::<span class="op">&lt;</span><span class="ident">State</span>, <span class="kw">_</span><span class="op">&gt;</span>(
+    <span class="kw-2">&amp;</span><span class="ident">display_handle</span>,
     <span class="ident">formats</span>,
-    <span class="op">|</span><span class="ident">buffer</span>, <span class="ident">dispatch_data</span><span class="op">|</span> {
-        <span class="comment">/* validate the dmabuf and import it into your renderer state */</span>
-        <span class="bool-val">true</span>
-    },
     <span class="prelude-val">None</span> <span class="comment">// we don&#39;t provide a logger in this example</span>
-);</code></pre></div>
-</div></details><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.init_dmabuf_global.html" title="smithay::wayland::dmabuf::init_dmabuf_global fn">init_dmabuf_global</a></div><div class="item-right docblock-short"><p>Initialize a dmabuf global.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.init_dmabuf_global_with_filter.html" title="smithay::wayland::dmabuf::init_dmabuf_global_with_filter fn">init_dmabuf_global_with_filter</a></div><div class="item-right docblock-short"><p>Initialize a dmabuf global with a client filter.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+);
+
+<span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span> {
+    <span class="ident">dmabuf_state</span>,
+    <span class="ident">dmabuf_global</span>,
+};
+
+<span class="comment">// Rest of the compositor goes here...</span></code></pre></div>
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.DmabufData.html" title="smithay::wayland::dmabuf::DmabufData struct">DmabufData</a></div><div class="item-right docblock-short"><p>Data associated with a dmabuf global protocol object.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.DmabufGlobal.html" title="smithay::wayland::dmabuf::DmabufGlobal struct">DmabufGlobal</a></div><div class="item-right docblock-short"><p>A handle to a registered dmabuf global.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.DmabufGlobalData.html" title="smithay::wayland::dmabuf::DmabufGlobalData struct">DmabufGlobalData</a></div><div class="item-right docblock-short"><p>Data associated with a dmabuf global.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.DmabufParamsData.html" title="smithay::wayland::dmabuf::DmabufParamsData struct">DmabufParamsData</a></div><div class="item-right docblock-short"><p>Data associated with a pending <a href="../../backend/allocator/dmabuf/struct.Dmabuf.html" title="Dmabuf"><code>Dmabuf</code></a> import.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.DmabufState.html" title="smithay::wayland::dmabuf::DmabufState struct">DmabufState</a></div><div class="item-right docblock-short"><p>Delegate type for all dmabuf globals.</p>
+</div></div></div><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.ImportError.html" title="smithay::wayland::dmabuf::ImportError enum">ImportError</a></div><div class="item-right docblock-short"><p>Error that may occur when importing a <a href="../../backend/allocator/dmabuf/struct.Dmabuf.html" title="Dmabuf"><code>Dmabuf</code></a>.</p>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.DmabufHandler.html" title="smithay::wayland::dmabuf::DmabufHandler trait">DmabufHandler</a></div><div class="item-right docblock-short"><p>Handler trait for <a href="../../backend/allocator/dmabuf/struct.Dmabuf.html" title="Dmabuf"><code>Dmabuf</code></a> import from the compositor.</p>
+</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.get_dmabuf.html" title="smithay::wayland::dmabuf::get_dmabuf fn">get_dmabuf</a></div><div class="item-right docblock-short"><p>Gets the contents of a <a href="../../backend/allocator/dmabuf/struct.Dmabuf.html" title="Dmabuf"><code>Dmabuf</code></a> backed <a href="../../../wayland_server/protocol/wl_buffer/struct.WlBuffer.html"><code>WlBuffer</code></a>.</p>
+</div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -197,14 +195,44 @@
 <span id="190">190</span>
 <span id="191">191</span>
 <span id="192">192</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
-<span class="kw">use</span> <span class="ident">std::ops::Deref</span>;
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">collections::HashMap</span>,
+    <span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>},
+};
 
-<span class="kw">use</span> <span class="ident">wayland_server::protocol::wl_touch::WlTouch</span>;
-<span class="kw">use</span> <span class="ident">wayland_server</span>::{<span class="ident">Filter</span>, <span class="ident">Main</span>};
+<span class="kw">use</span> <span class="ident">wayland_server</span>::{
+    <span class="ident">backend</span>::{<span class="ident">ClientId</span>, <span class="ident">ObjectId</span>},
+    <span class="ident">protocol::wl_touch</span>::{<span class="self">self</span>, <span class="ident">WlTouch</span>},
+    <span class="ident">DelegateDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>, <span class="ident">Resource</span>,
+};
 
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">SeatHandler</span>, <span class="ident">SeatState</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::backend::input::TouchSlot</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wayland::seat::wl_surface::WlSurface</span>;
@@ -218,7 +246,7 @@
 <span class="doccomment">/// clients.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TouchHandle</span> {
-    <span class="ident">inner</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">TouchInternal</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">inner</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">TouchInternal</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">TouchHandle</span> {
@@ -232,9 +260,11 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This should be done first, before anything else is done with this touch handle.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new_touch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">touch</span>: <span class="ident">WlTouch</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">known_handles</span>.<span class="ident">push</span>(<span class="ident">touch</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">known_handles</span>.<span class="ident">push</span>(<span class="ident">touch</span>);
     }
 
+    <span class="comment">// TODO: Any ideas how to group some of those args?</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
     <span class="doccomment">/// Notify clients about new touch points.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">down</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
@@ -246,28 +276,29 @@
         <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Logical</span><span class="op">&gt;</span>,
     ) {
         <span class="self">self</span>.<span class="ident">inner</span>
-            .<span class="ident">borrow_mut</span>()
+            .<span class="ident">lock</span>()
+            .<span class="ident">unwrap</span>()
             .<span class="ident">down</span>(<span class="ident">serial</span>, <span class="ident">time</span>, <span class="ident">surface</span>, <span class="ident">surface_offset</span>, <span class="ident">slot</span>, <span class="ident">location</span>);
     }
 
     <span class="doccomment">/// Notify clients about touch point removal.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">up</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serial</span>: <span class="ident">Serial</span>, <span class="ident">time</span>: <span class="ident">u32</span>, <span class="ident">slot</span>: <span class="ident">TouchSlot</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">up</span>(<span class="ident">serial</span>, <span class="ident">time</span>, <span class="ident">slot</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">up</span>(<span class="ident">serial</span>, <span class="ident">time</span>, <span class="ident">slot</span>);
     }
 
     <span class="doccomment">/// Notify clients about touch motion.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">motion</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">time</span>: <span class="ident">u32</span>, <span class="ident">slot</span>: <span class="ident">TouchSlot</span>, <span class="ident">location</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Logical</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">motion</span>(<span class="ident">time</span>, <span class="ident">slot</span>, <span class="ident">location</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">motion</span>(<span class="ident">time</span>, <span class="ident">slot</span>, <span class="ident">location</span>);
     }
 
     <span class="doccomment">/// Notify clients about touch shape changes.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">shape</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">slot</span>: <span class="ident">TouchSlot</span>, <span class="ident">major</span>: <span class="ident">f64</span>, <span class="ident">minor</span>: <span class="ident">f64</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">shape</span>(<span class="ident">slot</span>, <span class="ident">major</span>, <span class="ident">minor</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">shape</span>(<span class="ident">slot</span>, <span class="ident">major</span>, <span class="ident">minor</span>);
     }
 
     <span class="doccomment">/// Notify clients about touch shape orientation.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orientation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">slot</span>: <span class="ident">TouchSlot</span>, <span class="ident">orientation</span>: <span class="ident">f64</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">orientation</span>(<span class="ident">slot</span>, <span class="ident">orientation</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">orientation</span>(<span class="ident">slot</span>, <span class="ident">orientation</span>);
     }
 
     <span class="doccomment">/// Notify clients about touch cancellation.</span>
@@ -275,7 +306,7 @@
     <span class="doccomment">/// This should be sent by the compositor when the currently active touch</span>
     <span class="doccomment">/// slot was recognized as a gesture.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cancel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">cancel</span>();
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">cancel</span>();
     }
 }
 
@@ -293,6 +324,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">TouchInternal</span> {
+    <span class="comment">// TODO: Any ideas how to group some of those args?</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
     <span class="kw">fn</span> <span class="ident">down</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">serial</span>: <span class="ident">Serial</span>,
@@ -309,7 +342,7 @@
 
         <span class="comment">// Select all WlTouch instances associated to the active WlSurface.</span>
         <span class="kw">for</span> <span class="ident">handle</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">known_handles</span> {
-            <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">as_ref</span>().<span class="ident">same_client_as</span>(<span class="ident">surface</span>.<span class="ident">as_ref</span>()) {
+            <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">id</span>().<span class="ident">same_client_as</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>.<span class="ident">id</span>()) {
                 <span class="ident">focus</span>.<span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">handle</span>.<span class="ident">clone</span>());
             }
         }
@@ -336,7 +369,7 @@
 
     <span class="kw">fn</span> <span class="ident">shape</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">slot</span>: <span class="ident">TouchSlot</span>, <span class="ident">major</span>: <span class="ident">f64</span>, <span class="ident">minor</span>: <span class="ident">f64</span>) {
         <span class="self">self</span>.<span class="ident">with_focused_handles</span>(<span class="ident">slot</span>, <span class="op">|</span><span class="ident">handle</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">as_ref</span>().<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">6</span> {
+            <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">6</span> {
                 <span class="ident">handle</span>.<span class="ident">shape</span>(<span class="ident">slot</span>.<span class="ident">into</span>(), <span class="ident">major</span>, <span class="ident">minor</span>);
             }
         });
@@ -344,7 +377,7 @@
 
     <span class="kw">fn</span> <span class="ident">orientation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">slot</span>: <span class="ident">TouchSlot</span>, <span class="ident">orientation</span>: <span class="ident">f64</span>) {
         <span class="self">self</span>.<span class="ident">with_focused_handles</span>(<span class="ident">slot</span>, <span class="op">|</span><span class="ident">handle</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">as_ref</span>().<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">6</span> {
+            <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">version</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">6</span> {
                 <span class="ident">handle</span>.<span class="ident">orientation</span>(<span class="ident">slot</span>.<span class="ident">into</span>(), <span class="ident">orientation</span>);
             }
         });
@@ -372,23 +405,40 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">implement_touch</span>(<span class="ident">touch</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">WlTouch</span><span class="op">&gt;</span>, <span class="ident">handle</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">TouchHandle</span><span class="op">&gt;</span>) -&gt; <span class="ident">WlTouch</span> {
-    <span class="comment">// The sole `Release` request is already handled by our destructor.</span>
-    <span class="ident">touch</span>.<span class="ident">quick_assign</span>(<span class="op">|</span><span class="ident">_touch</span>, <span class="ident">_request</span>, <span class="ident">_data</span><span class="op">|</span> {});
+<span class="doccomment">/// User data for keyboard</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TouchUserData</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">handle</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TouchHandle</span><span class="op">&gt;</span>,
+}
 
-    <span class="comment">// Remove from touch handles on destroy.</span>
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">handle</span>) <span class="op">=</span> <span class="ident">handle</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">handle</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
-        <span class="ident">touch</span>.<span class="ident">assign_destructor</span>(<span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">touch</span>: <span class="ident">WlTouch</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">inner</span>
-                .<span class="ident">borrow_mut</span>()
-                .<span class="ident">known_handles</span>
-                .<span class="ident">retain</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="op">!</span><span class="ident">t</span>.<span class="ident">as_ref</span>().<span class="ident">equals</span>(<span class="ident">touch</span>.<span class="ident">as_ref</span>()))
-        }));
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlTouch</span>, <span class="ident">TouchUserData</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SeatState</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlTouch</span>, <span class="ident">TouchUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">SeatHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">_resource</span>: <span class="kw-2">&amp;</span><span class="ident">WlTouch</span>,
+        <span class="ident">_request</span>: <span class="ident">wl_touch::Request</span>,
+        <span class="ident">_data</span>: <span class="kw-2">&amp;</span><span class="ident">TouchUserData</span>,
+        <span class="ident">_dhandle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_server::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
     }
 
-    <span class="ident">touch</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>, <span class="ident">_client_id</span>: <span class="ident">ClientId</span>, <span class="ident">object_id</span>: <span class="ident">ObjectId</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">TouchUserData</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">handle</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">handle</span> {
+            <span class="ident">handle</span>
+                .<span class="ident">inner</span>
+                .<span class="ident">lock</span>()
+                .<span class="ident">unwrap</span>()
+                .<span class="ident">known_handles</span>
+                .<span class="ident">retain</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> <span class="ident">k</span>.<span class="ident">id</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">object_id</span>)
+        }
+    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

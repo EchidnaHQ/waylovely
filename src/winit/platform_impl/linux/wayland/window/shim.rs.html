@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/platform_impl/linux/wayland/window/shim.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>shim.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../../storage.js"></script><script src="../../../../../../crates.js"></script><script defer src="../../../../../../main.js"></script><script defer src="../../../../../../source-script.js"></script><script defer src="../../../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/platform_impl/linux/wayland/window/shim.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>shim.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../../storage.js"></script><script src="../../../../../../crates.js"></script><script defer src="../../../../../../main.js"></script><script defer src="../../../../../../source-script.js"></script><script defer src="../../../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../../winit/index.html"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../../winit/index.html"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -457,27 +455,118 @@
 <span id="450">450</span>
 <span id="451">451</span>
 <span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::Cell</span>;
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
+<span class="kw">use</span> <span class="ident">sctk::reexports::client::protocol::wl_compositor::WlCompositor</span>;
 <span class="kw">use</span> <span class="ident">sctk::reexports::client::protocol::wl_output::WlOutput</span>;
 <span class="kw">use</span> <span class="ident">sctk::reexports::client::Attached</span>;
 <span class="kw">use</span> <span class="ident">sctk::reexports::protocols::staging::xdg_activation::v1::client::xdg_activation_token_v1</span>;
 <span class="kw">use</span> <span class="ident">sctk::reexports::protocols::staging::xdg_activation::v1::client::xdg_activation_v1::XdgActivationV1</span>;
 
 <span class="kw">use</span> <span class="ident">sctk::environment::Environment</span>;
-<span class="kw">use</span> <span class="ident">sctk::window</span>::{<span class="ident">Decorations</span>, <span class="ident">FallbackFrame</span>, <span class="ident">Window</span>};
+<span class="kw">use</span> <span class="ident">sctk::window</span>::{<span class="ident">Decorations</span>, <span class="ident">Window</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dpi</span>::{<span class="ident">LogicalPosition</span>, <span class="ident">LogicalSize</span>};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::event::WindowEvent</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::event</span>::{<span class="ident">Ime</span>, <span class="ident">WindowEvent</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland::env::WinitEnv</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland::event_loop::WinitState</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland::event_loop</span>::{<span class="ident">EventSink</span>, <span class="ident">WinitState</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland::seat::pointer::WinitPointer</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland::seat::text_input::TextInputHandler</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::wayland::WindowId</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::window</span>::{<span class="ident">CursorIcon</span>, <span class="ident">UserAttentionType</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::window</span>::{<span class="ident">CursorIcon</span>, <span class="ident">Theme</span>, <span class="ident">UserAttentionType</span>};
+
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::WinitFrame</span>;
 
 <span class="doccomment">/// A request to SCTK window from Winit window.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -511,6 +600,9 @@
     <span class="doccomment">/// Request decorations change.</span>
     <span class="ident">Decorate</span>(<span class="ident">bool</span>),
 
+    <span class="doccomment">/// Request decorations change.</span>
+    <span class="ident">CsdThemeVariant</span>(<span class="ident">Theme</span>),
+
     <span class="doccomment">/// Make the window resizeable.</span>
     <span class="ident">Resizeable</span>(<span class="ident">bool</span>),
 
@@ -527,12 +619,18 @@
     <span class="ident">FrameSize</span>(<span class="ident">LogicalSize</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>),
 
     <span class="doccomment">/// Set IME window position.</span>
-    <span class="ident">IMEPosition</span>(<span class="ident">LogicalPosition</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>),
+    <span class="ident">ImePosition</span>(<span class="ident">LogicalPosition</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>),
+
+    <span class="doccomment">/// Enable IME on the given window.</span>
+    <span class="ident">AllowIme</span>(<span class="ident">bool</span>),
 
     <span class="doccomment">/// Request Attention.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// `None` unsets the attention request.</span>
     <span class="ident">Attention</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">UserAttentionType</span><span class="op">&gt;</span>),
+
+    <span class="doccomment">/// Passthrough mouse input to underlying windows.</span>
+    <span class="ident">PassthroughMouseInput</span>(<span class="ident">bool</span>),
 
     <span class="doccomment">/// Redraw was requested.</span>
     <span class="ident">Redraw</span>,
@@ -598,7 +696,7 @@
 <span class="doccomment">/// and react to events.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WindowHandle</span> {
     <span class="doccomment">/// An actual window.</span>
-    <span class="kw">pub</span> <span class="ident">window</span>: <span class="ident">Window</span><span class="op">&lt;</span><span class="ident">FallbackFrame</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">window</span>: <span class="ident">Window</span><span class="op">&lt;</span><span class="ident">WinitFrame</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The current size of the window.</span>
     <span class="kw">pub</span> <span class="ident">size</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">LogicalSize</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -608,6 +706,12 @@
 
     <span class="doccomment">/// Current cursor icon.</span>
     <span class="kw">pub</span> <span class="ident">cursor_icon</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">CursorIcon</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Whether the window is resizable.</span>
+    <span class="kw">pub</span> <span class="ident">is_resizable</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Allow IME events for that window.</span>
+    <span class="kw">pub</span> <span class="ident">ime_allowed</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Visible cursor or not.</span>
     <span class="ident">cursor_visible</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
@@ -626,28 +730,37 @@
 
     <span class="doccomment">/// Indicator whether user attention is requested.</span>
     <span class="ident">attention_requested</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Compositor</span>
+    <span class="ident">compositor</span>: <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">WlCompositor</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">WindowHandle</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
         <span class="ident">env</span>: <span class="kw-2">&amp;</span><span class="ident">Environment</span><span class="op">&lt;</span><span class="ident">WinitEnv</span><span class="op">&gt;</span>,
-        <span class="ident">window</span>: <span class="ident">Window</span><span class="op">&lt;</span><span class="ident">FallbackFrame</span><span class="op">&gt;</span>,
+        <span class="ident">window</span>: <span class="ident">Window</span><span class="op">&lt;</span><span class="ident">WinitFrame</span><span class="op">&gt;</span>,
         <span class="ident">size</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">LogicalSize</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
         <span class="ident">pending_window_requests</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">WindowRequest</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">xdg_activation</span> <span class="op">=</span> <span class="ident">env</span>.<span class="ident">get_global</span>::<span class="op">&lt;</span><span class="ident">XdgActivationV1</span><span class="op">&gt;</span>();
+        <span class="comment">// Unwrap is safe, since we can&#39;t create window without compositor anyway and won&#39;t be</span>
+        <span class="comment">// here.</span>
+        <span class="kw">let</span> <span class="ident">compositor</span> <span class="op">=</span> <span class="ident">env</span>.<span class="ident">get_global</span>::<span class="op">&lt;</span><span class="ident">WlCompositor</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
 
         <span class="self">Self</span> {
             <span class="ident">window</span>,
             <span class="ident">size</span>,
             <span class="ident">pending_window_requests</span>,
             <span class="ident">cursor_icon</span>: <span class="ident">Cell::new</span>(<span class="ident">CursorIcon::Default</span>),
+            <span class="ident">is_resizable</span>: <span class="ident">Cell::new</span>(<span class="bool-val">true</span>),
             <span class="ident">confined</span>: <span class="ident">Cell::new</span>(<span class="bool-val">false</span>),
             <span class="ident">cursor_visible</span>: <span class="ident">Cell::new</span>(<span class="bool-val">true</span>),
             <span class="ident">pointers</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">text_inputs</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">xdg_activation</span>,
             <span class="ident">attention_requested</span>: <span class="ident">Cell::new</span>(<span class="bool-val">false</span>),
+            <span class="ident">compositor</span>,
+            <span class="ident">ime_allowed</span>: <span class="ident">Cell::new</span>(<span class="bool-val">false</span>),
         }
     }
 
@@ -763,6 +876,41 @@
         }
     }
 
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">passthrough_mouse_input</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">passthrough_mouse_input</span>: <span class="ident">bool</span>) {
+        <span class="kw">if</span> <span class="ident">passthrough_mouse_input</span> {
+            <span class="kw">let</span> <span class="ident">region</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">compositor</span>.<span class="ident">create_region</span>();
+            <span class="ident">region</span>.<span class="ident">add</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+            <span class="self">self</span>.<span class="ident">window</span>
+                .<span class="ident">surface</span>()
+                .<span class="ident">set_input_region</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">region</span>.<span class="ident">detach</span>()));
+            <span class="ident">region</span>.<span class="ident">destroy</span>();
+        } <span class="kw">else</span> {
+            <span class="comment">// Using `None` results in the entire window being clickable.</span>
+            <span class="self">self</span>.<span class="ident">window</span>.<span class="ident">surface</span>().<span class="ident">set_input_region</span>(<span class="prelude-val">None</span>);
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_ime_allowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allowed</span>: <span class="ident">bool</span>, <span class="ident">event_sink</span>: <span class="kw-2">&amp;mut</span> <span class="ident">EventSink</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ime_allowed</span>.<span class="ident">get</span>() <span class="op">==</span> <span class="ident">allowed</span> {
+            <span class="kw">return</span>;
+        }
+
+        <span class="self">self</span>.<span class="ident">ime_allowed</span>.<span class="ident">replace</span>(<span class="ident">allowed</span>);
+        <span class="kw">let</span> <span class="ident">window_id</span> <span class="op">=</span> <span class="ident">wayland::make_wid</span>(<span class="self">self</span>.<span class="ident">window</span>.<span class="ident">surface</span>());
+
+        <span class="kw">for</span> <span class="ident">text_input</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">text_inputs</span>.<span class="ident">iter</span>() {
+            <span class="ident">text_input</span>.<span class="ident">set_input_allowed</span>(<span class="ident">allowed</span>);
+        }
+
+        <span class="kw">let</span> <span class="ident">event</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">allowed</span> {
+            <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Enabled</span>)
+        } <span class="kw">else</span> {
+            <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Disabled</span>)
+        };
+
+        <span class="ident">event_sink</span>.<span class="ident">push_window_event</span>(<span class="ident">event</span>, <span class="ident">window_id</span>);
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_cursor_visible</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visible</span>: <span class="ident">bool</span>) {
         <span class="self">self</span>.<span class="ident">cursor_visible</span>.<span class="ident">replace</span>(<span class="ident">visible</span>);
         <span class="kw">let</span> <span class="ident">cursor_icon</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">visible</span> {
@@ -817,8 +965,12 @@
                 <span class="ident">WindowRequest::NewCursorIcon</span>(<span class="ident">cursor_icon</span>) =&gt; {
                     <span class="ident">window_handle</span>.<span class="ident">set_cursor_icon</span>(<span class="ident">cursor_icon</span>);
                 }
-                <span class="ident">WindowRequest::IMEPosition</span>(<span class="ident">position</span>) =&gt; {
+                <span class="ident">WindowRequest::ImePosition</span>(<span class="ident">position</span>) =&gt; {
                     <span class="ident">window_handle</span>.<span class="ident">set_ime_position</span>(<span class="ident">position</span>);
+                }
+                <span class="ident">WindowRequest::AllowIme</span>(<span class="ident">allow</span>) =&gt; {
+                    <span class="kw">let</span> <span class="ident">event_sink</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">winit_state</span>.<span class="ident">event_sink</span>;
+                    <span class="ident">window_handle</span>.<span class="ident">set_ime_allowed</span>(<span class="ident">allow</span>, <span class="ident">event_sink</span>);
                 }
                 <span class="ident">WindowRequest::GrabCursor</span>(<span class="ident">grab</span>) =&gt; {
                     <span class="ident">window_handle</span>.<span class="ident">set_cursor_grab</span>(<span class="ident">grab</span>);
@@ -848,6 +1000,15 @@
                     <span class="kw">let</span> <span class="ident">window_update</span> <span class="op">=</span> <span class="ident">window_updates</span>.<span class="ident">get_mut</span>(<span class="ident">window_id</span>).<span class="ident">unwrap</span>();
                     <span class="ident">window_update</span>.<span class="ident">refresh_frame</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 }
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sctk-adwaita&quot;</span>)]</span>
+                <span class="ident">WindowRequest::CsdThemeVariant</span>(<span class="ident">theme</span>) =&gt; {
+                    <span class="ident">window_handle</span>.<span class="ident">window</span>.<span class="ident">set_frame_config</span>(<span class="ident">theme</span>.<span class="ident">into</span>());
+
+                    <span class="kw">let</span> <span class="ident">window_update</span> <span class="op">=</span> <span class="ident">window_updates</span>.<span class="ident">get_mut</span>(<span class="ident">window_id</span>).<span class="ident">unwrap</span>();
+                    <span class="ident">window_update</span>.<span class="ident">refresh_frame</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                }
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;sctk-adwaita&quot;</span>))]</span>
+                <span class="ident">WindowRequest::CsdThemeVariant</span>(<span class="kw">_</span>) =&gt; {}
                 <span class="ident">WindowRequest::Resizeable</span>(<span class="ident">resizeable</span>) =&gt; {
                     <span class="ident">window_handle</span>.<span class="ident">window</span>.<span class="ident">set_resizable</span>(<span class="ident">resizeable</span>);
 
@@ -877,10 +1038,23 @@
                     <span class="ident">window_update</span>.<span class="ident">redraw_requested</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 }
                 <span class="ident">WindowRequest::FrameSize</span>(<span class="ident">size</span>) =&gt; {
-                    <span class="comment">// Set new size.</span>
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">window_handle</span>.<span class="ident">is_resizable</span>.<span class="ident">get</span>() {
+                        <span class="comment">// On Wayland non-resizable window is achieved by setting both min and max</span>
+                        <span class="comment">// size of the window to the same value.</span>
+                        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">size</span>.<span class="ident">width</span>, <span class="ident">size</span>.<span class="ident">height</span>));
+                        <span class="ident">window_handle</span>.<span class="ident">window</span>.<span class="ident">set_max_size</span>(<span class="ident">size</span>);
+                        <span class="ident">window_handle</span>.<span class="ident">window</span>.<span class="ident">set_min_size</span>(<span class="ident">size</span>);
+                    }
+
                     <span class="ident">window_handle</span>.<span class="ident">window</span>.<span class="ident">resize</span>(<span class="ident">size</span>.<span class="ident">width</span>, <span class="ident">size</span>.<span class="ident">height</span>);
 
                     <span class="comment">// We should refresh the frame after resize.</span>
+                    <span class="kw">let</span> <span class="ident">window_update</span> <span class="op">=</span> <span class="ident">window_updates</span>.<span class="ident">get_mut</span>(<span class="ident">window_id</span>).<span class="ident">unwrap</span>();
+                    <span class="ident">window_update</span>.<span class="ident">refresh_frame</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                }
+                <span class="ident">WindowRequest::PassthroughMouseInput</span>(<span class="ident">passthrough</span>) =&gt; {
+                    <span class="ident">window_handle</span>.<span class="ident">passthrough_mouse_input</span>(<span class="ident">passthrough</span>);
+
                     <span class="kw">let</span> <span class="ident">window_update</span> <span class="op">=</span> <span class="ident">window_updates</span>.<span class="ident">get_mut</span>(<span class="ident">window_id</span>).<span class="ident">unwrap</span>();
                     <span class="ident">window_update</span>.<span class="ident">refresh_frame</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 }
@@ -910,5 +1084,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

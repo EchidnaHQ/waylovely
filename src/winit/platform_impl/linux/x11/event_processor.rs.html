@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/platform_impl/linux/x11/event_processor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_processor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/platform_impl/linux/x11/event_processor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_processor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../winit/index.html"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../winit/index.html"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1301,6 +1299,82 @@
 <span id="1294">1294</span>
 <span id="1295">1295</span>
 <span id="1296">1296</span>
+<span id="1297">1297</span>
+<span id="1298">1298</span>
+<span id="1299">1299</span>
+<span id="1300">1300</span>
+<span id="1301">1301</span>
+<span id="1302">1302</span>
+<span id="1303">1303</span>
+<span id="1304">1304</span>
+<span id="1305">1305</span>
+<span id="1306">1306</span>
+<span id="1307">1307</span>
+<span id="1308">1308</span>
+<span id="1309">1309</span>
+<span id="1310">1310</span>
+<span id="1311">1311</span>
+<span id="1312">1312</span>
+<span id="1313">1313</span>
+<span id="1314">1314</span>
+<span id="1315">1315</span>
+<span id="1316">1316</span>
+<span id="1317">1317</span>
+<span id="1318">1318</span>
+<span id="1319">1319</span>
+<span id="1320">1320</span>
+<span id="1321">1321</span>
+<span id="1322">1322</span>
+<span id="1323">1323</span>
+<span id="1324">1324</span>
+<span id="1325">1325</span>
+<span id="1326">1326</span>
+<span id="1327">1327</span>
+<span id="1328">1328</span>
+<span id="1329">1329</span>
+<span id="1330">1330</span>
+<span id="1331">1331</span>
+<span id="1332">1332</span>
+<span id="1333">1333</span>
+<span id="1334">1334</span>
+<span id="1335">1335</span>
+<span id="1336">1336</span>
+<span id="1337">1337</span>
+<span id="1338">1338</span>
+<span id="1339">1339</span>
+<span id="1340">1340</span>
+<span id="1341">1341</span>
+<span id="1342">1342</span>
+<span id="1343">1343</span>
+<span id="1344">1344</span>
+<span id="1345">1345</span>
+<span id="1346">1346</span>
+<span id="1347">1347</span>
+<span id="1348">1348</span>
+<span id="1349">1349</span>
+<span id="1350">1350</span>
+<span id="1351">1351</span>
+<span id="1352">1352</span>
+<span id="1353">1353</span>
+<span id="1354">1354</span>
+<span id="1355">1355</span>
+<span id="1356">1356</span>
+<span id="1357">1357</span>
+<span id="1358">1358</span>
+<span id="1359">1359</span>
+<span id="1360">1360</span>
+<span id="1361">1361</span>
+<span id="1362">1362</span>
+<span id="1363">1363</span>
+<span id="1364">1364</span>
+<span id="1365">1365</span>
+<span id="1366">1366</span>
+<span id="1367">1367</span>
+<span id="1368">1368</span>
+<span id="1369">1369</span>
+<span id="1370">1370</span>
+<span id="1371">1371</span>
+<span id="1372">1372</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cell::RefCell</span>, <span class="ident">collections::HashMap</span>, <span class="ident">rc::Rc</span>, <span class="ident">slice</span>, <span class="ident">sync::Arc</span>};
 
 <span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">c_char</span>, <span class="ident">c_int</span>, <span class="ident">c_long</span>, <span class="ident">c_uint</span>, <span class="ident">c_ulong</span>};
@@ -1315,10 +1389,12 @@
 
 <span class="kw">use</span> <span class="ident">util::modifiers</span>::{<span class="ident">ModifierKeyState</span>, <span class="ident">ModifierKeymap</span>};
 
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::platform::x11::ime</span>::{<span class="ident">ImeEvent</span>, <span class="ident">ImeEventReceiver</span>, <span class="ident">ImeRequest</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">dpi</span>::{<span class="ident">PhysicalPosition</span>, <span class="ident">PhysicalSize</span>},
     <span class="ident">event</span>::{
-        <span class="ident">DeviceEvent</span>, <span class="ident">ElementState</span>, <span class="ident">Event</span>, <span class="ident">KeyboardInput</span>, <span class="ident">ModifiersState</span>, <span class="ident">TouchPhase</span>, <span class="ident">WindowEvent</span>,
+        <span class="ident">DeviceEvent</span>, <span class="ident">ElementState</span>, <span class="ident">Event</span>, <span class="ident">Ime</span>, <span class="ident">KeyboardInput</span>, <span class="ident">ModifiersState</span>, <span class="ident">TouchPhase</span>,
+        <span class="ident">WindowEvent</span>,
     },
     <span class="ident">event_loop::EventLoopWindowTarget</span> <span class="kw">as</span> <span class="ident">RootELW</span>,
 };
@@ -1329,6 +1405,7 @@
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">EventProcessor</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">dnd</span>: <span class="ident">Dnd</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">ime_receiver</span>: <span class="ident">ImeReceiver</span>,
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">ime_event_receiver</span>: <span class="ident">ImeEventReceiver</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">randr_event_offset</span>: <span class="ident">c_int</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">devices</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">DeviceId</span>, <span class="ident">Device</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">xi2ext</span>: <span class="ident">XExtension</span>,
@@ -1340,6 +1417,7 @@
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">first_touch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
     <span class="comment">// Currently focused window belonging to this process</span>
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">active_window</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ffi::Window</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">is_composing</span>: <span class="ident">bool</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">EventProcessor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
@@ -1348,7 +1426,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">devices</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">devices</span>.<span class="ident">borrow_mut</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">info</span>) <span class="op">=</span> <span class="ident">DeviceInfo::get</span>(<span class="kw-2">&amp;</span><span class="ident">wt</span>.<span class="ident">xconn</span>, <span class="ident">device</span>) {
             <span class="kw">for</span> <span class="ident">info</span> <span class="kw">in</span> <span class="ident">info</span>.<span class="ident">iter</span>() {
-                <span class="ident">devices</span>.<span class="ident">insert</span>(<span class="ident">DeviceId</span>(<span class="ident">info</span>.<span class="ident">deviceid</span>), <span class="ident">Device::new</span>(<span class="self">self</span>, <span class="ident">info</span>));
+                <span class="ident">devices</span>.<span class="ident">insert</span>(<span class="ident">DeviceId</span>(<span class="ident">info</span>.<span class="ident">deviceid</span>), <span class="ident">Device::new</span>(<span class="ident">info</span>));
             }
         }
     }
@@ -1870,7 +1948,7 @@
 
                 <span class="comment">// When a compose sequence or IME pre-edit is finished, it ends in a KeyPress with</span>
                 <span class="comment">// a keycode of 0.</span>
-                <span class="kw">if</span> <span class="ident">keycode</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">keycode</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_composing</span> {
                     <span class="kw">let</span> <span class="ident">scancode</span> <span class="op">=</span> <span class="ident">keycode</span> <span class="op">-</span> <span class="ident">KEYCODE_OFFSET</span> <span class="kw">as</span> <span class="ident">u32</span>;
                     <span class="kw">let</span> <span class="ident">keysym</span> <span class="op">=</span> <span class="ident">wt</span>.<span class="ident">xconn</span>.<span class="ident">lookup_keysym</span>(<span class="ident">xkev</span>);
                     <span class="kw">let</span> <span class="ident">virtual_keycode</span> <span class="op">=</span> <span class="ident">events::keysym_to_element</span>(<span class="ident">keysym</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
@@ -1905,12 +1983,25 @@
                         <span class="kw">return</span>;
                     };
 
-                    <span class="kw">for</span> <span class="ident">chr</span> <span class="kw">in</span> <span class="ident">written</span>.<span class="ident">chars</span>() {
+                    <span class="comment">// If we&#39;re composing right now, send the string we&#39;ve got from X11 via</span>
+                    <span class="comment">// Ime::Commit.</span>
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_composing</span> <span class="op">&amp;&amp;</span> <span class="ident">keycode</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">written</span>.<span class="ident">is_empty</span>() {
                         <span class="kw">let</span> <span class="ident">event</span> <span class="op">=</span> <span class="ident">Event::WindowEvent</span> {
                             <span class="ident">window_id</span>,
-                            <span class="ident">event</span>: <span class="ident">WindowEvent::ReceivedCharacter</span>(<span class="ident">chr</span>),
+                            <span class="ident">event</span>: <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Commit</span>(<span class="ident">written</span>)),
                         };
+
+                        <span class="self">self</span>.<span class="ident">is_composing</span> <span class="op">=</span> <span class="bool-val">false</span>;
                         <span class="ident">callback</span>(<span class="ident">event</span>);
+                    } <span class="kw">else</span> {
+                        <span class="kw">for</span> <span class="ident">chr</span> <span class="kw">in</span> <span class="ident">written</span>.<span class="ident">chars</span>() {
+                            <span class="kw">let</span> <span class="ident">event</span> <span class="op">=</span> <span class="ident">Event::WindowEvent</span> {
+                                <span class="ident">window_id</span>,
+                                <span class="ident">event</span>: <span class="ident">WindowEvent::ReceivedCharacter</span>(<span class="ident">chr</span>),
+                            };
+
+                            <span class="ident">callback</span>(<span class="ident">event</span>);
+                        }
                     }
                 }
             }
@@ -1996,8 +2087,8 @@
                                             <span class="ident">delta</span>: <span class="kw">match</span> <span class="ident">xev</span>.<span class="ident">detail</span> {
                                                 <span class="number">4</span> =&gt; <span class="ident">LineDelta</span>(<span class="number">0.0</span>, <span class="number">1.0</span>),
                                                 <span class="number">5</span> =&gt; <span class="ident">LineDelta</span>(<span class="number">0.0</span>, <span class="op">-</span><span class="number">1.0</span>),
-                                                <span class="number">6</span> =&gt; <span class="ident">LineDelta</span>(<span class="op">-</span><span class="number">1.0</span>, <span class="number">0.0</span>),
-                                                <span class="number">7</span> =&gt; <span class="ident">LineDelta</span>(<span class="number">1.0</span>, <span class="number">0.0</span>),
+                                                <span class="number">6</span> =&gt; <span class="ident">LineDelta</span>(<span class="number">1.0</span>, <span class="number">0.0</span>),
+                                                <span class="number">7</span> =&gt; <span class="ident">LineDelta</span>(<span class="op">-</span><span class="number">1.0</span>, <span class="number">0.0</span>),
                                                 <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
                                             },
                                             <span class="ident">phase</span>: <span class="ident">TouchPhase::Moved</span>,
@@ -2077,10 +2168,10 @@
                                             <span class="ident">event</span>: <span class="ident">MouseWheel</span> {
                                                 <span class="ident">device_id</span>,
                                                 <span class="ident">delta</span>: <span class="kw">match</span> <span class="ident">info</span>.<span class="ident">orientation</span> {
-                                                    <span class="ident">ScrollOrientation::Horizontal</span> =&gt; {
-                                                        <span class="ident">LineDelta</span>(<span class="ident">delta</span> <span class="kw">as</span> <span class="ident">f32</span>, <span class="number">0.0</span>)
-                                                    }
                                                     <span class="comment">// X11 vertical scroll coordinates are opposite to winit&#39;s</span>
+                                                    <span class="ident">ScrollOrientation::Horizontal</span> =&gt; {
+                                                        <span class="ident">LineDelta</span>(<span class="op">-</span><span class="ident">delta</span> <span class="kw">as</span> <span class="ident">f32</span>, <span class="number">0.0</span>)
+                                                    }
                                                     <span class="ident">ScrollOrientation::Vertical</span> =&gt; {
                                                         <span class="ident">LineDelta</span>(<span class="number">0.0</span>, <span class="op">-</span><span class="ident">delta</span> <span class="kw">as</span> <span class="ident">f32</span>)
                                                     }
@@ -2193,6 +2284,8 @@
                         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">active_window</span> <span class="op">!</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">xev</span>.<span class="ident">event</span>) {
                             <span class="self">self</span>.<span class="ident">active_window</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">xev</span>.<span class="ident">event</span>);
 
+                            <span class="ident">wt</span>.<span class="ident">update_device_event_filter</span>(<span class="bool-val">true</span>);
+
                             <span class="kw">let</span> <span class="ident">window_id</span> <span class="op">=</span> <span class="ident">mkwid</span>(<span class="ident">xev</span>.<span class="ident">event</span>);
                             <span class="kw">let</span> <span class="ident">position</span> <span class="op">=</span> <span class="ident">PhysicalPosition::new</span>(<span class="ident">xev</span>.<span class="ident">event_x</span>, <span class="ident">xev</span>.<span class="ident">event_y</span>);
 
@@ -2242,6 +2335,7 @@
                         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">window_exists</span>(<span class="ident">xev</span>.<span class="ident">event</span>) {
                             <span class="kw">return</span>;
                         }
+
                         <span class="ident">wt</span>.<span class="ident">ime</span>
                             .<span class="ident">borrow_mut</span>()
                             .<span class="ident">unfocus</span>(<span class="ident">xev</span>.<span class="ident">event</span>)
@@ -2249,6 +2343,8 @@
 
                         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">active_window</span>.<span class="ident">take</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">xev</span>.<span class="ident">event</span>) {
                             <span class="kw">let</span> <span class="ident">window_id</span> <span class="op">=</span> <span class="ident">mkwid</span>(<span class="ident">xev</span>.<span class="ident">event</span>);
+
+                            <span class="ident">wt</span>.<span class="ident">update_device_event_filter</span>(<span class="bool-val">false</span>);
 
                             <span class="comment">// Issue key release events for all pressed keys</span>
                             <span class="ident"><span class="self">Self</span>::handle_pressed_keys</span>(
@@ -2482,9 +2578,12 @@
                                         <span class="kw">if</span> <span class="ident">monitor</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">new_monitor</span>.<span class="ident">name</span> {
                                             <span class="kw">let</span> (<span class="ident">width</span>, <span class="ident">height</span>) <span class="op">=</span> <span class="ident">window</span>.<span class="ident">inner_size_physical</span>();
                                             <span class="kw">let</span> (<span class="ident">new_width</span>, <span class="ident">new_height</span>) <span class="op">=</span> <span class="ident">window</span>.<span class="ident">adjust_for_dpi</span>(
-                                                <span class="comment">// If there all monitors are closed before, scale</span>
-                                                <span class="comment">// factor would be already changed to 1.0.</span>
-                                                <span class="ident">maybe_prev_scale_factor</span>.<span class="ident">unwrap_or</span>(<span class="number">1.0</span>),
+                                                <span class="comment">// If we couldn&#39;t determine the previous scale</span>
+                                                <span class="comment">// factor (e.g., because all monitors were closed</span>
+                                                <span class="comment">// before), just pick whatever the current monitor</span>
+                                                <span class="comment">// has set as a baseline.</span>
+                                                <span class="ident">maybe_prev_scale_factor</span>
+                                                    .<span class="ident">unwrap_or</span>(<span class="ident">monitor</span>.<span class="ident">scale_factor</span>),
                                                 <span class="ident">new_monitor</span>.<span class="ident">scale_factor</span>,
                                                 <span class="ident">width</span>,
                                                 <span class="ident">height</span>,
@@ -2523,8 +2622,59 @@
             }
         }
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>((<span class="ident">window_id</span>, <span class="ident">x</span>, <span class="ident">y</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">ime_receiver</span>.<span class="ident">try_recv</span>() {
-            <span class="ident">wt</span>.<span class="ident">ime</span>.<span class="ident">borrow_mut</span>().<span class="ident">send_xim_spot</span>(<span class="ident">window_id</span>, <span class="ident">x</span>, <span class="ident">y</span>);
+        <span class="comment">// Handle IME requests.</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">request</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">ime_receiver</span>.<span class="ident">try_recv</span>() {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ime</span> <span class="op">=</span> <span class="ident">wt</span>.<span class="ident">ime</span>.<span class="ident">borrow_mut</span>();
+            <span class="kw">match</span> <span class="ident">request</span> {
+                <span class="ident">ImeRequest::Position</span>(<span class="ident">window_id</span>, <span class="ident">x</span>, <span class="ident">y</span>) =&gt; {
+                    <span class="ident">ime</span>.<span class="ident">send_xim_spot</span>(<span class="ident">window_id</span>, <span class="ident">x</span>, <span class="ident">y</span>);
+                }
+                <span class="ident">ImeRequest::Allow</span>(<span class="ident">window_id</span>, <span class="ident">allowed</span>) =&gt; {
+                    <span class="ident">ime</span>.<span class="ident">set_ime_allowed</span>(<span class="ident">window_id</span>, <span class="ident">allowed</span>);
+                }
+            }
+        }
+
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">ime_event_receiver</span>.<span class="ident">try_recv</span>() {
+            <span class="prelude-val">Ok</span>((<span class="ident">window</span>, <span class="ident">event</span>)) =&gt; <span class="kw">match</span> <span class="ident">event</span> {
+                <span class="ident">ImeEvent::Enabled</span> =&gt; {
+                    <span class="ident">callback</span>(<span class="ident">Event::WindowEvent</span> {
+                        <span class="ident">window_id</span>: <span class="ident">mkwid</span>(<span class="ident">window</span>),
+                        <span class="ident">event</span>: <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Enabled</span>),
+                    });
+                }
+                <span class="ident">ImeEvent::Start</span> =&gt; {
+                    <span class="self">self</span>.<span class="ident">is_composing</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                    <span class="ident">callback</span>(<span class="ident">Event::WindowEvent</span> {
+                        <span class="ident">window_id</span>: <span class="ident">mkwid</span>(<span class="ident">window</span>),
+                        <span class="ident">event</span>: <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Preedit</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>(), <span class="prelude-val">None</span>)),
+                    });
+                }
+                <span class="ident">ImeEvent::Update</span>(<span class="ident">text</span>, <span class="ident">position</span>) =&gt; {
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_composing</span> {
+                        <span class="ident">callback</span>(<span class="ident">Event::WindowEvent</span> {
+                            <span class="ident">window_id</span>: <span class="ident">mkwid</span>(<span class="ident">window</span>),
+                            <span class="ident">event</span>: <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Preedit</span>(<span class="ident">text</span>, <span class="prelude-val">Some</span>((<span class="ident">position</span>, <span class="ident">position</span>)))),
+                        });
+                    }
+                }
+                <span class="ident">ImeEvent::End</span> =&gt; {
+                    <span class="self">self</span>.<span class="ident">is_composing</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                    <span class="comment">// Issue empty preedit on `Done`.</span>
+                    <span class="ident">callback</span>(<span class="ident">Event::WindowEvent</span> {
+                        <span class="ident">window_id</span>: <span class="ident">mkwid</span>(<span class="ident">window</span>),
+                        <span class="ident">event</span>: <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Preedit</span>(<span class="ident">String::new</span>(), <span class="prelude-val">None</span>)),
+                    });
+                }
+                <span class="ident">ImeEvent::Disabled</span> =&gt; {
+                    <span class="self">self</span>.<span class="ident">is_composing</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                    <span class="ident">callback</span>(<span class="ident">Event::WindowEvent</span> {
+                        <span class="ident">window_id</span>: <span class="ident">mkwid</span>(<span class="ident">window</span>),
+                        <span class="ident">event</span>: <span class="ident">WindowEvent::Ime</span>(<span class="ident">Ime::Disabled</span>),
+                    });
+                }
+            },
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; (),
         }
     }
 
@@ -2598,5 +2748,5 @@
     <span class="kw-2">*</span><span class="ident">first</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

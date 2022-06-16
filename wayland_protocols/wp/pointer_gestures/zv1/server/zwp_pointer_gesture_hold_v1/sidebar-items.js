@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EVT_BEGIN_SINCE","The minimal object version supporting this event"],["EVT_END_SINCE","The minimal object version supporting this event"],["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["ZwpPointerGestureHoldV1","a hold gesture object"]]});

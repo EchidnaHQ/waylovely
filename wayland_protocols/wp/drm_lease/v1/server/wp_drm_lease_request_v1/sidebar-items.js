@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["REQ_REQUEST_CONNECTOR_SINCE","The minimal object version supporting this request"],["REQ_SUBMIT_SINCE","The minimal object version supporting this request"]],"enum":[["Error",""],["Event",""],["Request",""]],"struct":[["WpDrmLeaseRequestV1","DRM lease request"]]});

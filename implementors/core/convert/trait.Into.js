@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["nix"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.Into.html\" title=\"trait core::convert::Into\">Into</a>&lt;ucred&gt; for <a class=\"struct\" href=\"nix/sys/socket/struct.UnixCredentials.html\" title=\"struct nix::sys::socket::UnixCredentials\">UnixCredentials</a>","synthetic":false,"types":["nix::sys::socket::UnixCredentials"]}];
+implementors["nix"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.61.0/core/convert/trait.Into.html\" title=\"trait core::convert::Into\">Into</a>&lt;ucred&gt; for <a class=\"struct\" href=\"nix/sys/socket/struct.UnixCredentials.html\" title=\"struct nix::sys::socket::UnixCredentials\">UnixCredentials</a>","synthetic":false,"types":["nix::sys::socket::UnixCredentials"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

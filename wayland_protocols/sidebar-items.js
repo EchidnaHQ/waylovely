@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["misc","Misc protocols"],["presentation_time","Presentation time protocol"],["staging","Staging protocols from wayland-protocols"],["unstable","Unstable protocols from wayland-protocols"],["viewporter","Viewporter protocol"],["wlr","wlr-procotols extension family"],["xdg_shell","XDG Shell protocol"]]});
+initSidebarItems({"mod":[["ext","Miscellaneous protocols"],["wp","Generic wayland protocols"],["xdg","Protocols related to window management"]]});

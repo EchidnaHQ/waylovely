@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../winit/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../winit/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -165,6 +163,7 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Winit is a cross-platform window creation and event loop management library.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Building windows</span>
@@ -198,8 +197,8 @@
 <span class="doccomment">//! You can retrieve events by calling [`EventLoop::run`][event_loop_run]. This function will</span>
 <span class="doccomment">//! dispatch events for every [`Window`] that was created with that particular [`EventLoop`], and</span>
 <span class="doccomment">//! will run until the `control_flow` argument given to the closure is set to</span>
-<span class="doccomment">//! [`ControlFlow`]`::`[`Exit`], at which point [`Event`]`::`[`LoopDestroyed`] is emitted and the</span>
-<span class="doccomment">//! entire program terminates.</span>
+<span class="doccomment">//! [`ControlFlow`]`::`[`ExitWithCode`] (which [`ControlFlow`]`::`[`Exit`] aliases to), at which</span>
+<span class="doccomment">//! point [`Event`]`::`[`LoopDestroyed`] is emitted and the entire program terminates.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Winit no longer uses a `EventLoop::poll_events() -&gt; impl Iterator&lt;Event&gt;`-based event loop</span>
 <span class="doccomment">//! model, since that can&#39;t be implemented properly on some platforms (e.g web, iOS) and works poorly on</span>
@@ -211,7 +210,7 @@
 <span class="doccomment">//! ```no_run</span>
 <span class="doccomment">//! use winit::{</span>
 <span class="doccomment">//!     event::{Event, WindowEvent},</span>
-<span class="doccomment">//!     event_loop::{ControlFlow, EventLoop},</span>
+<span class="doccomment">//!     event_loop::EventLoop,</span>
 <span class="doccomment">//!     window::WindowBuilder,</span>
 <span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
@@ -221,12 +220,12 @@
 <span class="doccomment">//! event_loop.run(move |event, _, control_flow| {</span>
 <span class="doccomment">//!     // ControlFlow::Poll continuously runs the event loop, even if the OS hasn&#39;t</span>
 <span class="doccomment">//!     // dispatched any events. This is ideal for games and similar applications.</span>
-<span class="doccomment">//!     *control_flow = ControlFlow::Poll;</span>
+<span class="doccomment">//!     control_flow.set_poll();</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     // ControlFlow::Wait pauses the event loop if no events are available to process.</span>
 <span class="doccomment">//!     // This is ideal for non-game applications that only update in response to user</span>
 <span class="doccomment">//!     // input, and uses significantly less power/CPU time than ControlFlow::Poll.</span>
-<span class="doccomment">//!     *control_flow = ControlFlow::Wait;</span>
+<span class="doccomment">//!     control_flow.set_wait();</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     match event {</span>
 <span class="doccomment">//!         Event::WindowEvent {</span>
@@ -234,7 +233,7 @@
 <span class="doccomment">//!             ..</span>
 <span class="doccomment">//!         } =&gt; {</span>
 <span class="doccomment">//!             println!(&quot;The close button was pressed; stopping&quot;);</span>
-<span class="doccomment">//!             *control_flow = ControlFlow::Exit</span>
+<span class="doccomment">//!             control_flow.set_exit();</span>
 <span class="doccomment">//!         },</span>
 <span class="doccomment">//!         Event::MainEventsCleared =&gt; {</span>
 <span class="doccomment">//!             // Application update code.</span>
@@ -281,6 +280,7 @@
 <span class="doccomment">//! [event_loop_run]: event_loop::EventLoop::run</span>
 <span class="doccomment">//! [`ControlFlow`]: event_loop::ControlFlow</span>
 <span class="doccomment">//! [`Exit`]: event_loop::ControlFlow::Exit</span>
+<span class="doccomment">//! [`ExitWithCode`]: event_loop::ControlFlow::ExitWithCode</span>
 <span class="doccomment">//! [`Window`]: window::Window</span>
 <span class="doccomment">//! [`WindowId`]: window::WindowId</span>
 <span class="doccomment">//! [`WindowBuilder`]: window::WindowBuilder</span>
@@ -326,5 +326,5 @@
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">platform</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

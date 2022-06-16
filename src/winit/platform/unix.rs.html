@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/platform/unix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>unix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/platform/unix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>unix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../winit/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../winit/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -441,34 +439,6 @@
 <span id="434">434</span>
 <span id="435">435</span>
 <span id="436">436</span>
-<span id="437">437</span>
-<span id="438">438</span>
-<span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
-<span id="460">460</span>
-<span id="461">461</span>
-<span id="462">462</span>
-<span id="463">463</span>
-<span id="464">464</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">cfg</span>(<span class="ident">any</span>(
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
@@ -482,7 +452,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">ptr</span>, <span class="ident">sync::Arc</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">event_loop</span>::{<span class="ident">EventLoop</span>, <span class="ident">EventLoopWindowTarget</span>},
+    <span class="ident">event_loop</span>::{<span class="ident">EventLoopBuilder</span>, <span class="ident">EventLoopWindowTarget</span>},
     <span class="ident">monitor::MonitorHandle</span>,
     <span class="ident">window</span>::{<span class="ident">Window</span>, <span class="ident">WindowBuilder</span>},
 };
@@ -492,7 +462,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::x11</span>::{<span class="ident">ffi::XVisualInfo</span>, <span class="ident">XConnection</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl</span>::{
-    <span class="ident">EventLoop</span> <span class="kw">as</span> <span class="ident">LinuxEventLoop</span>, <span class="ident">EventLoopWindowTarget</span> <span class="kw">as</span> <span class="ident">LinuxEventLoopWindowTarget</span>,
+    <span class="ident">ApplicationName</span>, <span class="ident">Backend</span>, <span class="ident">EventLoopWindowTarget</span> <span class="kw">as</span> <span class="ident">LinuxEventLoopWindowTarget</span>,
     <span class="ident">Window</span> <span class="kw">as</span> <span class="ident">LinuxWindow</span>,
 };
 
@@ -502,6 +472,9 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl::x11</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::platform_impl</span>::{<span class="ident">x11::util::WindowType</span> <span class="kw">as</span> <span class="ident">XWindowType</span>, <span class="ident">XNotSupported</span>};
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::window::Theme</span>;
 
 <span class="doccomment">/// Additional methods on `EventLoopWindowTarget` that are specific to Unix.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EventLoopWindowTargetExtUnix</span> {
@@ -541,7 +514,6 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">xlib_xconnection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">XConnection</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">p</span> {
@@ -564,100 +536,42 @@
     }
 }
 
-<span class="doccomment">/// Additional methods on `EventLoop` that are specific to Unix.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EventLoopExtUnix</span> {
-    <span class="doccomment">/// Builds a new `EventLoop` that is forced to use X11.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If called outside the main thread. To initialize an X11 event loop outside</span>
-    <span class="doccomment">/// the main thread, use [`new_x11_any_thread`](#tymethod.new_x11_any_thread).</span>
+<span class="doccomment">/// Additional methods on [`EventLoopBuilder`] that are specific to Unix.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EventLoopBuilderExtUnix</span> {
+    <span class="doccomment">/// Force using X11.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_x11</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>;
+    <span class="kw">fn</span> <span class="ident">with_x11</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span>;
 
-    <span class="doccomment">/// Builds a new `EventLoop` that is forced to use Wayland.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If called outside the main thread. To initialize a Wayland event loop outside</span>
-    <span class="doccomment">/// the main thread, use [`new_wayland_any_thread`](#tymethod.new_wayland_any_thread).</span>
+    <span class="doccomment">/// Force using Wayland.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_wayland</span>() -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>;
+    <span class="kw">fn</span> <span class="ident">with_wayland</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span>;
 
-    <span class="doccomment">/// Builds a new `EventLoop` on any thread.</span>
+    <span class="doccomment">/// Whether to allow the event loop to be created off of the main thread.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This method bypasses the cross-platform compatibility requirement</span>
-    <span class="doccomment">/// that `EventLoop` be created on the main thread.</span>
-    <span class="kw">fn</span> <span class="ident">new_any_thread</span>() -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>;
-
-    <span class="doccomment">/// Builds a new X11 `EventLoop` on any thread.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method bypasses the cross-platform compatibility requirement</span>
-    <span class="doccomment">/// that `EventLoop` be created on the main thread.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_x11_any_thread</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>;
-
-    <span class="doccomment">/// Builds a new Wayland `EventLoop` on any thread.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method bypasses the cross-platform compatibility requirement</span>
-    <span class="doccomment">/// that `EventLoop` be created on the main thread.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_wayland_any_thread</span>() -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>;
+    <span class="doccomment">/// By default, the window is only allowed to be created on the main</span>
+    <span class="doccomment">/// thread, to make platform compatibility easier.</span>
+    <span class="kw">fn</span> <span class="ident">with_any_thread</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">any_thread</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span>;
 }
 
-<span class="kw">fn</span> <span class="ident">wrap_ev</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">event_loop</span>: <span class="ident">LinuxEventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">EventLoop</span> {
-        <span class="ident">event_loop</span>,
-        <span class="ident">_marker</span>: <span class="ident">std::marker::PhantomData</span>,
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">EventLoopExtUnix</span> <span class="kw">for</span> <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">new_any_thread</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">wrap_ev</span>(<span class="ident">LinuxEventLoop::new_any_thread</span>())
-    }
-
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">EventLoopBuilderExtUnix</span> <span class="kw">for</span> <span class="ident">EventLoopBuilder</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_x11_any_thread</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span> {
-        <span class="ident">LinuxEventLoop::new_x11_any_thread</span>().<span class="ident">map</span>(<span class="ident">wrap_ev</span>)
+    <span class="kw">fn</span> <span class="ident">with_x11</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">forced_backend</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Backend::X</span>);
+        <span class="self">self</span>
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_wayland_any_thread</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">wrap_ev</span>(
-            <span class="ident">LinuxEventLoop::new_wayland_any_thread</span>()
-                <span class="comment">// TODO: propagate</span>
-                .<span class="ident">expect</span>(<span class="string">&quot;failed to open Wayland connection&quot;</span>),
-        )
+    <span class="kw">fn</span> <span class="ident">with_wayland</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">forced_backend</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Backend::Wayland</span>);
+        <span class="self">self</span>
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_x11</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span> {
-        <span class="ident">LinuxEventLoop::new_x11</span>().<span class="ident">map</span>(<span class="ident">wrap_ev</span>)
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">new_wayland</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">wrap_ev</span>(
-            <span class="ident">LinuxEventLoop::new_wayland</span>()
-                <span class="comment">// TODO: propagate</span>
-                .<span class="ident">expect</span>(<span class="string">&quot;failed to open Wayland connection&quot;</span>),
-        )
+    <span class="kw">fn</span> <span class="ident">with_any_thread</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">any_thread</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">any_thread</span> <span class="op">=</span> <span class="ident">any_thread</span>;
+        <span class="self">self</span>
     }
 }
 
@@ -708,6 +622,13 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">wayland_display</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">raw::c_void</span><span class="op">&gt;</span>;
 
+    <span class="doccomment">/// Updates [`Theme`] of window decorations.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You can also use `WINIT_WAYLAND_CSD_THEME` env variable to set the theme.</span>
+    <span class="doccomment">/// Possible values for env variable are: &quot;dark&quot; and light&quot;</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">wayland_set_csd_theme</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="ident">Theme</span>);
+
     <span class="doccomment">/// Check if the window is ready for drawing</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// It is a remnant of a previous implementation detail for the</span>
@@ -750,7 +671,6 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">xlib_xconnection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">XConnection</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">window</span> {
@@ -791,6 +711,16 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">wayland_set_csd_theme</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">theme</span>: <span class="ident">Theme</span>) {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">window</span> {
+            <span class="ident">LinuxWindow::Wayland</span>(<span class="kw-2">ref</span> <span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">set_csd_theme</span>(<span class="ident">theme</span>),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
+            <span class="kw">_</span> =&gt; {}
+        }
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">is_ready</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">true</span>
     }
@@ -800,21 +730,41 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">WindowBuilderExtUnix</span> {
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_x11_visual</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">visual_infos</span>: <span class="kw-2">*const</span> <span class="ident">T</span>) -&gt; <span class="self">Self</span>;
+
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_x11_screen</span>(<span class="self">self</span>, <span class="ident">screen_id</span>: <span class="ident">i32</span>) -&gt; <span class="self">Self</span>;
 
-    <span class="doccomment">/// Build window with `WM_CLASS` hint; defaults to the name of the binary. Only relevant on X11.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">with_class</span>(<span class="self">self</span>, <span class="ident">class</span>: <span class="ident">String</span>, <span class="ident">instance</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// Build window with the given `general` and `instance` names.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// On Wayland, the `general` name sets an application ID, which should match the `.desktop`</span>
+    <span class="doccomment">/// file destributed with your program. The `instance` is a `no-op`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// On X11, the `general` sets general class of `WM_CLASS(STRING)`, while `instance` set the</span>
+    <span class="doccomment">/// instance part of it. The resulted property looks like `WM_CLASS(STRING) = &quot;general&quot;, &quot;instance&quot;`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// For details about application ID conventions, see the</span>
+    <span class="doccomment">/// [Desktop Entry Spec](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#desktop-file-id)</span>
+    <span class="kw">fn</span> <span class="ident">with_name</span>(<span class="self">self</span>, <span class="ident">general</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">instance</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span>;
+
     <span class="doccomment">/// Build window with override-redirect flag; defaults to false. Only relevant on X11.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_override_redirect</span>(<span class="self">self</span>, <span class="ident">override_redirect</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span>;
+
     <span class="doccomment">/// Build window with `_NET_WM_WINDOW_TYPE` hints; defaults to `Normal`. Only relevant on X11.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_x11_window_type</span>(<span class="self">self</span>, <span class="ident">x11_window_type</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">XWindowType</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span>;
+
     <span class="doccomment">/// Build window with `_GTK_THEME_VARIANT` hint set to the specified value. Currently only relevant on X11.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_gtk_theme_variant</span>(<span class="self">self</span>, <span class="ident">variant</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span>;
+
+    <span class="doccomment">/// Build window with certain decoration [`Theme`]</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You can also use `WINIT_WAYLAND_CSD_THEME` env variable to set the theme.</span>
+    <span class="doccomment">/// Possible values for env variable are: &quot;dark&quot; and light&quot;</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">with_wayland_csd_theme</span>(<span class="self">self</span>, <span class="ident">theme</span>: <span class="ident">Theme</span>) -&gt; <span class="self">Self</span>;
+
     <span class="doccomment">/// Build window with resize increment hint. Only implemented on X11.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
@@ -829,6 +779,7 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_resize_increments</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">increments</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span>;
+
     <span class="doccomment">/// Build window with base size hint. Only implemented on X11.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
@@ -843,14 +794,6 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_base_size</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">base_size</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span>;
-
-    <span class="doccomment">/// Build window with a given application ID. It should match the `.desktop` file distributed with</span>
-    <span class="doccomment">/// your program. Only relevant on Wayland.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For details about application ID conventions, see the</span>
-    <span class="doccomment">/// [Desktop Entry Spec](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#desktop-file-id)</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">with_app_id</span>(<span class="self">self</span>, <span class="ident">app_id</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">WindowBuilderExtUnix</span> <span class="kw">for</span> <span class="ident">WindowBuilder</span> {
@@ -872,9 +815,8 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">with_class</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">instance</span>: <span class="ident">String</span>, <span class="ident">class</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">class</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">instance</span>, <span class="ident">class</span>));
+    <span class="kw">fn</span> <span class="ident">with_name</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">general</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">instance</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ApplicationName::new</span>(<span class="ident">general</span>.<span class="ident">into</span>(), <span class="ident">instance</span>.<span class="ident">into</span>()));
         <span class="self">self</span>
     }
 
@@ -900,6 +842,13 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">with_wayland_csd_theme</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">theme</span>: <span class="ident">Theme</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">csd_theme</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">theme</span>);
+        <span class="self">self</span>
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_resize_increments</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">increments</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">resize_increments</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">increments</span>.<span class="ident">into</span>());
@@ -910,13 +859,6 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">with_base_size</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">base_size</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">base_size</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base_size</span>.<span class="ident">into</span>());
-        <span class="self">self</span>
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">with_app_id</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">app_id</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">platform_specific</span>.<span class="ident">app_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">app_id</span>);
         <span class="self">self</span>
     }
 }
@@ -934,5 +876,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

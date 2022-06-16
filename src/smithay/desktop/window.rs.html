@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -391,49 +389,10 @@
 <span id="384">384</span>
 <span id="385">385</span>
 <span id="386">386</span>
-<span id="387">387</span>
-<span id="388">388</span>
-<span id="389">389</span>
-<span id="390">390</span>
-<span id="391">391</span>
-<span id="392">392</span>
-<span id="393">393</span>
-<span id="394">394</span>
-<span id="395">395</span>
-<span id="396">396</span>
-<span id="397">397</span>
-<span id="398">398</span>
-<span id="399">399</span>
-<span id="400">400</span>
-<span id="401">401</span>
-<span id="402">402</span>
-<span id="403">403</span>
-<span id="404">404</span>
-<span id="405">405</span>
-<span id="406">406</span>
-<span id="407">407</span>
-<span id="408">408</span>
-<span id="409">409</span>
-<span id="410">410</span>
-<span id="411">411</span>
-<span id="412">412</span>
-<span id="413">413</span>
-<span id="414">414</span>
-<span id="415">415</span>
-<span id="416">416</span>
-<span id="417">417</span>
-<span id="418">418</span>
-<span id="419">419</span>
-<span id="420">420</span>
-<span id="421">421</span>
-<span id="422">422</span>
-<span id="423">423</span>
-<span id="424">424</span>
-<span id="425">425</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">backend::renderer</span>::{<span class="ident">utils::draw_surface_tree</span>, <span class="ident">ImportAll</span>, <span class="ident">Renderer</span>},
     <span class="ident">desktop</span>::{<span class="ident">utils</span>::<span class="kw-2">*</span>, <span class="ident">PopupManager</span>, <span class="ident">Space</span>},
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>},
+    <span class="ident">utils</span>::{<span class="ident">user_data::UserDataMap</span>, <span class="ident">IsAlive</span>, <span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>},
     <span class="ident">wayland</span>::{
         <span class="ident">compositor::with_states</span>,
         <span class="ident">output::Output</span>,
@@ -441,13 +400,11 @@
     },
 };
 <span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">cell::Cell</span>,
     <span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>},
-    <span class="ident">rc::Rc</span>,
+    <span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>},
 };
-<span class="kw">use</span> <span class="ident">wayland_commons::user_data::UserDataMap</span>;
-<span class="kw">use</span> <span class="ident">wayland_protocols::xdg_shell::server::xdg_toplevel</span>;
-<span class="kw">use</span> <span class="ident">wayland_server::protocol::wl_surface</span>;
+<span class="kw">use</span> <span class="ident">wayland_protocols::xdg::shell::server::xdg_toplevel</span>;
+<span class="kw">use</span> <span class="ident">wayland_server</span>::{<span class="ident">protocol::wl_surface</span>, <span class="ident">DisplayHandle</span>};
 
 <span class="macro">crate::utils::ids::id_gen!</span>(<span class="ident">next_window_id</span>, <span class="ident">WINDOW_ID</span>, <span class="ident">WINDOW_IDS</span>);
 
@@ -477,38 +434,37 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;xwayland&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">X11Surface</span> {
-    <span class="doccomment">/// Checks if the surface is still alive.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>()
+<span class="kw">impl</span> <span class="ident">IsAlive</span> <span class="kw">for</span> <span class="ident">X11Surface</span> {
+    <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">surface</span>.<span class="ident">alive</span>()
     }
+}
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;xwayland&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">X11Surface</span> {
     <span class="doccomment">/// Returns the underlying [`WlSurface`](wl_surface::WlSurface), if still any.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">alive</span>() {
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">surface</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wl_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">surface</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Kind</span> {
-    <span class="doccomment">/// Checks if the surface is still alive.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+    <span class="doccomment">/// Returns the underlying [`WlSurface`](wl_surface::WlSurface), if still any.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wl_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="ident">Kind::Xdg</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">wl_surface</span>(),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;xwayland&quot;</span>)]</span>
+            <span class="ident">Kind::X11</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">wl_surface</span>(),
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">IsAlive</span> <span class="kw">for</span> <span class="ident">Kind</span> {
+    <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Kind::Xdg</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">alive</span>(),
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;xwayland&quot;</span>)]</span>
             <span class="ident">Kind::X11</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">alive</span>(),
-        }
-    }
-
-    <span class="doccomment">/// Returns the underlying [`WlSurface`](wl_surface::WlSurface), if still any.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_surface</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Kind::Xdg</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">get_surface</span>(),
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;xwayland&quot;</span>)]</span>
-            <span class="ident">Kind::X11</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">get_surface</span>(),
         }
     }
 }
@@ -517,8 +473,8 @@
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">WindowInner</span> {
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">id</span>: <span class="ident">usize</span>,
     <span class="ident">toplevel</span>: <span class="ident">Kind</span>,
-    <span class="ident">bbox</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">z_index</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">bbox</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">z_index</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">user_data</span>: <span class="ident">UserDataMap</span>,
 }
 
@@ -530,7 +486,7 @@
 
 <span class="doccomment">/// Represents a single application window</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Window</span>(<span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">WindowInner</span><span class="op">&gt;</span>);
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Window</span>(<span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">WindowInner</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Window</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
@@ -543,6 +499,12 @@
 <span class="kw">impl</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">Window</span> {
     <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">Hasher</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">H</span>) {
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">id</span>.<span class="ident">hash</span>(<span class="ident">state</span>);
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">IsAlive</span> <span class="kw">for</span> <span class="ident">Window</span> {
+    <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">alive</span>()
     }
 }
 
@@ -566,36 +528,28 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">toplevel</span>: <span class="ident">Kind</span>) -&gt; <span class="ident">Window</span> {
         <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">next_window_id</span>();
 
-        <span class="ident">Window</span>(<span class="ident">Rc::new</span>(<span class="ident">WindowInner</span> {
+        <span class="ident">Window</span>(<span class="ident">Arc::new</span>(<span class="ident">WindowInner</span> {
             <span class="ident">id</span>,
             <span class="ident">toplevel</span>,
-            <span class="ident">bbox</span>: <span class="ident">Cell::new</span>(<span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">0</span>))),
+            <span class="ident">bbox</span>: <span class="ident">Mutex::new</span>(<span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">0</span>))),
             <span class="ident">user_data</span>: <span class="ident">UserDataMap::new</span>(),
-            <span class="ident">z_index</span>: <span class="ident">Cell::new</span>(<span class="prelude-val">None</span>),
+            <span class="ident">z_index</span>: <span class="ident">Mutex::new</span>(<span class="prelude-val">None</span>),
         }))
     }
 
     <span class="doccomment">/// Returns the geometry of this window.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">geometry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">surface</span>) =&gt; <span class="ident">surface</span>,
-            <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">0</span>)),
-        };
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>();
         <span class="comment">// It&#39;s the set geometry with the full bounding box as the fallback.</span>
         <span class="ident">with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
             <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">current</span>::<span class="op">&lt;</span><span class="ident">SurfaceCachedState</span><span class="op">&gt;</span>().<span class="ident">geometry</span>
         })
-        .<span class="ident">unwrap</span>()
         .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">bbox</span>())
     }
 
     <span class="doccomment">/// Returns a bounding box over this window and its children.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bbox</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>().<span class="ident">is_some</span>() {
-            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">bbox</span>.<span class="ident">get</span>()
-        } <span class="kw">else</span> {
-            <span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">0</span>))
-        }
+        <span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">bbox</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()
     }
 
     <span class="doccomment">/// Returns a bounding box over this window and children including popups.</span>
@@ -604,24 +558,19 @@
     <span class="doccomment">/// will not include the popups.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bbox_with_popups</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounding_box</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bbox</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
-            <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
-                .<span class="ident">ok</span>()
-                .<span class="ident">into_iter</span>()
-                .<span class="ident">flatten</span>()
-            {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-                    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
-                    <span class="ident">bounding_box</span> <span class="op">=</span> <span class="ident">bounding_box</span>.<span class="ident">merge</span>(<span class="ident">bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">offset</span>));
-                }
-            }
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>();
+        <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>) {
+            <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">wl_surface</span>();
+            <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
+            <span class="ident">bounding_box</span> <span class="op">=</span> <span class="ident">bounding_box</span>.<span class="ident">merge</span>(<span class="ident">bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">offset</span>));
         }
+
         <span class="ident">bounding_box</span>
     }
 
     <span class="doccomment">/// Returns the [`Physical`] bounding box over this window, it subsurfaces as well as any popups.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This differs from using [`bbox_with_popups`] and translating the returned [`Rectangle`]</span>
+    <span class="doccomment">/// This differs from using [`bbox_with_popups`](Window::bbox_with_popups) and translating the returned [`Rectangle`]</span>
     <span class="doccomment">/// to [`Physical`] space as it rounds the subsurface and popup offsets.</span>
     <span class="doccomment">/// See [`physical_bbox_from_surface_tree`] for more information.</span>
     <span class="doccomment">///</span>
@@ -634,23 +583,14 @@
     ) -&gt; <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">surface</span>) =&gt; <span class="ident">surface</span>,
-            <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="ident">Rectangle::default</span>(),
-        };
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">geo</span> <span class="op">=</span> <span class="ident">physical_bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">location</span>, <span class="ident">scale</span>);
-        <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">p_location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
-            .<span class="ident">ok</span>()
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">flatten</span>()
-        {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">p_location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>)
-                    .<span class="ident">to_f64</span>()
-                    .<span class="ident">to_physical</span>(<span class="ident">scale</span>)
-                    .<span class="ident">to_i32_round</span>();
-                <span class="ident">geo</span> <span class="op">=</span> <span class="ident">geo</span>.<span class="ident">merge</span>(<span class="ident">physical_bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">location</span> <span class="op">+</span> <span class="ident">offset</span>, <span class="ident">scale</span>));
-            }
+        <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">p_location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>) {
+            <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">p_location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>)
+                .<span class="ident">to_f64</span>()
+                .<span class="ident">to_physical</span>(<span class="ident">scale</span>)
+                .<span class="ident">to_i32_round</span>();
+            <span class="ident">geo</span> <span class="op">=</span> <span class="ident">geo</span>.<span class="ident">merge</span>(<span class="ident">physical_bbox_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">location</span> <span class="op">+</span> <span class="ident">offset</span>, <span class="ident">scale</span>));
         }
         <span class="ident">geo</span>
     }
@@ -658,15 +598,13 @@
     <span class="doccomment">/// Activate/Deactivate this window</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_activated</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">active</span>: <span class="ident">bool</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span> {
-            <span class="ident">Kind::Xdg</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>
-                .<span class="ident">with_pending_state</span>(<span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="ident">active</span> {
-                        <span class="ident">state</span>.<span class="ident">states</span>.<span class="ident">set</span>(<span class="ident">xdg_toplevel::State::Activated</span>)
-                    } <span class="kw">else</span> {
-                        <span class="ident">state</span>.<span class="ident">states</span>.<span class="ident">unset</span>(<span class="ident">xdg_toplevel::State::Activated</span>)
-                    }
-                })
-                .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>),
+            <span class="ident">Kind::Xdg</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">with_pending_state</span>(<span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
+                <span class="kw">if</span> <span class="ident">active</span> {
+                    <span class="ident">state</span>.<span class="ident">states</span>.<span class="ident">set</span>(<span class="ident">xdg_toplevel::State::Activated</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">state</span>.<span class="ident">states</span>.<span class="ident">unset</span>(<span class="ident">xdg_toplevel::State::Activated</span>)
+                }
+            }),
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;xwayland&quot;</span>)]</span>
             <span class="ident">Kind::X11</span>(<span class="kw-2">ref</span> <span class="ident">_t</span>) =&gt; <span class="bool-val">false</span>,
         }
@@ -684,17 +622,11 @@
     <span class="doccomment">/// Sends the frame callback to all the subsurfaces in this</span>
     <span class="doccomment">/// window that requested it</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_frame</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">time</span>: <span class="ident">u32</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>();
+        <span class="ident">send_frames_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">time</span>);
+        <span class="kw">for</span> (<span class="ident">popup</span>, <span class="kw">_</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>) {
+            <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">wl_surface</span>();
             <span class="ident">send_frames_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">time</span>);
-            <span class="kw">for</span> (<span class="ident">popup</span>, <span class="kw">_</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
-                .<span class="ident">ok</span>()
-                .<span class="ident">into_iter</span>()
-                .<span class="ident">flatten</span>()
-            {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-                    <span class="ident">send_frames_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">time</span>);
-                }
-            }
         }
     }
 
@@ -703,9 +635,7 @@
     <span class="doccomment">/// Needs to be called whenever the toplevel surface or any unsynchronized subsurfaces of this window are updated</span>
     <span class="doccomment">/// to correctly update the bounding box of this window.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">refresh</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
-            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">bbox</span>.<span class="ident">set</span>(<span class="ident">bbox_from_surface_tree</span>(<span class="ident">surface</span>, (<span class="number">0</span>, <span class="number">0</span>)));
-        }
+        <span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">bbox</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() <span class="op">=</span> <span class="ident">bbox_from_surface_tree</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>(), (<span class="number">0</span>, <span class="number">0</span>));
     }
 
     <span class="doccomment">/// Finds the topmost surface under this point matching the input regions of the surface and returns</span>
@@ -720,27 +650,18 @@
         <span class="ident">surface_type</span>: <span class="ident">WindowSurfaceType</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">wl_surface::WlSurface</span>, <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">point</span> <span class="op">=</span> <span class="ident">point</span>.<span class="ident">into</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
-            <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::POPUP</span>) {
-                <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
-                    .<span class="ident">ok</span>()
-                    .<span class="ident">into_iter</span>()
-                    .<span class="ident">flatten</span>()
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>();
+        <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::POPUP</span>) {
+            <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>) {
+                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>) <span class="op">=</span> <span class="ident">under_from_surface_tree</span>(<span class="ident">popup</span>.<span class="ident">wl_surface</span>(), <span class="ident">point</span>, <span class="ident">offset</span>, <span class="ident">surface_type</span>)
                 {
-                    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span> <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>) <span class="op">=</span> <span class="ident">popup</span>
-                        .<span class="ident">get_surface</span>()
-                        .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">surface</span><span class="op">|</span> <span class="ident">under_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">point</span>, <span class="ident">offset</span>, <span class="ident">surface_type</span>))
-                    {
-                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
-                    }
+                    <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
                 }
             }
-
-            <span class="ident">under_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">point</span>, (<span class="number">0</span>, <span class="number">0</span>), <span class="ident">surface_type</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
         }
+
+        <span class="ident">under_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">point</span>, (<span class="number">0</span>, <span class="number">0</span>), <span class="ident">surface_type</span>)
     }
 
     <span class="doccomment">/// Damage of all the surfaces of this window.</span>
@@ -755,9 +676,8 @@
         <span class="ident">for_values</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">Space</span>, <span class="kw-2">&amp;</span><span class="ident">Output</span>)<span class="op">&gt;</span>,
     ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">damage</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">get_surface</span>() {
-            <span class="ident">damage</span>.<span class="ident">extend</span>(<span class="ident">damage_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">location</span>, <span class="ident">scale</span>, <span class="ident">for_values</span>));
-        }
+        <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">toplevel</span>.<span class="ident">wl_surface</span>();
+        <span class="ident">damage</span>.<span class="ident">extend</span>(<span class="ident">damage_from_surface_tree</span>(<span class="ident">surface</span>, <span class="ident">location</span>, <span class="ident">scale</span>, <span class="ident">for_values</span>));
         <span class="ident">damage</span>
     }
 
@@ -774,13 +694,13 @@
     <span class="doccomment">/// Overrides the default z-index of this window.</span>
     <span class="doccomment">/// (Default is [`RenderZindex::Shell`](crate::desktop::space::RenderZindex))</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">override_z_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">u8</span>) {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">z_index</span>.<span class="ident">set</span>(<span class="prelude-val">Some</span>(<span class="ident">index</span>));
+        <span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">z_index</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>);
     }
 
     <span class="doccomment">/// Resets a previously overriden z-index to the default of</span>
     <span class="doccomment">/// [`RenderZindex::Shell`](crate::desktop::space::RenderZindex).</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear_z_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">z_index</span>.<span class="ident">take</span>();
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">z_index</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">take</span>();
     }
 }
 
@@ -793,7 +713,9 @@
 <span class="doccomment">/// Note: This function will render nothing, if you are not using</span>
 <span class="doccomment">/// [`crate::backend::renderer::utils::on_commit_buffer_handler`]</span>
 <span class="doccomment">/// to let smithay handle buffer management.</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">draw_window</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">P</span>, <span class="ident">S</span><span class="op">&gt;</span>(
+    <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
     <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">R</span>,
     <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
     <span class="ident">window</span>: <span class="kw-2">&amp;</span><span class="ident">Window</span>,
@@ -809,11 +731,8 @@
     <span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 {
     <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">into</span>();
-    <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">scale</span>.<span class="ident">into</span>();
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">window</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>() {
-        <span class="ident">draw_surface_tree</span>(<span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">surface</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)<span class="question-mark">?</span>;
-    }
-    <span class="prelude-val">Ok</span>(())
+    <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">toplevel</span>().<span class="ident">wl_surface</span>();
+    <span class="ident">draw_surface_tree</span>(<span class="ident">dh</span>, <span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">surface</span>, <span class="ident">scale</span>.<span class="ident">into</span>(), <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)
 }
 
 <span class="doccomment">/// Renders popups of a given [`Window`] using a provided renderer and frame</span>
@@ -825,7 +744,9 @@
 <span class="doccomment">/// Note: This function will render nothing, if you are not using</span>
 <span class="doccomment">/// [`crate::backend::renderer::utils::on_commit_buffer_handler`]</span>
 <span class="doccomment">/// to let smithay handle buffer management.</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">draw_window_popups</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">S</span>, <span class="ident">P</span><span class="op">&gt;</span>(
+    <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
     <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">R</span>,
     <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="ident">R</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
     <span class="ident">window</span>: <span class="kw-2">&amp;</span><span class="ident">Window</span>,
@@ -841,20 +762,19 @@
     <span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Point</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 {
     <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">into</span>();
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">window</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>() {
-        <span class="ident"><span class="kw">super</span>::popup::draw_popups</span>(
-            <span class="ident">renderer</span>,
-            <span class="ident">frame</span>,
-            <span class="ident">surface</span>,
-            <span class="ident">location</span>,
-            <span class="ident">window</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>,
-            <span class="ident">scale</span>,
-            <span class="ident">damage</span>,
-            <span class="ident">log</span>,
-        )<span class="question-mark">?</span>;
-    }
-    <span class="prelude-val">Ok</span>(())
+    <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">window</span>.<span class="ident">toplevel</span>().<span class="ident">wl_surface</span>();
+    <span class="ident"><span class="kw">super</span>::popup::draw_popups</span>(
+        <span class="ident">dh</span>,
+        <span class="ident">renderer</span>,
+        <span class="ident">frame</span>,
+        <span class="ident">surface</span>,
+        <span class="ident">location</span>,
+        <span class="ident">window</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>,
+        <span class="ident">scale</span>.<span class="ident">into</span>(),
+        <span class="ident">damage</span>,
+        <span class="ident">log</span>,
+    )
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

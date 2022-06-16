@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["xdg_foreign_init","Creates new `xdg-foreign` globals."]],"struct":[["XdgForeignState","Manages all exported and imported surfaces."]]});

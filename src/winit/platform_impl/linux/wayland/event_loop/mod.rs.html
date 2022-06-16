@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/platform_impl/linux/wayland/event_loop/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../../storage.js"></script><script src="../../../../../../crates.js"></script><script defer src="../../../../../../main.js"></script><script defer src="../../../../../../source-script.js"></script><script defer src="../../../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/platform_impl/linux/wayland/event_loop/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../../storage.js"></script><script src="../../../../../../crates.js"></script><script defer src="../../../../../../main.js"></script><script defer src="../../../../../../source-script.js"></script><script defer src="../../../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../../winit/index.html"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../../winit/index.html"><img class="rust-logo" src="../../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -548,10 +546,6 @@
 <span id="541">541</span>
 <span id="542">542</span>
 <span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::error::Error</span>;
@@ -586,9 +580,8 @@
 <span class="kw">mod</span> <span class="ident">state</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proxy::EventLoopProxy</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sink::EventSink</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">state::WinitState</span>;
-
-<span class="kw">use</span> <span class="ident">sink::EventSink</span>;
 
 <span class="kw">type</span> <span class="ident">WinitDispatcher</span> <span class="op">=</span> <span class="ident">calloop::Dispatcher</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">WaylandSource</span>, <span class="ident">WinitState</span><span class="op">&gt;</span>;
 
@@ -760,19 +753,15 @@
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Event</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">RootEventLoopWindowTarget</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> <span class="ident">ControlFlow</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class="self">self</span>.<span class="ident">run_return</span>(<span class="ident">callback</span>);
-        <span class="ident">process::exit</span>(<span class="number">0</span>)
+        <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">run_return</span>(<span class="ident">callback</span>);
+        <span class="ident">process::exit</span>(<span class="ident">exit_code</span>);
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_return</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">callback</span>: <span class="ident">F</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_return</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">callback</span>: <span class="ident">F</span>) -&gt; <span class="ident">i32</span>
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Event</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">RootEventLoopWindowTarget</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> <span class="ident">ControlFlow</span>),
     {
-        <span class="comment">// Send pending events to the server.</span>
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">display</span>.<span class="ident">flush</span>();
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">control_flow</span> <span class="op">=</span> <span class="ident">ControlFlow::default</span>();
-
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">control_flow</span> <span class="op">=</span> <span class="ident">ControlFlow::Poll</span>;
         <span class="kw">let</span> <span class="ident">pending_user_events</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pending_user_events</span>.<span class="ident">clone</span>();
 
         <span class="ident">callback</span>(
@@ -789,7 +778,108 @@
         <span class="comment">// really an option. Instead we inform that the event loop got destroyed. We may</span>
         <span class="comment">// communicate an error that something was terminated, but winit doesn&#39;t provide us</span>
         <span class="comment">// with an API to do that via some event.</span>
-        <span class="kw">loop</span> {
+        <span class="comment">// Still, we set the exit code to the error&#39;s OS error code, or to 1 if not possible.</span>
+        <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="kw">loop</span> {
+            <span class="comment">// Send pending events to the server.</span>
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">display</span>.<span class="ident">flush</span>();
+
+            <span class="comment">// During the run of the user callback, some other code monitoring and reading the</span>
+            <span class="comment">// Wayland socket may have been run (mesa for example does this with vsync), if that</span>
+            <span class="comment">// is the case, some events may have been enqueued in our event queue.</span>
+            <span class="comment">//</span>
+            <span class="comment">// If some messages are there, the event loop needs to behave as if it was instantly</span>
+            <span class="comment">// woken up by messages arriving from the Wayland socket, to avoid delaying the</span>
+            <span class="comment">// dispatch of these events until we&#39;re woken up again.</span>
+            <span class="kw">let</span> <span class="ident">instant_wakeup</span> <span class="op">=</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wayland_source</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">wayland_dispatcher</span>.<span class="ident">as_source_mut</span>();
+                <span class="kw">let</span> <span class="ident">queue</span> <span class="op">=</span> <span class="ident">wayland_source</span>.<span class="ident">queue</span>();
+                <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">window_target</span>.<span class="ident">p</span> {
+                    <span class="ident">PlatformEventLoopWindowTarget::Wayland</span>(<span class="ident">window_target</span>) =&gt; {
+                        <span class="ident">window_target</span>.<span class="ident">state</span>.<span class="ident">get_mut</span>()
+                    }
+                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
+                    <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+                };
+
+                <span class="kw">match</span> <span class="ident">queue</span>.<span class="ident">dispatch_pending</span>(<span class="ident">state</span>, <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="macro">unimplemented!</span>()) {
+                    <span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>) =&gt; <span class="ident">dispatched</span> <span class="op">&gt;</span> <span class="number">0</span>,
+                    <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; <span class="kw">break</span> <span class="ident">error</span>.<span class="ident">raw_os_error</span>().<span class="ident">unwrap_or</span>(<span class="number">1</span>),
+                }
+            };
+
+            <span class="kw">match</span> <span class="ident">control_flow</span> {
+                <span class="ident">ControlFlow::ExitWithCode</span>(<span class="ident">code</span>) =&gt; <span class="kw">break</span> <span class="ident">code</span>,
+                <span class="ident">ControlFlow::Poll</span> =&gt; {
+                    <span class="comment">// Non-blocking dispatch.</span>
+                    <span class="kw">let</span> <span class="ident">timeout</span> <span class="op">=</span> <span class="ident">Duration::from_millis</span>(<span class="number">0</span>);
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">loop_dispatch</span>(<span class="prelude-val">Some</span>(<span class="ident">timeout</span>)) {
+                        <span class="kw">break</span> <span class="ident">error</span>.<span class="ident">raw_os_error</span>().<span class="ident">unwrap_or</span>(<span class="number">1</span>);
+                    }
+
+                    <span class="ident">callback</span>(
+                        <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::Poll</span>),
+                        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
+                        <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
+                    );
+                }
+                <span class="ident">ControlFlow::Wait</span> =&gt; {
+                    <span class="kw">let</span> <span class="ident">timeout</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">instant_wakeup</span> {
+                        <span class="prelude-val">Some</span>(<span class="ident">Duration::from_millis</span>(<span class="number">0</span>))
+                    } <span class="kw">else</span> {
+                        <span class="prelude-val">None</span>
+                    };
+
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">loop_dispatch</span>(<span class="ident">timeout</span>) {
+                        <span class="kw">break</span> <span class="ident">error</span>.<span class="ident">raw_os_error</span>().<span class="ident">unwrap_or</span>(<span class="number">1</span>);
+                    }
+
+                    <span class="ident">callback</span>(
+                        <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::WaitCancelled</span> {
+                            <span class="ident">start</span>: <span class="ident">Instant::now</span>(),
+                            <span class="ident">requested_resume</span>: <span class="prelude-val">None</span>,
+                        }),
+                        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
+                        <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
+                    );
+                }
+                <span class="ident">ControlFlow::WaitUntil</span>(<span class="ident">deadline</span>) =&gt; {
+                    <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
+
+                    <span class="comment">// Compute the amount of time we&#39;ll block for.</span>
+                    <span class="kw">let</span> <span class="ident">duration</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">deadline</span> <span class="op">&gt;</span> <span class="ident">start</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">instant_wakeup</span> {
+                        <span class="ident">deadline</span> <span class="op">-</span> <span class="ident">start</span>
+                    } <span class="kw">else</span> {
+                        <span class="ident">Duration::from_millis</span>(<span class="number">0</span>)
+                    };
+
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">loop_dispatch</span>(<span class="prelude-val">Some</span>(<span class="ident">duration</span>)) {
+                        <span class="kw">break</span> <span class="ident">error</span>.<span class="ident">raw_os_error</span>().<span class="ident">unwrap_or</span>(<span class="number">1</span>);
+                    }
+
+                    <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
+
+                    <span class="kw">if</span> <span class="ident">now</span> <span class="op">&lt;</span> <span class="ident">deadline</span> {
+                        <span class="ident">callback</span>(
+                            <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::WaitCancelled</span> {
+                                <span class="ident">start</span>,
+                                <span class="ident">requested_resume</span>: <span class="prelude-val">Some</span>(<span class="ident">deadline</span>),
+                            }),
+                            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
+                            <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
+                        )
+                    } <span class="kw">else</span> {
+                        <span class="ident">callback</span>(
+                            <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::ResumeTimeReached</span> {
+                                <span class="ident">start</span>,
+                                <span class="ident">requested_resume</span>: <span class="ident">deadline</span>,
+                            }),
+                            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
+                            <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
+                        )
+                    }
+                }
+            }
+
             <span class="comment">// Handle pending user events. We don&#39;t need back buffer, since we can&#39;t dispatch</span>
             <span class="comment">// user events indirectly via callback to the user.</span>
             <span class="kw">for</span> <span class="ident">user_event</span> <span class="kw">in</span> <span class="ident">pending_user_events</span>.<span class="ident">borrow_mut</span>().<span class="ident">drain</span>(..) {
@@ -963,110 +1053,10 @@
                 <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
                 <span class="kw-2">&amp;mut</span> <span class="ident">callback</span>,
             );
-
-            <span class="comment">// Send pending events to the server.</span>
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">display</span>.<span class="ident">flush</span>();
-
-            <span class="comment">// During the run of the user callback, some other code monitoring and reading the</span>
-            <span class="comment">// Wayland socket may have been run (mesa for example does this with vsync), if that</span>
-            <span class="comment">// is the case, some events may have been enqueued in our event queue.</span>
-            <span class="comment">//</span>
-            <span class="comment">// If some messages are there, the event loop needs to behave as if it was instantly</span>
-            <span class="comment">// woken up by messages arriving from the Wayland socket, to avoid delaying the</span>
-            <span class="comment">// dispatch of these events until we&#39;re woken up again.</span>
-            <span class="kw">let</span> <span class="ident">instant_wakeup</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wayland_source</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">wayland_dispatcher</span>.<span class="ident">as_source_mut</span>();
-                <span class="kw">let</span> <span class="ident">queue</span> <span class="op">=</span> <span class="ident">wayland_source</span>.<span class="ident">queue</span>();
-                <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">window_target</span>.<span class="ident">p</span> {
-                    <span class="ident">PlatformEventLoopWindowTarget::Wayland</span>(<span class="ident">window_target</span>) =&gt; {
-                        <span class="ident">window_target</span>.<span class="ident">state</span>.<span class="ident">get_mut</span>()
-                    }
-                    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-                    <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-                };
-
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>) <span class="op">=</span> <span class="ident">queue</span>.<span class="ident">dispatch_pending</span>(<span class="ident">state</span>, <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="macro">unimplemented!</span>()) {
-                    <span class="ident">dispatched</span> <span class="op">&gt;</span> <span class="number">0</span>
-                } <span class="kw">else</span> {
-                    <span class="kw">break</span>;
-                }
-            };
-
-            <span class="kw">match</span> <span class="ident">control_flow</span> {
-                <span class="ident">ControlFlow::Exit</span> =&gt; <span class="kw">break</span>,
-                <span class="ident">ControlFlow::Poll</span> =&gt; {
-                    <span class="comment">// Non-blocking dispatch.</span>
-                    <span class="kw">let</span> <span class="ident">timeout</span> <span class="op">=</span> <span class="ident">Duration::from_millis</span>(<span class="number">0</span>);
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">loop_dispatch</span>(<span class="prelude-val">Some</span>(<span class="ident">timeout</span>)).<span class="ident">is_err</span>() {
-                        <span class="kw">break</span>;
-                    }
-
-                    <span class="ident">callback</span>(
-                        <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::Poll</span>),
-                        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
-                        <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
-                    );
-                }
-                <span class="ident">ControlFlow::Wait</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">timeout</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">instant_wakeup</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">Duration::from_millis</span>(<span class="number">0</span>))
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    };
-
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">loop_dispatch</span>(<span class="ident">timeout</span>).<span class="ident">is_err</span>() {
-                        <span class="kw">break</span>;
-                    }
-
-                    <span class="ident">callback</span>(
-                        <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::WaitCancelled</span> {
-                            <span class="ident">start</span>: <span class="ident">Instant::now</span>(),
-                            <span class="ident">requested_resume</span>: <span class="prelude-val">None</span>,
-                        }),
-                        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
-                        <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
-                    );
-                }
-                <span class="ident">ControlFlow::WaitUntil</span>(<span class="ident">deadline</span>) =&gt; {
-                    <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
-
-                    <span class="comment">// Compute the amount of time we&#39;ll block for.</span>
-                    <span class="kw">let</span> <span class="ident">duration</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">deadline</span> <span class="op">&gt;</span> <span class="ident">start</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">instant_wakeup</span> {
-                        <span class="ident">deadline</span> <span class="op">-</span> <span class="ident">start</span>
-                    } <span class="kw">else</span> {
-                        <span class="ident">Duration::from_millis</span>(<span class="number">0</span>)
-                    };
-
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">loop_dispatch</span>(<span class="prelude-val">Some</span>(<span class="ident">duration</span>)).<span class="ident">is_err</span>() {
-                        <span class="kw">break</span>;
-                    }
-
-                    <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
-
-                    <span class="kw">if</span> <span class="ident">now</span> <span class="op">&lt;</span> <span class="ident">deadline</span> {
-                        <span class="ident">callback</span>(
-                            <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::WaitCancelled</span> {
-                                <span class="ident">start</span>,
-                                <span class="ident">requested_resume</span>: <span class="prelude-val">Some</span>(<span class="ident">deadline</span>),
-                            }),
-                            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
-                            <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
-                        )
-                    } <span class="kw">else</span> {
-                        <span class="ident">callback</span>(
-                            <span class="ident">Event::NewEvents</span>(<span class="ident">StartCause::ResumeTimeReached</span> {
-                                <span class="ident">start</span>,
-                                <span class="ident">requested_resume</span>: <span class="ident">deadline</span>,
-                            }),
-                            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>,
-                            <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>,
-                        )
-                    }
-                }
-            }
-        }
+        };
 
         <span class="ident">callback</span>(<span class="ident">Event::LoopDestroyed</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">window_target</span>, <span class="kw-2">&amp;mut</span> <span class="ident">control_flow</span>);
+        <span class="ident">exit_code</span>
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1100,5 +1090,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

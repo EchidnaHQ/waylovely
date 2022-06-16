@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["ZwpXwaylandKeyboardGrabV1","interface for grabbing the keyboard"]]});

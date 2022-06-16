@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["__interfaces",""],["ext_session_lock_manager_v1","used to lock the session"],["ext_session_lock_surface_v1","a surface displayed while the session is locked"],["ext_session_lock_v1","manage lock state and create lock surfaces"]]});

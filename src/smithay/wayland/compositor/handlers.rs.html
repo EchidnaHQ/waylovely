@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -444,27 +442,174 @@
 <span id="437">437</span>
 <span id="438">438</span>
 <span id="439">439</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">cell::RefCell</span>,
-    <span class="ident">ops::Deref</span> <span class="kw">as</span> <span class="kw">_</span>,
-    <span class="ident">rc::Rc</span>,
-    <span class="ident">sync</span>::{
-        <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
-        <span class="ident">Mutex</span>,
-    },
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{
+    <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
+    <span class="ident">Mutex</span>,
 };
 
 <span class="kw">use</span> <span class="ident">wayland_server</span>::{
-    <span class="ident">protocol</span>::{<span class="ident">wl_compositor</span>, <span class="ident">wl_region</span>, <span class="ident">wl_subcompositor</span>, <span class="ident">wl_subsurface</span>, <span class="ident">wl_surface</span>},
-    <span class="ident">DispatchData</span>, <span class="ident">Filter</span>, <span class="ident">Main</span>,
+    <span class="ident">protocol</span>::{
+        <span class="ident">wl_callback</span>::{<span class="self">self</span>, <span class="ident">WlCallback</span>},
+        <span class="ident">wl_compositor</span>::{<span class="self">self</span>, <span class="ident">WlCompositor</span>},
+        <span class="ident">wl_region</span>::{<span class="self">self</span>, <span class="ident">WlRegion</span>},
+        <span class="ident">wl_subcompositor</span>::{<span class="self">self</span>, <span class="ident">WlSubcompositor</span>},
+        <span class="ident">wl_subsurface</span>::{<span class="self">self</span>, <span class="ident">WlSubsurface</span>},
+        <span class="ident">wl_surface</span>::{<span class="self">self</span>, <span class="ident">WlSurface</span>},
+    },
+    <span class="ident">DataInit</span>, <span class="ident">DelegateDispatch</span>, <span class="ident">DelegateGlobalDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>, <span class="ident">GlobalDispatch</span>, <span class="ident">New</span>,
+    <span class="ident">Resource</span>, <span class="ident">WEnum</span>,
 };
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">Logical</span>, <span class="ident">Point</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{
+    <span class="ident">alive_tracker</span>::{<span class="ident">AliveTracker</span>, <span class="ident">IsAlive</span>},
+    <span class="ident">Logical</span>, <span class="ident">Point</span>,
+};
 
 <span class="kw">use</span> <span class="kw">super</span>::{
     <span class="ident">cache::Cacheable</span>,
     <span class="ident">tree</span>::{<span class="ident">Location</span>, <span class="ident">PrivateSurfaceData</span>},
-    <span class="ident">AlreadyHasRole</span>, <span class="ident">BufferAssignment</span>, <span class="ident">Damage</span>, <span class="ident">Rectangle</span>, <span class="ident">RectangleKind</span>, <span class="ident">RegionAttributes</span>, <span class="ident">SurfaceAttributes</span>,
+    <span class="ident">AlreadyHasRole</span>, <span class="ident">BufferAssignment</span>, <span class="ident">CompositorHandler</span>, <span class="ident">CompositorState</span>, <span class="ident">Damage</span>, <span class="ident">Rectangle</span>, <span class="ident">RectangleKind</span>,
+    <span class="ident">RegionAttributes</span>, <span class="ident">SurfaceAttributes</span>,
 };
 
 <span class="kw">use</span> <span class="ident">slog::trace</span>;
@@ -473,70 +618,174 @@
  * wl_compositor
  */</span>
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">implement_compositor</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span>(
-    <span class="ident">compositor</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wl_compositor::WlCompositor</span><span class="op">&gt;</span>,
-    <span class="ident">log</span>: <span class="ident">::slog::Logger</span>,
-    <span class="ident">implem</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">wl_compositor::WlCompositor</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="ident">WlCompositor</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
 <span class="kw">where</span>
-    <span class="ident">Impl</span>: <span class="kw">for</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FnMut</span>(<span class="ident">wl_surface::WlSurface</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">WlCompositor</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlCompositor</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSurface</span>, <span class="ident">SurfaceUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlRegion</span>, <span class="ident">RegionUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
 {
-    <span class="ident">compositor</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">_compositor</span>, <span class="ident">request</span>, <span class="kw">_</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">request</span> {
-        <span class="ident">wl_compositor::Request::CreateSurface</span> { <span class="ident">id</span> } =&gt; {
-            <span class="macro">trace!</span>(<span class="ident">log</span>, <span class="string">&quot;Creating a new wl_surface.&quot;</span>);
-            <span class="ident">implement_surface</span>(<span class="ident">id</span>, <span class="ident">log</span>.<span class="ident">clone</span>(), <span class="ident">implem</span>.<span class="ident">clone</span>());
+    <span class="kw">fn</span> <span class="ident">bind</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">resource</span>: <span class="ident">New</span><span class="op">&lt;</span><span class="ident">WlCompositor</span><span class="op">&gt;</span>,
+        <span class="ident">_global_data</span>: <span class="kw-2">&amp;</span>(),
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="ident">data_init</span>.<span class="ident">init</span>(<span class="ident">resource</span>, ());
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlCompositor</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlCompositor</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSurface</span>, <span class="ident">SurfaceUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlRegion</span>, <span class="ident">RegionUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">_resource</span>: <span class="kw-2">&amp;</span><span class="ident">WlCompositor</span>,
+        <span class="ident">request</span>: <span class="ident">wl_compositor::Request</span>,
+        <span class="ident">_data</span>: <span class="kw-2">&amp;</span>(),
+        <span class="ident">_dhandle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="kw">let</span> <span class="ident">log</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">state</span>.<span class="ident">compositor_state</span>().<span class="ident">log</span>;
+        <span class="kw">match</span> <span class="ident">request</span> {
+            <span class="ident">wl_compositor::Request::CreateSurface</span> { <span class="ident">id</span> } =&gt; {
+                <span class="macro">trace!</span>(<span class="ident">log</span>, <span class="string">&quot;Creating a new wl_surface.&quot;</span>);
+
+                <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">data_init</span>.<span class="ident">init</span>(
+                    <span class="ident">id</span>,
+                    <span class="ident">SurfaceUserData</span> {
+                        <span class="ident">inner</span>: <span class="ident">PrivateSurfaceData::new</span>(),
+                        <span class="ident">alive_tracker</span>: <span class="ident">Default::default</span>(),
+                    },
+                );
+                <span class="ident">PrivateSurfaceData::init</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>);
+            }
+            <span class="ident">wl_compositor::Request::CreateRegion</span> { <span class="ident">id</span> } =&gt; {
+                <span class="macro">trace!</span>(<span class="ident">log</span>, <span class="string">&quot;Creating a new wl_region.&quot;</span>);
+
+                <span class="ident">data_init</span>.<span class="ident">init</span>(
+                    <span class="ident">id</span>,
+                    <span class="ident">RegionUserData</span> {
+                        <span class="ident">inner</span>: <span class="ident">Default::default</span>(),
+                    },
+                );
+            }
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
         }
-        <span class="ident">wl_compositor::Request::CreateRegion</span> { <span class="ident">id</span> } =&gt; {
-            <span class="macro">trace!</span>(<span class="ident">log</span>, <span class="string">&quot;Creating a new wl_region.&quot;</span>);
-            <span class="ident">implement_region</span>(<span class="ident">id</span>);
-        }
-        <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-    });
-    <span class="ident">compositor</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
+    }
 }
 
 <span class="comment">/*
  * wl_surface
  */</span>
 
-<span class="kw">type</span> <span class="ident">SurfaceImplemFn</span> <span class="op">=</span> <span class="kw">dyn</span> <span class="kw">for</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FnMut</span>(<span class="ident">wl_surface::WlSurface</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>);
+<span class="kw">impl</span> <span class="ident">Cacheable</span> <span class="kw">for</span> <span class="ident">SurfaceAttributes</span> {
+    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">SurfaceAttributes</span> {
+            <span class="ident">buffer</span>: <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">take</span>(),
+            <span class="ident">buffer_delta</span>: <span class="self">self</span>.<span class="ident">buffer_delta</span>.<span class="ident">take</span>(),
+            <span class="ident">buffer_scale</span>: <span class="self">self</span>.<span class="ident">buffer_scale</span>,
+            <span class="ident">buffer_transform</span>: <span class="self">self</span>.<span class="ident">buffer_transform</span>,
+            <span class="ident">damage</span>: <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">damage</span>),
+            <span class="ident">opaque_region</span>: <span class="self">self</span>.<span class="ident">opaque_region</span>.<span class="ident">clone</span>(),
+            <span class="ident">input_region</span>: <span class="self">self</span>.<span class="ident">input_region</span>.<span class="ident">clone</span>(),
+            <span class="ident">frame_callbacks</span>: <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">frame_callbacks</span>),
+        }
+    }
+    <span class="kw">fn</span> <span class="ident">merge_into</span>(<span class="self">self</span>, <span class="ident">into</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>, <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">BufferAssignment::NewBuffer</span>(<span class="ident">buffer</span>)) <span class="op">=</span>
+                <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="ident">into</span>.<span class="ident">buffer</span>, <span class="self">self</span>.<span class="ident">buffer</span>)
+            {
+                <span class="kw">let</span> <span class="ident">new_buffer</span> <span class="op">=</span> <span class="ident">into</span>.<span class="ident">buffer</span>.<span class="ident">as_ref</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">b</span> {
+                    <span class="ident">BufferAssignment::Removed</span> =&gt; <span class="prelude-val">None</span>,
+                    <span class="ident">BufferAssignment::NewBuffer</span>(<span class="ident">buffer</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">buffer</span>),
+                });
 
-<span class="comment">// Internal implementation data of surfaces</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">SurfaceImplem</span> {
-    <span class="ident">log</span>: <span class="ident">::slog::Logger</span>,
-    <span class="ident">implem</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SurfaceImplemFn</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">SurfaceImplem</span> {
-    <span class="kw">fn</span> <span class="ident">make</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span>(<span class="ident">log</span>: <span class="ident">::slog::Logger</span>, <span class="ident">implem</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="ident">SurfaceImplem</span>
-    <span class="kw">where</span>
-        <span class="ident">Impl</span>: <span class="kw">for</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FnMut</span>(<span class="ident">wl_surface::WlSurface</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    {
-        <span class="ident">SurfaceImplem</span> { <span class="ident">log</span>, <span class="ident">implem</span> }
+                <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">buffer</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">new_buffer</span> {
+                    <span class="ident">buffer</span>.<span class="ident">release</span>();
+                }
+            }
+        }
+        <span class="ident">into</span>.<span class="ident">buffer_delta</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer_delta</span>;
+        <span class="ident">into</span>.<span class="ident">buffer_scale</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer_scale</span>;
+        <span class="ident">into</span>.<span class="ident">buffer_transform</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer_transform</span>;
+        <span class="ident">into</span>.<span class="ident">damage</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">damage</span>);
+        <span class="ident">into</span>.<span class="ident">opaque_region</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">opaque_region</span>;
+        <span class="ident">into</span>.<span class="ident">input_region</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">input_region</span>;
+        <span class="ident">into</span>.<span class="ident">frame_callbacks</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">frame_callbacks</span>);
     }
 }
 
-<span class="kw">impl</span> <span class="ident">SurfaceImplem</span> {
-    <span class="kw">fn</span> <span class="ident">receive_surface_request</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">req</span>: <span class="ident">wl_surface::Request</span>,
-        <span class="ident">surface</span>: <span class="ident">wl_surface::WlSurface</span>,
-        <span class="ident">ddata</span>: <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
+<span class="doccomment">/// User data for WlSurface</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SurfaceUserData</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">PrivateSurfaceData</span><span class="op">&gt;</span>,
+    <span class="ident">alive_tracker</span>: <span class="ident">AliveTracker</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlSurface</span>, <span class="ident">SurfaceUserData</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSurface</span>, <span class="ident">SurfaceUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlCallback</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>,
+        <span class="ident">request</span>: <span class="ident">wl_surface::Request</span>,
+        <span class="ident">_data</span>: <span class="kw-2">&amp;</span><span class="ident">SurfaceUserData</span>,
+        <span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_server::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
     ) {
-        <span class="kw">match</span> <span class="ident">req</span> {
+        <span class="kw">match</span> <span class="ident">request</span> {
             <span class="ident">wl_surface::Request::Attach</span> { <span class="ident">buffer</span>, <span class="ident">x</span>, <span class="ident">y</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-                    <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>().<span class="ident">buffer</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">buffer</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">buffer</span>) =&gt; <span class="ident">BufferAssignment::NewBuffer</span> {
-                            <span class="ident">buffer</span>,
-                            <span class="ident">delta</span>: (<span class="ident">x</span>, <span class="ident">y</span>).<span class="ident">into</span>(),
-                        },
+                <span class="kw">let</span> <span class="ident">offset</span>: <span class="ident">Point</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">x</span>, <span class="ident">y</span>).<span class="ident">into</span>();
+                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> (<span class="ident">x</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">y</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>).<span class="ident">then</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">offset</span>);
+
+                <span class="comment">// If version predates 5 just use the offset</span>
+                <span class="comment">// Otherwise error out and use None</span>
+                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">surface</span>.<span class="ident">version</span>() <span class="op">&lt;</span> <span class="number">5</span> {
+                    <span class="ident">offset</span>
+                } <span class="kw">else</span> {
+                    <span class="kw">if</span> <span class="ident">offset</span>.<span class="ident">is_some</span>() {
+                        <span class="ident">surface</span>.<span class="ident">post_error</span>(
+                            <span class="ident">wl_surface::Error::InvalidOffset</span>,
+                            <span class="string">&quot;Passing non-zero x,y is protocol violation since versions 5&quot;</span>,
+                        );
+                    }
+
+                    <span class="prelude-val">None</span>
+                };
+
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pending</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>();
+
+                    <span class="comment">// Let&#39;s set the offset here in case it is supported and non-zero</span>
+                    <span class="kw">if</span> <span class="ident">offset</span>.<span class="ident">is_some</span>() {
+                        <span class="ident">pending</span>.<span class="ident">buffer_delta</span> <span class="op">=</span> <span class="ident">offset</span>;
+                    }
+
+                    <span class="ident">pending</span>.<span class="ident">buffer</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">buffer</span> {
+                        <span class="prelude-val">Some</span>(<span class="ident">buffer</span>) =&gt; <span class="ident">BufferAssignment::NewBuffer</span>(<span class="ident">buffer</span>),
                         <span class="prelude-val">None</span> =&gt; <span class="ident">BufferAssignment::Removed</span>,
                     })
                 });
             }
             <span class="ident">wl_surface::Request::Damage</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
                     <span class="ident">states</span>
                         .<span class="ident">cached_state</span>
                         .<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>()
@@ -548,58 +797,65 @@
                 });
             }
             <span class="ident">wl_surface::Request::Frame</span> { <span class="ident">callback</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">callback</span> <span class="op">=</span> <span class="ident">data_init</span>.<span class="ident">init</span>(<span class="ident">callback</span>, ());
+
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
                     <span class="ident">states</span>
                         .<span class="ident">cached_state</span>
                         .<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>()
                         .<span class="ident">frame_callbacks</span>
-                        .<span class="ident">push</span>((<span class="kw-2">*</span><span class="ident">callback</span>).<span class="ident">clone</span>());
+                        .<span class="ident">push</span>(<span class="ident">callback</span>.<span class="ident">clone</span>());
                 });
             }
             <span class="ident">wl_surface::Request::SetOpaqueRegion</span> { <span class="ident">region</span> } =&gt; {
                 <span class="kw">let</span> <span class="ident">attributes</span> <span class="op">=</span> <span class="ident">region</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">attributes_mutex</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">RegionAttributes</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
+                    <span class="kw">let</span> <span class="ident">attributes_mutex</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">r</span>.<span class="ident">data</span>::<span class="op">&lt;</span><span class="ident">RegionUserData</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>().<span class="ident">inner</span>;
                     <span class="ident">attributes_mutex</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>()
                 });
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
                     <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>().<span class="ident">opaque_region</span> <span class="op">=</span> <span class="ident">attributes</span>;
                 });
             }
             <span class="ident">wl_surface::Request::SetInputRegion</span> { <span class="ident">region</span> } =&gt; {
                 <span class="kw">let</span> <span class="ident">attributes</span> <span class="op">=</span> <span class="ident">region</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">attributes_mutex</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">RegionAttributes</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
+                    <span class="kw">let</span> <span class="ident">attributes_mutex</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">r</span>.<span class="ident">data</span>::<span class="op">&lt;</span><span class="ident">RegionUserData</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>().<span class="ident">inner</span>;
                     <span class="ident">attributes_mutex</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>()
                 });
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
                     <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>().<span class="ident">input_region</span> <span class="op">=</span> <span class="ident">attributes</span>;
                 });
             }
             <span class="ident">wl_surface::Request::Commit</span> =&gt; {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">user_impl</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">implem</span>.<span class="ident">borrow_mut</span>();
-                <span class="ident">PrivateSurfaceData::invoke_commit_hooks</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>);
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
-                    <span class="comment">// the client was killed by a hook, abort</span>
-                    <span class="kw">return</span>;
-                }
-                <span class="ident">PrivateSurfaceData::commit</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>);
-                <span class="macro">trace!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;Calling user implementation for wl_surface.commit&quot;</span>);
-                (<span class="kw-2">*</span><span class="ident">user_impl</span>)(<span class="ident">surface</span>, <span class="ident">ddata</span>);
+                <span class="ident">PrivateSurfaceData::invoke_pre_commit_hooks</span>(<span class="ident">handle</span>, <span class="ident">surface</span>);
+
+                <span class="ident">PrivateSurfaceData::commit</span>(<span class="ident">surface</span>, <span class="ident">handle</span>);
+
+                <span class="ident">PrivateSurfaceData::invoke_post_commit_hooks</span>(<span class="ident">handle</span>, <span class="ident">surface</span>);
+
+                <span class="macro">trace!</span>(
+                    <span class="ident">state</span>.<span class="ident">compositor_state</span>().<span class="ident">log</span>,
+                    <span class="string">&quot;Calling user implementation for wl_surface.commit&quot;</span>
+                );
+
+                <span class="ident">state</span>.<span class="ident">commit</span>(<span class="ident">handle</span>, <span class="ident">surface</span>);
             }
             <span class="ident">wl_surface::Request::SetBufferTransform</span> { <span class="ident">transform</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-                    <span class="ident">states</span>
-                        .<span class="ident">cached_state</span>
-                        .<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>()
-                        .<span class="ident">buffer_transform</span> <span class="op">=</span> <span class="ident">transform</span>;
-                });
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">WEnum::Value</span>(<span class="ident">transform</span>) <span class="op">=</span> <span class="ident">transform</span> {
+                    <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                        <span class="ident">states</span>
+                            .<span class="ident">cached_state</span>
+                            .<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>()
+                            .<span class="ident">buffer_transform</span> <span class="op">=</span> <span class="ident">transform</span>;
+                    });
+                }
             }
             <span class="ident">wl_surface::Request::SetBufferScale</span> { <span class="ident">scale</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
                     <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>().<span class="ident">buffer_scale</span> <span class="op">=</span> <span class="ident">scale</span>;
                 });
             }
             <span class="ident">wl_surface::Request::DamageBuffer</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
                     <span class="ident">states</span>
                         .<span class="ident">cached_state</span>
                         .<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>()
@@ -610,138 +866,152 @@
                         )))
                 });
             }
+            <span class="ident">wl_surface::Request::Offset</span> { <span class="ident">x</span>, <span class="ident">y</span> } =&gt; {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SurfaceAttributes</span><span class="op">&gt;</span>().<span class="ident">buffer_delta</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">x</span>, <span class="ident">y</span>).<span class="ident">into</span>());
+                });
+            }
             <span class="ident">wl_surface::Request::Destroy</span> =&gt; {
                 <span class="comment">// All is already handled by our destructor</span>
             }
             <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
         }
     }
-}
 
-<span class="kw">impl</span> <span class="ident">Cacheable</span> <span class="kw">for</span> <span class="ident">SurfaceAttributes</span> {
-    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">SurfaceAttributes</span> {
-            <span class="ident">buffer</span>: <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">take</span>(),
-            <span class="ident">buffer_scale</span>: <span class="self">self</span>.<span class="ident">buffer_scale</span>,
-            <span class="ident">buffer_transform</span>: <span class="self">self</span>.<span class="ident">buffer_transform</span>,
-            <span class="ident">damage</span>: <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">damage</span>),
-            <span class="ident">opaque_region</span>: <span class="self">self</span>.<span class="ident">opaque_region</span>.<span class="ident">clone</span>(),
-            <span class="ident">input_region</span>: <span class="self">self</span>.<span class="ident">input_region</span>.<span class="ident">clone</span>(),
-            <span class="ident">frame_callbacks</span>: <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">frame_callbacks</span>),
-        }
-    }
-    <span class="kw">fn</span> <span class="ident">merge_into</span>(<span class="self">self</span>, <span class="ident">into</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">is_some</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">BufferAssignment::Removed</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span> {
-                <span class="ident">into</span>.<span class="ident">damage</span>.<span class="ident">clear</span>();
-            }
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">BufferAssignment::NewBuffer</span> { <span class="ident">buffer</span>, .. }) <span class="op">=</span>
-                <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="ident">into</span>.<span class="ident">buffer</span>, <span class="self">self</span>.<span class="ident">buffer</span>)
-            {
-                <span class="kw">let</span> <span class="ident">new_buffer</span> <span class="op">=</span> <span class="ident">into</span>.<span class="ident">buffer</span>.<span class="ident">as_ref</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">b</span> {
-                    <span class="ident">BufferAssignment::Removed</span> =&gt; <span class="prelude-val">None</span>,
-                    <span class="ident">BufferAssignment::NewBuffer</span> { <span class="ident">buffer</span>, .. } =&gt; <span class="prelude-val">Some</span>(<span class="ident">buffer</span>),
-                });
-
-                <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">buffer</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">new_buffer</span> {
-                    <span class="ident">buffer</span>.<span class="ident">release</span>();
-                }
-            }
-        }
-        <span class="ident">into</span>.<span class="ident">buffer_scale</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer_scale</span>;
-        <span class="ident">into</span>.<span class="ident">buffer_transform</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer_transform</span>;
-        <span class="ident">into</span>.<span class="ident">damage</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">damage</span>);
-        <span class="ident">into</span>.<span class="ident">opaque_region</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">opaque_region</span>;
-        <span class="ident">into</span>.<span class="ident">input_region</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">input_region</span>;
-        <span class="ident">into</span>.<span class="ident">frame_callbacks</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">frame_callbacks</span>);
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client_id</span>: <span class="ident">wayland_server::backend::ClientId</span>,
+        <span class="ident">object_id</span>: <span class="ident">wayland_server::backend::ObjectId</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">SurfaceUserData</span>,
+    ) {
+        <span class="ident">data</span>.<span class="ident">alive_tracker</span>.<span class="ident">destroy_notify</span>();
+        <span class="ident">PrivateSurfaceData::cleanup</span>(<span class="ident">data</span>, <span class="ident">object_id</span>);
     }
 }
 
-<span class="kw">fn</span> <span class="ident">implement_surface</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span>(
-    <span class="ident">surface</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wl_surface::WlSurface</span><span class="op">&gt;</span>,
-    <span class="ident">log</span>: <span class="ident">::slog::Logger</span>,
-    <span class="ident">implem</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">wl_surface::WlSurface</span>
-<span class="kw">where</span>
-    <span class="ident">Impl</span>: <span class="kw">for</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FnMut</span>(<span class="ident">wl_surface::WlSurface</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-{
-    <span class="ident">surface</span>.<span class="ident">quick_assign</span>({
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">implem</span> <span class="op">=</span> <span class="ident">SurfaceImplem::make</span>(<span class="ident">log</span>, <span class="ident">implem</span>);
-        <span class="kw">move</span> <span class="op">|</span><span class="ident">surface</span>, <span class="ident">req</span>, <span class="ident">ddata</span><span class="op">|</span> <span class="ident">implem</span>.<span class="ident">receive_surface_request</span>(<span class="ident">req</span>, <span class="ident">surface</span>.<span class="ident">deref</span>().<span class="ident">clone</span>(), <span class="ident">ddata</span>)
-    });
-    <span class="ident">surface</span>.<span class="ident">assign_destructor</span>(<span class="ident">Filter::new</span>(<span class="op">|</span><span class="ident">surface</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="ident">PrivateSurfaceData::cleanup</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>)));
-    <span class="ident">surface</span>
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">user_data</span>()
-        .<span class="ident">set_threadsafe</span>(<span class="ident">PrivateSurfaceData::new</span>);
-    <span class="ident">PrivateSurfaceData::init</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>);
-    <span class="ident">surface</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
+<span class="kw">impl</span> <span class="ident">IsAlive</span> <span class="kw">for</span> <span class="ident">WlSurface</span> {
+    <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">let</span> <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">SurfaceUserData</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>().<span class="ident">unwrap</span>();
+        <span class="ident">data</span>.<span class="ident">alive_tracker</span>.<span class="ident">alive</span>()
+    }
 }
 
 <span class="comment">/*
  * wl_region
  */</span>
 
-<span class="kw">fn</span> <span class="ident">region_implem</span>(<span class="ident">request</span>: <span class="ident">wl_region::Request</span>, <span class="ident">region</span>: <span class="ident">wl_region::WlRegion</span>) {
-    <span class="kw">let</span> <span class="ident">attributes_mutex</span> <span class="op">=</span> <span class="ident">region</span>
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">user_data</span>()
-        .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">RegionAttributes</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-        .<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">attributes_mutex</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-    <span class="kw">match</span> <span class="ident">request</span> {
-        <span class="ident">wl_region::Request::Add</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; <span class="ident">guard</span>.<span class="ident">rects</span>.<span class="ident">push</span>((
-            <span class="ident">RectangleKind::Add</span>,
-            <span class="ident">Rectangle::from_loc_and_size</span>((<span class="ident">x</span>, <span class="ident">y</span>), (<span class="ident">width</span>, <span class="ident">height</span>)),
-        )),
-        <span class="ident">wl_region::Request::Subtract</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; <span class="ident">guard</span>.<span class="ident">rects</span>.<span class="ident">push</span>((
-            <span class="ident">RectangleKind::Subtract</span>,
-            <span class="ident">Rectangle::from_loc_and_size</span>((<span class="ident">x</span>, <span class="ident">y</span>), (<span class="ident">width</span>, <span class="ident">height</span>)),
-        )),
-        <span class="ident">wl_region::Request::Destroy</span> =&gt; {
-            <span class="comment">// all is handled by our destructor</span>
-        }
-        <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-    }
+<span class="doccomment">/// User data of WlRegion</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RegionUserData</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">RegionAttributes</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">fn</span> <span class="ident">implement_region</span>(<span class="ident">region</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wl_region::WlRegion</span><span class="op">&gt;</span>) -&gt; <span class="ident">wl_region::WlRegion</span> {
-    <span class="ident">region</span>.<span class="ident">quick_assign</span>(<span class="op">|</span><span class="ident">region</span>, <span class="ident">req</span>, <span class="kw">_</span><span class="op">|</span> <span class="ident">region_implem</span>(<span class="ident">req</span>, <span class="ident">region</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()));
-    <span class="ident">region</span>
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">user_data</span>()
-        .<span class="ident">set_threadsafe</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Mutex::new</span>(<span class="ident">RegionAttributes::default</span>()));
-    <span class="ident">region</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlRegion</span>, <span class="ident">RegionUserData</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlRegion</span>, <span class="ident">RegionUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">_resource</span>: <span class="kw-2">&amp;</span><span class="ident">WlRegion</span>,
+        <span class="ident">request</span>: <span class="ident">wl_region::Request</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">RegionUserData</span>,
+        <span class="ident">_dhandle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_server::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">match</span> <span class="ident">request</span> {
+            <span class="ident">wl_region::Request::Add</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; <span class="ident">guard</span>.<span class="ident">rects</span>.<span class="ident">push</span>((
+                <span class="ident">RectangleKind::Add</span>,
+                <span class="ident">Rectangle::from_loc_and_size</span>((<span class="ident">x</span>, <span class="ident">y</span>), (<span class="ident">width</span>, <span class="ident">height</span>)),
+            )),
+            <span class="ident">wl_region::Request::Subtract</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; <span class="ident">guard</span>.<span class="ident">rects</span>.<span class="ident">push</span>((
+                <span class="ident">RectangleKind::Subtract</span>,
+                <span class="ident">Rectangle::from_loc_and_size</span>((<span class="ident">x</span>, <span class="ident">y</span>), (<span class="ident">width</span>, <span class="ident">height</span>)),
+            )),
+            <span class="ident">wl_region::Request::Destroy</span> =&gt; {
+                <span class="comment">// all is handled by our destructor</span>
+            }
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+        }
+    }
 }
 
 <span class="comment">/*
  * wl_subcompositor
  */</span>
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">implement_subcompositor</span>(
-    <span class="ident">subcompositor</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wl_subcompositor::WlSubcompositor</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">wl_subcompositor::WlSubcompositor</span> {
-    <span class="ident">subcompositor</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">subcompositor</span>, <span class="ident">request</span>, <span class="kw">_</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">request</span> {
-        <span class="ident">wl_subcompositor::Request::GetSubsurface</span> { <span class="ident">id</span>, <span class="ident">surface</span>, <span class="ident">parent</span> } =&gt; {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">AlreadyHasRole</span>) <span class="op">=</span> <span class="ident">PrivateSurfaceData::set_parent</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="kw-2">&amp;</span><span class="ident">parent</span>) {
-                <span class="ident">subcompositor</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                    <span class="ident">wl_subcompositor::Error::BadSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                    <span class="string">&quot;Surface already has a role.&quot;</span>.<span class="ident">into</span>(),
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="ident">WlSubcompositor</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">WlSubcompositor</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSubcompositor</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSubsurface</span>, <span class="ident">SubsurfaceUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">bind</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">resource</span>: <span class="ident">New</span><span class="op">&lt;</span><span class="ident">WlSubcompositor</span><span class="op">&gt;</span>,
+        <span class="ident">_global_data</span>: <span class="kw-2">&amp;</span>(),
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="ident">data_init</span>.<span class="ident">init</span>(<span class="ident">resource</span>, ());
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlSubcompositor</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSubcompositor</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSubsurface</span>, <span class="ident">SubsurfaceUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">subcompositor</span>: <span class="kw-2">&amp;</span><span class="ident">WlSubcompositor</span>,
+        <span class="ident">request</span>: <span class="ident">wl_subcompositor::Request</span>,
+        <span class="ident">_data</span>: <span class="kw-2">&amp;</span>(),
+        <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="kw">match</span> <span class="ident">request</span> {
+            <span class="ident">wl_subcompositor::Request::GetSubsurface</span> { <span class="ident">id</span>, <span class="ident">surface</span>, <span class="ident">parent</span> } =&gt; {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">AlreadyHasRole</span>) <span class="op">=</span> <span class="ident">PrivateSurfaceData::set_parent</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="kw-2">&amp;</span><span class="ident">parent</span>) {
+                    <span class="ident">subcompositor</span>
+                        .<span class="ident">post_error</span>(<span class="ident">wl_subcompositor::Error::BadSurface</span>, <span class="string">&quot;Surface already has a role.&quot;</span>);
+                    <span class="kw">return</span>;
+                }
+
+                <span class="ident">data_init</span>.<span class="ident">init</span>(
+                    <span class="ident">id</span>,
+                    <span class="ident">SubsurfaceUserData</span> {
+                        <span class="ident">surface</span>: <span class="ident">surface</span>.<span class="ident">clone</span>(),
+                    },
                 );
-                <span class="kw">return</span>;
+
+                <span class="ident"><span class="kw">super</span>::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">insert_if_missing_threadsafe</span>(<span class="ident">SubsurfaceState::new</span>)
+                });
             }
-            <span class="ident">implement_subsurface</span>(<span class="ident">id</span>, <span class="ident">surface</span>);
+            <span class="ident">wl_subcompositor::Request::Destroy</span> =&gt; {}
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
         }
-        <span class="ident">wl_subcompositor::Request::Destroy</span> =&gt; {}
-        <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-    });
-    <span class="ident">subcompositor</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
+    }
 }
 
 <span class="comment">/*
  * wl_subsurface
  */</span>
 
+<span class="doccomment">/// User data of WlSubsurface</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubsurfaceUserData</span> {
+    <span class="ident">surface</span>: <span class="ident">WlSurface</span>,
+}
 <span class="doccomment">/// The cached state associated with a subsurface</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubsurfaceCachedState</span> {
@@ -759,13 +1029,13 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Cacheable</span> <span class="kw">for</span> <span class="ident">SubsurfaceCachedState</span> {
-    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">SubsurfaceCachedState</span> {
+    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
             <span class="ident">location</span>: <span class="self">self</span>.<span class="ident">location</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">merge_into</span>(<span class="self">self</span>, <span class="ident">into</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>) {
+    <span class="kw">fn</span> <span class="ident">merge_into</span>(<span class="self">self</span>, <span class="ident">into</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>, <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) {
         <span class="ident">into</span>.<span class="ident">location</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">location</span>;
     }
 }
@@ -801,45 +1071,44 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">implement_subsurface</span>(
-    <span class="ident">subsurface</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wl_subsurface::WlSubsurface</span><span class="op">&gt;</span>,
-    <span class="ident">surface</span>: <span class="ident">wl_surface::WlSurface</span>,
-) -&gt; <span class="ident">wl_subsurface::WlSubsurface</span> {
-    <span class="kw">let</span> <span class="ident">data_surface</span> <span class="op">=</span> <span class="ident">surface</span>.<span class="ident">clone</span>();
-    <span class="ident">subsurface</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">subsurface</span>, <span class="ident">request</span>, <span class="kw">_</span><span class="op">|</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlSubsurface</span>, <span class="ident">SubsurfaceUserData</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlSubsurface</span>, <span class="ident">SubsurfaceUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">subsurface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSubsurface</span>,
+        <span class="ident">request</span>: <span class="ident">wl_subsurface::Request</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">SubsurfaceUserData</span>,
+        <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
         <span class="kw">match</span> <span class="ident">request</span> {
             <span class="ident">wl_subsurface::Request::SetPosition</span> { <span class="ident">x</span>, <span class="ident">y</span> } =&gt; {
-                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
+                <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
                     <span class="ident">state</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceCachedState</span><span class="op">&gt;</span>().<span class="ident">location</span> <span class="op">=</span> (<span class="ident">x</span>, <span class="ident">y</span>).<span class="ident">into</span>();
                 })
             }
             <span class="ident">wl_subsurface::Request::PlaceAbove</span> { <span class="ident">sibling</span> } =&gt; {
-                <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">subsurface</span>
-                    .<span class="ident">as_ref</span>()
-                    .<span class="ident">user_data</span>()
-                    .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">wl_surface::WlSurface</span><span class="op">&gt;</span>()
-                    .<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="ident">PrivateSurfaceData::reorder</span>(<span class="ident">surface</span>, <span class="ident">Location::After</span>, <span class="kw-2">&amp;</span><span class="ident">sibling</span>) {
-                    <span class="ident">subsurface</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                        <span class="ident">wl_subsurface::Error::BadSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                        <span class="string">&quot;Provided surface is not a sibling or parent.&quot;</span>.<span class="ident">into</span>(),
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="ident">PrivateSurfaceData::reorder</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="ident">Location::After</span>, <span class="kw-2">&amp;</span><span class="ident">sibling</span>) {
+                    <span class="ident">subsurface</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wl_subsurface::Error::BadSurface</span>,
+                        <span class="string">&quot;Provided surface is not a sibling or parent.&quot;</span>,
                     )
                 }
             }
             <span class="ident">wl_subsurface::Request::PlaceBelow</span> { <span class="ident">sibling</span> } =&gt; {
-                <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">subsurface</span>
-                    .<span class="ident">as_ref</span>()
-                    .<span class="ident">user_data</span>()
-                    .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">wl_surface::WlSurface</span><span class="op">&gt;</span>()
-                    .<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="ident">PrivateSurfaceData::reorder</span>(<span class="ident">surface</span>, <span class="ident">Location::Before</span>, <span class="kw-2">&amp;</span><span class="ident">sibling</span>) {
-                    <span class="ident">subsurface</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                        <span class="ident">wl_subsurface::Error::BadSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                        <span class="string">&quot;Provided surface is not a sibling or parent.&quot;</span>.<span class="ident">into</span>(),
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="ident">PrivateSurfaceData::reorder</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="ident">Location::Before</span>, <span class="kw-2">&amp;</span><span class="ident">sibling</span>) {
+                    <span class="ident">subsurface</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wl_subsurface::Error::BadSurface</span>,
+                        <span class="string">&quot;Provided surface is not a sibling or parent.&quot;</span>,
                     )
                 }
             }
-            <span class="ident">wl_subsurface::Request::SetSync</span> =&gt; <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
+            <span class="ident">wl_subsurface::Request::SetSync</span> =&gt; <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
                 <span class="ident">state</span>
                     .<span class="ident">data_map</span>
                     .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceState</span><span class="op">&gt;</span>()
@@ -847,7 +1116,7 @@
                     .<span class="ident">sync</span>
                     .<span class="ident">store</span>(<span class="bool-val">true</span>, <span class="ident">Ordering::Release</span>);
             }),
-            <span class="ident">wl_subsurface::Request::SetDesync</span> =&gt; <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
+            <span class="ident">wl_subsurface::Request::SetDesync</span> =&gt; <span class="ident">PrivateSurfaceData::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
                 <span class="ident">state</span>
                     .<span class="ident">data_map</span>
                     .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">SubsurfaceState</span><span class="op">&gt;</span>()
@@ -860,29 +1129,38 @@
             }
             <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
         }
-    });
-    <span class="ident"><span class="kw">super</span>::with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data_surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-        <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">insert_if_missing_threadsafe</span>(<span class="ident">SubsurfaceState::new</span>)
-    })
-    .<span class="ident">unwrap</span>();
-    <span class="ident">subsurface</span>.<span class="ident">assign_destructor</span>(<span class="ident">Filter::new</span>(<span class="op">|</span><span class="ident">subsurface</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="ident">destroy_subsurface</span>(<span class="kw-2">&amp;</span><span class="ident">subsurface</span>)));
-    <span class="ident">subsurface</span>
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">user_data</span>()
-        .<span class="ident">set_threadsafe</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">data_surface</span>);
-    <span class="ident">subsurface</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client_id</span>: <span class="ident">wayland_server::backend::ClientId</span>,
+        <span class="ident">_object_id</span>: <span class="ident">wayland_server::backend::ObjectId</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">SubsurfaceUserData</span>,
+    ) {
+        <span class="comment">// TODO</span>
+        <span class="comment">// if surface.as_ref().is_alive() {</span>
+        <span class="ident">PrivateSurfaceData::unset_parent</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>);
+        <span class="comment">// }</span>
+    }
 }
 
-<span class="kw">fn</span> <span class="ident">destroy_subsurface</span>(<span class="ident">subsurface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_subsurface::WlSubsurface</span>) {
-    <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">subsurface</span>
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">user_data</span>()
-        .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">wl_surface::WlSurface</span><span class="op">&gt;</span>()
-        .<span class="ident">unwrap</span>();
-    <span class="kw">if</span> <span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
-        <span class="ident">PrivateSurfaceData::unset_parent</span>(<span class="ident">surface</span>);
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">WlCallback</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CompositorState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">WlCallback</span>, ()<span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">CompositorHandler</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">_subsurface</span>: <span class="kw-2">&amp;</span><span class="ident">WlCallback</span>,
+        <span class="ident">_request</span>: <span class="ident">wl_callback::Request</span>,
+        <span class="ident">_data</span>: <span class="kw-2">&amp;</span>(),
+        <span class="ident">_handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

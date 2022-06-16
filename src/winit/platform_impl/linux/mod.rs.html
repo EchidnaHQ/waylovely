@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/platform_impl/linux/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/platform_impl/linux/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../winit/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../winit/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -789,6 +787,66 @@
 <span id="782">782</span>
 <span id="783">783</span>
 <span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">cfg</span>(<span class="ident">any</span>(
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
@@ -801,7 +859,10 @@
 <span class="macro">compile_error!</span>(<span class="string">&quot;Please select a feature to build for unix: `x11`, `wayland`&quot;</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::window::Theme</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">std::error::Error</span>;
+
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::VecDeque</span>, <span class="ident">env</span>, <span class="ident">fmt</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">ffi::CStr</span>, <span class="ident">mem::MaybeUninit</span>, <span class="ident">os::raw</span>::<span class="kw-2">*</span>, <span class="ident">sync::Arc</span>};
@@ -818,7 +879,9 @@
     <span class="ident">dpi</span>::{<span class="ident">PhysicalPosition</span>, <span class="ident">PhysicalSize</span>, <span class="ident">Position</span>, <span class="ident">Size</span>},
     <span class="ident">error</span>::{<span class="ident">ExternalError</span>, <span class="ident">NotSupportedError</span>, <span class="ident">OsError</span> <span class="kw">as</span> <span class="ident">RootOsError</span>},
     <span class="ident">event::Event</span>,
-    <span class="ident">event_loop</span>::{<span class="ident">ControlFlow</span>, <span class="ident">EventLoopClosed</span>, <span class="ident">EventLoopWindowTarget</span> <span class="kw">as</span> <span class="ident">RootELW</span>},
+    <span class="ident">event_loop</span>::{
+        <span class="ident">ControlFlow</span>, <span class="ident">DeviceEventFilter</span>, <span class="ident">EventLoopClosed</span>, <span class="ident">EventLoopWindowTarget</span> <span class="kw">as</span> <span class="ident">RootELW</span>,
+    },
     <span class="ident">icon::Icon</span>,
     <span class="ident">monitor</span>::{<span class="ident">MonitorHandle</span> <span class="kw">as</span> <span class="ident">RootMonitorHandle</span>, <span class="ident">VideoMode</span> <span class="kw">as</span> <span class="ident">RootVideoMode</span>},
     <span class="ident">window</span>::{<span class="ident">CursorIcon</span>, <span class="ident">Fullscreen</span>, <span class="ident">UserAttentionType</span>, <span class="ident">WindowAttributes</span>},
@@ -840,8 +903,44 @@
 <span class="doccomment">/// If this variable is set with any other value, winit will panic.</span>
 <span class="kw">const</span> <span class="ident">BACKEND_PREFERENCE_ENV_VAR</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;WINIT_UNIX_BACKEND&quot;</span>;
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Hash</span>)]</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">Backend</span> {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
+    <span class="ident">X</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+    <span class="ident">Wayland</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Hash</span>)]</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">PlatformSpecificEventLoopAttributes</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">forced_backend</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Backend</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">any_thread</span>: <span class="ident">bool</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">PlatformSpecificEventLoopAttributes</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">forced_backend</span>: <span class="prelude-val">None</span>,
+            <span class="ident">any_thread</span>: <span class="bool-val">false</span>,
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ApplicationName</span> {
+    <span class="kw">pub</span> <span class="ident">general</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">instance</span>: <span class="ident">String</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">ApplicationName</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">general</span>: <span class="ident">String</span>, <span class="ident">instance</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">general</span>, <span class="ident">instance</span> }
+    }
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PlatformSpecificWindowBuilderAttributes</span> {
+    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ApplicationName</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">visual_infos</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">XVisualInfo</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
@@ -851,20 +950,19 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">base_size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">class</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">String</span>)<span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">override_redirect</span>: <span class="ident">bool</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">x11_window_types</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">XWindowType</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">gtk_theme_variant</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">app_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">csd_theme</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Theme</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">PlatformSpecificWindowBuilderAttributes</span> {
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
+            <span class="ident">name</span>: <span class="prelude-val">None</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
             <span class="ident">visual_infos</span>: <span class="prelude-val">None</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
@@ -874,15 +972,13 @@
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
             <span class="ident">base_size</span>: <span class="prelude-val">None</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-            <span class="ident">class</span>: <span class="prelude-val">None</span>,
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
             <span class="ident">override_redirect</span>: <span class="bool-val">false</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
             <span class="ident">x11_window_types</span>: <span class="macro">vec!</span>[<span class="ident">XWindowType::Normal</span>],
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
             <span class="ident">gtk_theme_variant</span>: <span class="prelude-val">None</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-            <span class="ident">app_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">csd_theme</span>: <span class="prelude-val">None</span>,
         }
     }
 }
@@ -1090,6 +1186,11 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_visible</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">is_visible</span>())
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">outer_position</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PhysicalPosition</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>, <span class="ident">NotSupportedError</span><span class="op">&gt;</span> {
         <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">outer_position</span>())
     }
@@ -1135,6 +1236,11 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_resizable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">is_resizable</span>())
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_cursor_icon</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cursor</span>: <span class="ident">CursorIcon</span>) {
         <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">set_cursor_icon</span>(<span class="ident">cursor</span>))
     }
@@ -1152,6 +1258,11 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">drag_window</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ExternalError</span><span class="op">&gt;</span> {
         <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">window</span>) =&gt; <span class="ident">window</span>.<span class="ident">drag_window</span>())
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_cursor_hittest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">hittest</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ExternalError</span><span class="op">&gt;</span> {
+        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">set_cursor_hittest</span>(<span class="ident">hittest</span>))
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1195,6 +1306,11 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_decorated</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">is_decorated</span>())
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_always_on_top</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_always_on_top</span>: <span class="ident">bool</span>) {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
@@ -1217,6 +1333,11 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_ime_position</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">position</span>: <span class="ident">Position</span>) {
         <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">set_ime_position</span>(<span class="ident">position</span>))
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_ime_allowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allowed</span>: <span class="ident">bool</span>) {
+        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">Window</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>.<span class="ident">set_ime_allowed</span>(<span class="ident">allowed</span>))
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1359,13 +1480,28 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="ident">assert_is_main_thread</span>(<span class="string">&quot;new_any_thread&quot;</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">attributes</span>: <span class="kw-2">&amp;</span><span class="ident">PlatformSpecificEventLoopAttributes</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">attributes</span>.<span class="ident">any_thread</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_main_thread</span>() {
+            <span class="macro">panic!</span>(
+                <span class="string">&quot;Initializing the event loop outside of the main thread is a significant \
+                 cross-platform compatibility hazard. If you absolutely need to create an \
+                 EventLoop on a different thread, you can use the \
+                 `EventLoopBuilderExtUnix::any_thread` function.&quot;</span>
+            );
+        }
 
-        <span class="ident">EventLoop::new_any_thread</span>()
-    }
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
+        <span class="kw">if</span> <span class="ident">attributes</span>.<span class="ident">forced_backend</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Backend::X</span>) {
+            <span class="comment">// TODO: Propagate</span>
+            <span class="kw">return</span> <span class="ident">EventLoop::new_x11_any_thread</span>().<span class="ident">unwrap</span>();
+        }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_any_thread</span>() -&gt; <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+        <span class="kw">if</span> <span class="ident">attributes</span>.<span class="ident">forced_backend</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Backend::Wayland</span>) {
+            <span class="comment">// TODO: Propagate</span>
+            <span class="kw">return</span> <span class="ident">EventLoop::new_wayland_any_thread</span>().<span class="ident">expect</span>(<span class="string">&quot;failed to open Wayland connection&quot;</span>);
+        }
+
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">env_var</span>) <span class="op">=</span> <span class="ident">env::var</span>(<span class="ident">BACKEND_PREFERENCE_ENV_VAR</span>) {
             <span class="kw">match</span> <span class="ident">env_var</span>.<span class="ident">as_str</span>() {
                 <span class="string">&quot;x11&quot;</span> =&gt; {
@@ -1414,26 +1550,12 @@
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_wayland</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="ident">assert_is_main_thread</span>(<span class="string">&quot;new_wayland_any_thread&quot;</span>);
-
-        <span class="ident">EventLoop::new_wayland_any_thread</span>()
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_wayland_any_thread</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new_wayland_any_thread</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="ident">wayland::EventLoop::new</span>().<span class="ident">map</span>(<span class="ident">EventLoop::Wayland</span>)
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_x11</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span> {
-        <span class="ident">assert_is_main_thread</span>(<span class="string">&quot;new_x11_any_thread&quot;</span>);
-
-        <span class="ident">EventLoop::new_x11_any_thread</span>()
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_x11_any_thread</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new_x11_any_thread</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">XNotSupported</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">xconn</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">X11_BACKEND</span>.<span class="ident">lock</span>().<span class="ident">as_ref</span>() {
             <span class="prelude-val">Ok</span>(<span class="ident">xconn</span>) =&gt; <span class="ident">xconn</span>.<span class="ident">clone</span>(),
             <span class="prelude-val">Err</span>(<span class="ident">err</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">clone</span>()),
@@ -1446,7 +1568,7 @@
         <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">EventLoop</span>(<span class="ident">evlp</span>) =&gt; <span class="ident">evlp</span>.<span class="ident">create_proxy</span>(); <span class="kw">as</span> <span class="ident">EventLoopProxy</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_return</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">callback</span>: <span class="ident">F</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_return</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">callback</span>: <span class="ident">F</span>) -&gt; <span class="ident">i32</span>
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident"><span class="kw">crate</span>::event::Event</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">RootELW</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> <span class="ident">ControlFlow</span>),
     {
@@ -1461,7 +1583,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">window_target</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::event_loop::EventLoopWindowTarget</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">EventLoop</span>(<span class="ident">evl</span>) =&gt; <span class="ident">evl</span>.<span class="ident">window_target</span>())
+        <span class="macro">x11_or_wayland!</span>(<span class="kw">match</span> <span class="self">self</span>; <span class="ident">EventLoop</span>(<span class="ident">evlp</span>) =&gt; <span class="ident">evlp</span>.<span class="ident">window_target</span>())
     }
 }
 
@@ -1522,6 +1644,16 @@
             }
         }
     }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_device_event_filter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_filter</span>: <span class="ident">DeviceEventFilter</span>) {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland&quot;</span>)]</span>
+            <span class="ident">EventLoopWindowTarget::Wayland</span>(<span class="kw">_</span>) =&gt; (),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;x11&quot;</span>)]</span>
+            <span class="ident">EventLoopWindowTarget::X</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">evlp</span>) =&gt; <span class="ident">evlp</span>.<span class="ident">set_device_event_filter</span>(<span class="ident">_filter</span>),
+        }
+    }
 }
 
 <span class="kw">fn</span> <span class="ident">sticky_exit_callback</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span><span class="op">&gt;</span>(
@@ -1532,26 +1664,12 @@
 ) <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Event</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">RootELW</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> <span class="ident">ControlFlow</span>),
 {
-    <span class="comment">// make ControlFlow::Exit sticky by providing a dummy</span>
-    <span class="comment">// control flow reference if it is already Exit.</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dummy</span> <span class="op">=</span> <span class="ident">ControlFlow::Exit</span>;
-    <span class="kw">let</span> <span class="ident">cf</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">control_flow</span> <span class="op">==</span> <span class="ident">ControlFlow::Exit</span> {
-        <span class="kw-2">&amp;mut</span> <span class="ident">dummy</span>
+    <span class="comment">// make ControlFlow::ExitWithCode sticky by providing a dummy</span>
+    <span class="comment">// control flow reference if it is already ExitWithCode.</span>
+    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ControlFlow::ExitWithCode</span>(<span class="ident">code</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">control_flow</span> {
+        <span class="ident">callback</span>(<span class="ident">evt</span>, <span class="ident">target</span>, <span class="kw-2">&amp;mut</span> <span class="ident">ControlFlow::ExitWithCode</span>(<span class="ident">code</span>))
     } <span class="kw">else</span> {
-        <span class="ident">control_flow</span>
-    };
-    <span class="comment">// user callback</span>
-    <span class="ident">callback</span>(<span class="ident">evt</span>, <span class="ident">target</span>, <span class="ident">cf</span>)
-}
-
-<span class="kw">fn</span> <span class="ident">assert_is_main_thread</span>(<span class="ident">suggested_method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">is_main_thread</span>() {
-        <span class="macro">panic!</span>(
-            <span class="string">&quot;Initializing the event loop outside of the main thread is a significant \
-             cross-platform compatibility hazard. If you really, absolutely need to create an \
-             EventLoop on a different thread, please use the `EventLoopExtUnix::{}` function.&quot;</span>,
-            <span class="ident">suggested_method</span>
-        );
+        <span class="ident">callback</span>(<span class="ident">evt</span>, <span class="ident">target</span>, <span class="ident">control_flow</span>)
     }
 }
 
@@ -1574,5 +1692,5 @@
     <span class="ident">std::thread::current</span>().<span class="ident">name</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;main&quot;</span>)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

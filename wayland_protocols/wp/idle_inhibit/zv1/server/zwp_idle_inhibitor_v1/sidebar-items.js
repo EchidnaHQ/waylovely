@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["ZwpIdleInhibitorV1","context object for inhibiting idle behavior"]]});

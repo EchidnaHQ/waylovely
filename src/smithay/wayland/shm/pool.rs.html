@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -270,6 +268,16 @@
 <span id="263">263</span>
 <span id="264">264</span>
 <span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">nix</span>::{
     <span class="ident">libc</span>,
     <span class="ident">sys</span>::{
@@ -292,11 +300,19 @@
 <span class="kw">static</span> <span class="ident">SIGBUS_INIT</span>: <span class="ident">Once</span> <span class="op">=</span> <span class="ident">Once::new</span>();
 <span class="kw">static</span> <span class="kw-2">mut</span> <span class="ident">OLD_SIGBUS_HANDLER</span>: <span class="kw-2">*mut</span> <span class="ident">SigAction</span> <span class="op">=</span> <span class="number">0</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">SigAction</span>;
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Pool</span> {
+    <span class="comment">// TODO: We may need to change this to a Mutex in order to support protocols like wlr screencopy which may</span>
+    <span class="comment">// require we write to a memmap.</span>
     <span class="ident">map</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">MemMap</span><span class="op">&gt;</span>,
     <span class="ident">fd</span>: <span class="ident">RawFd</span>,
     <span class="ident">log</span>: <span class="ident">::slog::Logger</span>,
 }
+
+<span class="comment">// SAFETY: The memmap is owned by the pool and content is only accessible via a reference.</span>
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">Pool</span> {}
+<span class="comment">// SAFETY: The memmap is guarded by a RwLock, meaning no writers may mutate the memmap when it is being read.</span>
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">Pool</span> {}
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ResizeError</span> {
     <span class="ident">InvalidSize</span>,
@@ -317,10 +333,13 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">resize</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">newsize</span>: <span class="ident">i32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ResizeError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">write</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">oldsize</span> <span class="op">=</span> <span class="ident">guard</span>.<span class="ident">size</span>();
+
         <span class="kw">if</span> <span class="ident">newsize</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">oldsize</span> <span class="op">&gt;</span> (<span class="ident">newsize</span> <span class="kw">as</span> <span class="ident">usize</span>) {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ResizeError::InvalidSize</span>);
         }
+
         <span class="macro">trace!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;Resizing shm pool&quot;</span>; <span class="string">&quot;fd&quot;</span> =&gt; <span class="self">self</span>.<span class="ident">fd</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="string">&quot;oldsize&quot;</span> =&gt; <span class="ident">oldsize</span>, <span class="string">&quot;newsize&quot;</span> =&gt; <span class="ident">newsize</span>);
+
         <span class="ident">guard</span>.<span class="ident">remap</span>(<span class="ident">newsize</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">map_err</span>(<span class="op">|</span>()<span class="op">|</span> {
             <span class="macro">debug!</span>(<span class="self">self</span>.<span class="ident">log</span>, <span class="string">&quot;SHM pool resize failed&quot;</span>; <span class="string">&quot;fd&quot;</span> =&gt; <span class="self">self</span>.<span class="ident">fd</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="string">&quot;oldsize&quot;</span> =&gt; <span class="ident">oldsize</span>, <span class="string">&quot;newsize&quot;</span> =&gt; <span class="ident">newsize</span>);
             <span class="ident">ResizeError::MremapFailed</span>
@@ -375,6 +394,7 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">MemMap</span> {
     <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">u8</span>,
     <span class="ident">fd</span>: <span class="ident">RawFd</span>,
@@ -441,7 +461,6 @@
     }
 }
 
-<span class="comment">// mman::mmap should really be unsafe... why isn&#39;t it?</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">map</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">u8</span>, ()<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">mman::mmap</span>(
         <span class="ident">ptr::null_mut</span>(),
@@ -454,7 +473,6 @@
     <span class="ident">ret</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())
 }
 
-<span class="comment">// mman::munmap should really be unsafe... why isn&#39;t it?</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unmap</span>(<span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">u8</span>, <span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">mman::munmap</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span>, <span class="ident">size</span>);
     <span class="ident">ret</span>.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())
@@ -517,7 +535,7 @@
 }
 
 <span class="comment">// This was shamelessly stolen from rustc&#39;s source</span>
-<span class="comment">// so I expect it to work whevener rust works</span>
+<span class="comment">// so I expect it to work whenever rust works</span>
 <span class="comment">// I guess it&#39;s good enough?</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>))]</span>
@@ -536,5 +554,5 @@
     (<span class="kw-2">*</span><span class="ident">info</span>).<span class="ident">si_addr</span>
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

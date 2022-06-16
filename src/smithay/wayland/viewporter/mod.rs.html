@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -293,21 +291,145 @@
 <span id="286">286</span>
 <span id="287">287</span>
 <span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Utilities for handling the `wp_viewporter` protocol</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## How to use it</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Initialization</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! To initialize this implementation, use the [`viewporter_init`]</span>
-<span class="doccomment">//! method provided by this module.</span>
+<span class="doccomment">//! To initialize this implementation, create [`ViewporterState`], store it in your `State` struct and</span>
+<span class="doccomment">//! implement the required traits, as shown in this example:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! use smithay::wayland::viewporter::viewporter_init;</span>
+<span class="doccomment">//! use smithay::wayland::viewporter::ViewporterState;</span>
+<span class="doccomment">//! use smithay::delegate_viewporter;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! # let mut display = wayland_server::Display::new();</span>
-<span class="doccomment">//! // Call the init function:</span>
-<span class="doccomment">//! viewporter_init(&amp;mut display);</span>
+<span class="doccomment">//! # struct State;</span>
+<span class="doccomment">//! # let mut display = wayland_server::Display::&lt;State&gt;::new().unwrap();</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // Create the viewporter state:</span>
+<span class="doccomment">//! let viewporter_state = ViewporterState::new::&lt;State, _&gt;(</span>
+<span class="doccomment">//!     &amp;display.handle(), // the display</span>
+<span class="doccomment">//!     None // provide a logger, if you want</span>
+<span class="doccomment">//! );</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // implement Dispatch for the Viewporter types</span>
+<span class="doccomment">//! delegate_viewporter!(State);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // You&#39;re now ready to go!</span>
 <span class="doccomment">//! ```</span>
@@ -330,173 +452,258 @@
 <span class="doccomment">//! [`on_commit_buffer_handler`](crate::backend::renderer::utils::on_commit_buffer_handler)</span>
 <span class="doccomment">//! the implementation will already call [`ensure_viewport_valid`] for you.</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cell::RefCell</span>, <span class="ident">ops::Deref</span> <span class="kw">as</span> <span class="kw">_</span>};
+<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
 
-<span class="kw">use</span> <span class="ident">wayland_protocols::viewporter::server</span>::{<span class="ident">wp_viewport</span>, <span class="ident">wp_viewporter</span>};
-<span class="kw">use</span> <span class="ident">wayland_server</span>::{<span class="ident">protocol::wl_surface</span>, <span class="ident">Display</span>, <span class="ident">Filter</span>, <span class="ident">Global</span>, <span class="ident">Main</span>};
+<span class="kw">use</span> <span class="ident">wayland_protocols::wp::viewporter::server</span>::{<span class="ident">wp_viewport</span>, <span class="ident">wp_viewporter</span>};
+<span class="kw">use</span> <span class="ident">wayland_server</span>::{
+    <span class="ident">backend::GlobalId</span>, <span class="ident">protocol::wl_surface</span>, <span class="ident">DelegateDispatch</span>, <span class="ident">DelegateGlobalDispatch</span>, <span class="ident">Dispatch</span>,
+    <span class="ident">DisplayHandle</span>, <span class="ident">GlobalDispatch</span>, <span class="ident">Resource</span>,
+};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">Logical</span>, <span class="ident">Rectangle</span>, <span class="ident">Size</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">IsAlive</span>, <span class="ident">Logical</span>, <span class="ident">Rectangle</span>, <span class="ident">Size</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::compositor</span>::{<span class="self">self</span>, <span class="ident">with_states</span>, <span class="ident">Cacheable</span>, <span class="ident">SurfaceData</span>};
 
-<span class="doccomment">/// Create new [`wp_viewporter`](wayland_protocols::viewporter::server::wp_viewporter) global.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// It returns the global handle, in case you wish to remove these global from</span>
-<span class="doccomment">/// the event loop in the future.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">viewporter_init</span>(<span class="ident">display</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Display</span>) -&gt; <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span><span class="op">&gt;</span> {
-    <span class="ident">display</span>.<span class="ident">create_global</span>(
-        <span class="number">1</span>,
-        <span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">new_viewporter</span>, <span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">implement_viewporter</span>(<span class="ident">new_viewporter</span>);
-        }),
-    )
+<span class="doccomment">/// State of the wp_viewporter Global</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ViewporterState</span> {
+    <span class="ident">dh</span>: <span class="ident">DisplayHandle</span>,
+    <span class="ident">global</span>: <span class="ident">GlobalId</span>,
 }
 
-<span class="kw">fn</span> <span class="ident">implement_viewporter</span>(<span class="ident">viewporter</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span><span class="op">&gt;</span>) -&gt; <span class="ident">wp_viewporter::WpViewporter</span> {
-    <span class="ident">viewporter</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="kw">_</span>, <span class="ident">request</span>, <span class="kw">_</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">request</span> {
-        <span class="ident">wp_viewporter::Request::GetViewport</span> { <span class="ident">id</span>, <span class="ident">surface</span> } =&gt; {
-            <span class="ident">implement_viewport</span>(<span class="ident">id</span>, <span class="ident">surface</span>);
-        }
-        <span class="ident">wp_viewporter::Request::Destroy</span> =&gt; {
-            <span class="comment">// All is already handled by our destructor</span>
-        }
-        <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-    });
-    <span class="ident">viewporter</span>.<span class="ident">deref</span>().<span class="ident">clone</span>()
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Viewport</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span><span class="op">&gt;</span><span class="op">&gt;</span>);
-
-<span class="kw">impl</span> <span class="ident">std::ops::Deref</span> <span class="kw">for</span> <span class="ident">Viewport</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span><span class="op">&gt;</span><span class="op">&gt;</span>;
-
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
+<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">ViewporterState</span> {
+    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+        <span class="self">self</span>.<span class="ident">dh</span>.<span class="ident">remove_global</span>(<span class="self">self</span>.<span class="ident">global</span>.<span class="ident">clone</span>())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::ops::DerefMut</span> <span class="kw">for</span> <span class="ident">Viewport</span> {
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="number">0</span>
+<span class="kw">impl</span> <span class="ident">ViewporterState</span> {
+    <span class="doccomment">/// Create new [`wp_viewporter`](wayland_protocols::viewporter::server::wp_viewporter) global.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// It returns the viewporter state, which you can drop to remove these global from</span>
+    <span class="doccomment">/// the event loop in the future.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">L</span><span class="op">&gt;</span>(<span class="ident">display</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">log</span>: <span class="ident">L</span>) -&gt; <span class="ident">ViewporterState</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>
+            <span class="op">+</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>
+            <span class="op">+</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span>, <span class="ident">ViewportState</span><span class="op">&gt;</span>
+            <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">L</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">slog::Logger</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    {
+        <span class="ident">ViewporterState</span> {
+            <span class="ident">dh</span>: <span class="ident">display</span>.<span class="ident">clone</span>(),
+            <span class="ident">global</span>: <span class="ident">display</span>.<span class="ident">create_global</span>::<span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>(
+                <span class="number">1</span>,
+                <span class="ident"><span class="kw">crate</span>::slog_or_fallback</span>(<span class="ident">log</span>).<span class="ident">new</span>(<span class="macro">slog::o!</span>(<span class="string">&quot;smithay_module&quot;</span> =&gt; <span class="string">&quot;wp_viewporter&quot;</span>)),
+            ),
+        }
+    }
+
+    <span class="doccomment">/// Returns the viewporter global.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">GlobalId</span> {
+        <span class="self">self</span>.<span class="ident">global</span>.<span class="ident">clone</span>()
     }
 }
 
-<span class="kw">fn</span> <span class="ident">implement_viewport</span>(<span class="ident">viewport</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span><span class="op">&gt;</span>, <span class="ident">surface</span>: <span class="ident">wl_surface::WlSurface</span>) {
-    <span class="kw">let</span> <span class="ident">already_has_viewport</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-        <span class="ident">states</span>
-            .<span class="ident">data_map</span>
-            .<span class="ident">insert_if_missing</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">RefCell::new</span>(<span class="ident">Viewport::default</span>()));
-        <span class="ident">states</span>
-            .<span class="ident">data_map</span>
-            .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Viewport</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">borrow</span>()
-            .<span class="ident">is_some</span>()
-    })
-    .<span class="ident">unwrap_or_default</span>();
-
-    <span class="kw">if</span> <span class="ident">already_has_viewport</span> {
-        <span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-            <span class="ident">wp_viewporter::Error::ViewportExists</span> <span class="kw">as</span> <span class="ident">u32</span>,
-            <span class="string">&quot;the surface already has a viewport object associated&quot;</span>.<span class="ident">to_string</span>(),
-        );
-        <span class="kw">return</span>;
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ViewporterState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span>, <span class="ident">ViewportState</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">bind</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">resource</span>: <span class="ident">wayland_server::New</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span><span class="op">&gt;</span>,
+        <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_server::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="ident">data_init</span>.<span class="ident">init</span>(<span class="ident">resource</span>, <span class="ident">global_data</span>.<span class="ident">clone</span>());
     }
-
-    <span class="ident">compositor::add_commit_hook</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="ident">viewport_commit_hook</span>);
-
-    <span class="ident">viewport</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">viewport</span>, <span class="ident">request</span>, <span class="kw">_</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">request</span> {
-        <span class="ident">wp_viewport::Request::Destroy</span> =&gt; {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-                <span class="ident">states</span>
-                    .<span class="ident">data_map</span>
-                    .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Viewport</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                    .<span class="ident">unwrap</span>()
-                    .<span class="ident">borrow_mut</span>()
-                    .<span class="ident">take</span>();
-                <span class="kw-2">*</span><span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>() <span class="op">=</span> <span class="ident">ViewportCachedState::default</span>();
-            });
-        }
-        <span class="ident">wp_viewport::Request::SetSource</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; {
-            <span class="comment">// If all of x, y, width and height are -1.0, the source rectangle is unset instead.</span>
-            <span class="comment">// Any other set of values where width or height are zero or negative,</span>
-            <span class="comment">// or x or y are negative, raise the bad_value protocol error.</span>
-            <span class="kw">let</span> <span class="ident">is_unset</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span> <span class="op">&amp;&amp;</span> <span class="ident">y</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span> <span class="op">&amp;&amp;</span> <span class="ident">width</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span>;
-            <span class="kw">let</span> <span class="ident">is_valid_src</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="ident">y</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="ident">width</span> <span class="op">&gt;</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">&gt;</span> <span class="number">0.0</span>;
-
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">is_unset</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_valid_src</span> {
-                <span class="ident">viewport</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                    <span class="ident">wp_viewport::Error::BadValue</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                    <span class="string">&quot;negative or zero values in width or height or negative values in x or y&quot;</span>.<span class="ident">to_string</span>(),
-                );
-                <span class="kw">return</span>;
-            }
-
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">viewport_state</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>();
-                <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_unset</span> {
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">Rectangle::from_loc_and_size</span>((<span class="ident">x</span>, <span class="ident">y</span>), (<span class="ident">width</span>, <span class="ident">height</span>)))
-                };
-                <span class="ident">viewport_state</span>.<span class="ident">src</span> <span class="op">=</span> <span class="ident">src</span>;
-            });
-
-            <span class="comment">// If the wl_surface associated with the wp_viewport is destroyed,</span>
-            <span class="comment">// all wp_viewport requests except &#39;destroy&#39; raise the protocol error no_surface.</span>
-            <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_err</span>() {
-                <span class="ident">viewport</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                    <span class="ident">wp_viewport::Error::NoSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                    <span class="string">&quot;the wl_surface was destroyed&quot;</span>.<span class="ident">to_string</span>(),
-                );
-            }
-        }
-        <span class="ident">wp_viewport::Request::SetDestination</span> { <span class="ident">width</span>, <span class="ident">height</span> } =&gt; {
-            <span class="comment">// If width is -1 and height is -1, the destination size is unset instead.</span>
-            <span class="comment">// Any other pair of values for width and height that contains zero or</span>
-            <span class="comment">// negative values raises the bad_value protocol error.</span>
-            <span class="kw">let</span> <span class="ident">is_unset</span> <span class="op">=</span> <span class="ident">width</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">is_valid_size</span> <span class="op">=</span> <span class="ident">width</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">&gt;</span> <span class="number">0</span>;
-
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">is_unset</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_valid_size</span> {
-                <span class="ident">viewport</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                    <span class="ident">wp_viewport::Error::BadValue</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                    <span class="string">&quot;negative or zero values in width or height&quot;</span>.<span class="ident">to_string</span>(),
-                );
-                <span class="kw">return</span>;
-            }
-
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">viewport_state</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>();
-                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_unset</span> {
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">Size::from</span>((<span class="ident">width</span>, <span class="ident">height</span>)))
-                };
-                <span class="ident">viewport_state</span>.<span class="ident">dst</span> <span class="op">=</span> <span class="ident">size</span>;
-            });
-
-            <span class="comment">// If the wl_surface associated with the wp_viewport is destroyed,</span>
-            <span class="comment">// all wp_viewport requests except &#39;destroy&#39; raise the protocol error no_surface.</span>
-            <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_err</span>() {
-                <span class="ident">viewport</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
-                    <span class="ident">wp_viewport::Error::NoSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
-                    <span class="string">&quot;the wl_surface was destroyed&quot;</span>.<span class="ident">to_string</span>(),
-                );
-            }
-        }
-        <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-    });
 }
 
-<span class="kw">fn</span> <span class="ident">viewport_commit_hook</span>(<span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>) {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ViewporterState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span>, <span class="ident">ViewportState</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">_resource</span>: <span class="kw-2">&amp;</span><span class="ident">wp_viewporter::WpViewporter</span>,
+        <span class="ident">request</span>: <span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span> <span class="kw">as</span> <span class="ident">wayland_server::Resource</span><span class="op">&gt;</span><span class="ident">::Request</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">slog::Logger</span>,
+        <span class="ident">_dhandle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_server::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="kw">match</span> <span class="ident">request</span> {
+            <span class="ident">wp_viewporter::Request::GetViewport</span> { <span class="ident">id</span>, <span class="ident">surface</span> } =&gt; {
+                <span class="kw">let</span> <span class="ident">already_has_viewport</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="ident">states</span>
+                        .<span class="ident">data_map</span>
+                        .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ViewportMarker</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">borrow</span>().<span class="ident">is_some</span>())
+                        .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+                });
+
+                <span class="kw">if</span> <span class="ident">already_has_viewport</span> {
+                    <span class="ident">surface</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wp_viewporter::Error::ViewportExists</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                        <span class="string">&quot;the surface already has a viewport object associated&quot;</span>.<span class="ident">to_string</span>(),
+                    );
+                    <span class="kw">return</span>;
+                }
+
+                <span class="ident">compositor::add_pre_commit_hook</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="ident">viewport_commit_hook</span>);
+
+                <span class="kw">let</span> <span class="ident">viewport</span> <span class="op">=</span> <span class="ident">data_init</span>.<span class="ident">init</span>(
+                    <span class="ident">id</span>,
+                    <span class="ident">ViewportState</span> {
+                        <span class="ident">surface</span>: <span class="ident">surface</span>.<span class="ident">clone</span>(),
+                        <span class="ident">log</span>: <span class="ident">data</span>.<span class="ident">new</span>(<span class="macro">slog::o!</span>(<span class="string">&quot;surface&quot;</span> =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">surface</span>))),
+                    },
+                );
+                <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="ident">states</span>
+                        .<span class="ident">data_map</span>
+                        .<span class="ident">insert_if_missing</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">RefCell::new</span>(<span class="prelude-val">Some</span>(<span class="ident">ViewportMarker</span>(<span class="ident">viewport</span>))));
+                })
+            }
+            <span class="ident">wp_viewporter::Request::Destroy</span> =&gt; {
+                <span class="comment">// All is already handled by our destructor</span>
+            }
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span>, <span class="ident">ViewportState</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ViewportState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewporter::WpViewporter</span>, <span class="ident">slog::Logger</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span>, <span class="ident">ViewportState</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Client</span>,
+        <span class="ident">resource</span>: <span class="kw-2">&amp;</span><span class="ident">wp_viewport::WpViewport</span>,
+        <span class="ident">request</span>: <span class="op">&lt;</span><span class="ident">wp_viewport::WpViewport</span> <span class="kw">as</span> <span class="ident">wayland_server::Resource</span><span class="op">&gt;</span><span class="ident">::Request</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">ViewportState</span>,
+        <span class="ident">_dhandle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_server::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+        <span class="kw">match</span> <span class="ident">request</span> {
+            <span class="ident">wp_viewport::Request::Destroy</span> =&gt; {
+                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="ident">states</span>
+                        .<span class="ident">data_map</span>
+                        .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ViewportMarker</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                        .<span class="ident">unwrap</span>()
+                        .<span class="ident">borrow_mut</span>()
+                        .<span class="ident">take</span>();
+                    <span class="kw-2">*</span><span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>() <span class="op">=</span> <span class="ident">ViewportCachedState::default</span>();
+                });
+            }
+            <span class="ident">wp_viewport::Request::SetSource</span> { <span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">width</span>, <span class="ident">height</span> } =&gt; {
+                <span class="comment">// If all of x, y, width and height are -1.0, the source rectangle is unset instead.</span>
+                <span class="comment">// Any other set of values where width or height are zero or negative,</span>
+                <span class="comment">// or x or y are negative, raise the bad_value protocol error.</span>
+                <span class="kw">let</span> <span class="ident">is_unset</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span> <span class="op">&amp;&amp;</span> <span class="ident">y</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span> <span class="op">&amp;&amp;</span> <span class="ident">width</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">==</span> <span class="op">-</span><span class="number">1.0</span>;
+                <span class="kw">let</span> <span class="ident">is_valid_src</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="ident">y</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="ident">width</span> <span class="op">&gt;</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">&gt;</span> <span class="number">0.0</span>;
+
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">is_unset</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_valid_src</span> {
+                    <span class="ident">resource</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wp_viewport::Error::BadValue</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                        <span class="string">&quot;negative or zero values in width or height or negative values in x or y&quot;</span>.<span class="ident">to_string</span>(),
+                    );
+                    <span class="kw">return</span>;
+                }
+
+                <span class="comment">// If the wl_surface associated with the wp_viewport is destroyed,</span>
+                <span class="comment">// all wp_viewport requests except &#39;destroy&#39; raise the protocol error no_surface.</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">surface</span>.<span class="ident">alive</span>() {
+                    <span class="ident">resource</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wp_viewport::Error::NoSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                        <span class="string">&quot;the wl_surface was destroyed&quot;</span>.<span class="ident">to_string</span>(),
+                    );
+                    <span class="kw">return</span>;
+                }
+
+                <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">viewport_state</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>();
+                    <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_unset</span> {
+                        <span class="prelude-val">None</span>
+                    } <span class="kw">else</span> {
+                        <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>((<span class="ident">x</span>, <span class="ident">y</span>), (<span class="ident">width</span>, <span class="ident">height</span>));
+                        <span class="macro">slog::trace!</span>(<span class="ident">data</span>.<span class="ident">log</span>, <span class="string">&quot;New destination: {:?}&quot;</span>, <span class="ident">src</span>);
+                        <span class="prelude-val">Some</span>(<span class="ident">src</span>)
+                    };
+                    <span class="ident">viewport_state</span>.<span class="ident">src</span> <span class="op">=</span> <span class="ident">src</span>;
+                });
+            }
+            <span class="ident">wp_viewport::Request::SetDestination</span> { <span class="ident">width</span>, <span class="ident">height</span> } =&gt; {
+                <span class="comment">// If width is -1 and height is -1, the destination size is unset instead.</span>
+                <span class="comment">// Any other pair of values for width and height that contains zero or</span>
+                <span class="comment">// negative values raises the bad_value protocol error.</span>
+                <span class="kw">let</span> <span class="ident">is_unset</span> <span class="op">=</span> <span class="ident">width</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span>;
+                <span class="kw">let</span> <span class="ident">is_valid_size</span> <span class="op">=</span> <span class="ident">width</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">height</span> <span class="op">&gt;</span> <span class="number">0</span>;
+
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">is_unset</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_valid_size</span> {
+                    <span class="ident">resource</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wp_viewport::Error::BadValue</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                        <span class="string">&quot;negative or zero values in width or height&quot;</span>.<span class="ident">to_string</span>(),
+                    );
+                    <span class="kw">return</span>;
+                }
+
+                <span class="comment">// If the wl_surface associated with the wp_viewport is destroyed,</span>
+                <span class="comment">// all wp_viewport requests except &#39;destroy&#39; raise the protocol error no_surface.</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">surface</span>.<span class="ident">alive</span>() {
+                    <span class="ident">resource</span>.<span class="ident">post_error</span>(
+                        <span class="ident">wp_viewport::Error::NoSurface</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                        <span class="string">&quot;the wl_surface was destroyed&quot;</span>.<span class="ident">to_string</span>(),
+                    );
+                }
+
+                <span class="ident">with_states</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">viewport_state</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>();
+                    <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_unset</span> {
+                        <span class="prelude-val">None</span>
+                    } <span class="kw">else</span> {
+                        <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">Size::from</span>((<span class="ident">width</span>, <span class="ident">height</span>));
+                        <span class="macro">slog::trace!</span>(<span class="ident">data</span>.<span class="ident">log</span>, <span class="string">&quot;New destination: {:?}&quot;</span>, <span class="ident">dst</span>);
+                        <span class="prelude-val">Some</span>(<span class="ident">dst</span>)
+                    };
+                    <span class="ident">viewport_state</span>.<span class="ident">dst</span> <span class="op">=</span> <span class="ident">size</span>;
+                });
+            }
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+        }
+    }
+}
+
+<span class="doccomment">/// State of a single viewport attached to a surface</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ViewportState</span> {
+    <span class="ident">surface</span>: <span class="ident">wl_surface::WlSurface</span>,
+    <span class="ident">log</span>: <span class="ident">slog::Logger</span>,
+}
+
+<span class="kw">struct</span> <span class="ident">ViewportMarker</span>(<span class="ident">wp_viewport::WpViewport</span>);
+
+<span class="kw">fn</span> <span class="ident">viewport_commit_hook</span>(<span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">wl_surface::WlSurface</span>) {
     <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">with_states</span>(<span class="ident">surface</span>, <span class="op">|</span><span class="ident">states</span><span class="op">|</span> {
         <span class="ident">states</span>
             .<span class="ident">data_map</span>
-            .<span class="ident">insert_if_missing</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">RefCell::new</span>(<span class="ident">Viewport::default</span>()));
-        <span class="kw">let</span> <span class="ident">viewport</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Viewport</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>().<span class="ident">borrow</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">viewport</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">viewport</span> {
+            .<span class="ident">insert_if_missing</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">RefCell::new</span>(<span class="prelude-ty">Option</span>::<span class="op">&lt;</span><span class="ident">ViewportMarker</span><span class="op">&gt;</span><span class="ident">::None</span>));
+        <span class="kw">let</span> <span class="ident">viewport</span> <span class="op">=</span> <span class="ident">states</span>
+            .<span class="ident">data_map</span>
+            .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ViewportMarker</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">borrow</span>();
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">viewport</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">viewport</span> {
             <span class="kw">let</span> <span class="ident">viewport_state</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>();
 
             <span class="comment">// If src_width or src_height are not integers and destination size is not set,</span>
@@ -505,7 +712,7 @@
             <span class="kw">if</span> <span class="ident">viewport_state</span>.<span class="ident">dst</span>.<span class="ident">is_none</span>()
                 <span class="op">&amp;&amp;</span> <span class="ident">src_size</span> <span class="op">!</span><span class="op">=</span> <span class="ident">src_size</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">Size::from</span>((<span class="ident">s</span>.<span class="ident">w</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">s</span>.<span class="ident">h</span> <span class="kw">as</span> <span class="ident">i32</span>)).<span class="ident">to_f64</span>())
             {
-                <span class="ident">viewport</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
+                <span class="ident">viewport</span>.<span class="number">0</span>.<span class="ident">post_error</span>(
                     <span class="ident">wp_viewport::Error::BadSize</span> <span class="kw">as</span> <span class="ident">u32</span>,
                     <span class="string">&quot;destination size is not integer&quot;</span>.<span class="ident">to_string</span>(),
                 );
@@ -521,17 +728,21 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ensure_viewport_valid</span>(<span class="ident">states</span>: <span class="kw-2">&amp;</span><span class="ident">SurfaceData</span>, <span class="ident">buffer_size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Logical</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
     <span class="ident">states</span>
         .<span class="ident">data_map</span>
-        .<span class="ident">insert_if_missing</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">RefCell::new</span>(<span class="ident">Viewport::default</span>()));
-    <span class="kw">let</span> <span class="ident">viewport</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">data_map</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Viewport</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>().<span class="ident">borrow</span>();
+        .<span class="ident">insert_if_missing</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">RefCell::new</span>(<span class="prelude-ty">Option</span>::<span class="op">&lt;</span><span class="ident">ViewportMarker</span><span class="op">&gt;</span><span class="ident">::None</span>));
+    <span class="kw">let</span> <span class="ident">viewport</span> <span class="op">=</span> <span class="ident">states</span>
+        .<span class="ident">data_map</span>
+        .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ViewportMarker</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+        .<span class="ident">unwrap</span>()
+        .<span class="ident">borrow</span>();
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">viewport</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">viewport</span> {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">viewport</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">viewport</span> {
         <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">states</span>.<span class="ident">cached_state</span>.<span class="ident">pending</span>::<span class="op">&lt;</span><span class="ident">ViewportCachedState</span><span class="op">&gt;</span>();
 
         <span class="kw">let</span> <span class="ident">buffer_rect</span> <span class="op">=</span> <span class="ident">Rectangle::from_loc_and_size</span>((<span class="number">0.0</span>, <span class="number">0.0</span>), <span class="ident">buffer_size</span>.<span class="ident">to_f64</span>());
         <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">src</span>.<span class="ident">unwrap_or</span>(<span class="ident">buffer_rect</span>);
         <span class="kw">let</span> <span class="ident">valid</span> <span class="op">=</span> <span class="ident">buffer_rect</span>.<span class="ident">contains_rect</span>(<span class="ident">src</span>);
         <span class="kw">if</span> <span class="op">!</span><span class="ident">valid</span> {
-            <span class="ident">viewport</span>.<span class="ident">as_ref</span>().<span class="ident">post_error</span>(
+            <span class="ident">viewport</span>.<span class="number">0</span>.<span class="ident">post_error</span>(
                 <span class="ident">wp_viewport::Error::OutOfBuffer</span> <span class="kw">as</span> <span class="ident">u32</span>,
                 <span class="string">&quot;source rectangle extends outside of the content area&quot;</span>.<span class="ident">to_string</span>(),
             );
@@ -569,18 +780,35 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Cacheable</span> <span class="kw">for</span> <span class="ident">ViewportCachedState</span> {
-    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">ViewportCachedState</span> {
             <span class="ident">src</span>: <span class="self">self</span>.<span class="ident">src</span>,
             <span class="ident">dst</span>: <span class="self">self</span>.<span class="ident">dst</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">merge_into</span>(<span class="self">self</span>, <span class="ident">into</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>) {
+    <span class="kw">fn</span> <span class="ident">merge_into</span>(<span class="self">self</span>, <span class="ident">into</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>, <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) {
         <span class="ident">into</span>.<span class="ident">src</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">src</span>;
         <span class="ident">into</span>.<span class="ident">dst</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">dst</span>;
     }
 }
+
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// TODO</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules!</span> <span class="ident">delegate_viewporter</span> {
+    ($(@<span class="op">&lt;</span>$( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">tt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span>:<span class="ident">tt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span>:<span class="ident">tt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span><span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: <span class="ident">ty</span>) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_global_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::wp::viewporter::server::wp_viewporter::WpViewporter</span>: <span class="ident">slog::Logger</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::viewporter::ViewporterState</span>);
+
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::wp::viewporter::server::wp_viewporter::WpViewporter</span>: <span class="ident">slog::Logger</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::viewporter::ViewporterState</span>);
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::wp::viewporter::server::wp_viewport::WpViewport</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::viewporter::ViewportState</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::viewporter::ViewportState</span>);
+    };
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

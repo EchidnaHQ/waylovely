@@ -1,0 +1,1 @@
+initSidebarItems({"static":[["ZWP_TEXT_INPUT_MANAGER_V1_INTERFACE",""],["ZWP_TEXT_INPUT_V1_INTERFACE",""],["zwp_text_input_manager_v1_interface",""],["zwp_text_input_manager_v1_requests",""],["zwp_text_input_v1_events",""],["zwp_text_input_v1_interface",""],["zwp_text_input_v1_requests",""]]});

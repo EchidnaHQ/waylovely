@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1134,15 +1132,6 @@
 <span id="1127">1127</span>
 <span id="1128">1128</span>
 <span id="1129">1129</span>
-<span id="1130">1130</span>
-<span id="1131">1131</span>
-<span id="1132">1132</span>
-<span id="1133">1133</span>
-<span id="1134">1134</span>
-<span id="1135">1135</span>
-<span id="1136">1136</span>
-<span id="1137">1137</span>
-<span id="1138">1138</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the [`Space`] helper class as well has related</span>
 <span class="doccomment">//! rendering helpers to add custom elements or different clients to a space.</span>
 
@@ -1154,7 +1143,7 @@
         <span class="ident">utils</span>::{<span class="ident">output_leave</span>, <span class="ident">output_update</span>},
         <span class="ident">window::Window</span>,
     },
-    <span class="ident">utils</span>::{<span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Transform</span>},
+    <span class="ident">utils</span>::{<span class="ident">IsAlive</span>, <span class="ident">Logical</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Transform</span>},
     <span class="ident">wayland</span>::{
         <span class="ident">compositor</span>::{<span class="ident">get_parent</span>, <span class="ident">is_sync_subsurface</span>, <span class="ident">with_surface_tree_downward</span>, <span class="ident">TraversalAction</span>},
         <span class="ident">output::Output</span>,
@@ -1162,7 +1151,7 @@
 };
 <span class="kw">use</span> <span class="ident">indexmap</span>::{<span class="ident">IndexMap</span>, <span class="ident">IndexSet</span>};
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::VecDeque</span>, <span class="ident">fmt</span>};
-<span class="kw">use</span> <span class="ident">wayland_server::protocol::wl_surface::WlSurface</span>;
+<span class="kw">use</span> <span class="ident">wayland_server</span>::{<span class="ident">protocol::wl_surface::WlSurface</span>, <span class="ident">DisplayHandle</span>};
 
 <span class="kw">mod</span> <span class="ident">element</span>;
 <span class="kw">mod</span> <span class="ident">layer</span>;
@@ -1329,16 +1318,12 @@
         <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>,
         <span class="ident">surface_type</span>: <span class="ident">WindowSurfaceType</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Window</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">alive</span>() {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
         <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::TOPLEVEL</span>) {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>
-                .<span class="ident">windows</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
-            {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">wl_surface</span>() <span class="op">==</span> <span class="ident">surface</span>) {
                 <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>);
             }
         }
@@ -1347,7 +1332,7 @@
             <span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>};
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">toplevel</span> <span class="op">=</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">toplevel</span> <span class="op">=</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">wl_surface</span>();
                 <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="ident">AtomicBool::new</span>(<span class="bool-val">false</span>);
                 <span class="ident">with_surface_tree_downward</span>(
                     <span class="ident">toplevel</span>,
@@ -1366,12 +1351,8 @@
 
         <span class="kw">if</span> <span class="ident">surface_type</span>.<span class="ident">contains</span>(<span class="ident">WindowSurfaceType::POPUP</span>) {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> {
-                <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>().<span class="ident">unwrap</span>())
-                    .<span class="ident">ok</span>()
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">popups</span><span class="op">|</span> {
-                        <span class="ident">popups</span>.<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">get_surface</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span> <span class="op">==</span> <span class="ident">surface</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
-                    })
-                    .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+                <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">wl_surface</span>())
+                    .<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">wl_surface</span>() <span class="op">==</span> <span class="ident">surface</span>)
             }) {
                 <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>);
             }
@@ -1380,7 +1361,7 @@
         <span class="prelude-val">None</span>
     }
 
-    <span class="doccomment">/// Returns the layer matching a given surface, if any.</span>
+    <span class="doccomment">/// Returns the layer matching a given surface, if any</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// `surface_type` can be used to limit the types of surfaces queried for equality.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">layer_for_surface</span>(
@@ -1388,9 +1369,6 @@
         <span class="ident">surface</span>: <span class="kw-2">&amp;</span><span class="ident">WlSurface</span>,
         <span class="ident">surface_type</span>: <span class="ident">WindowSurfaceType</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LayerSurface</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">surface</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>() {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
-        }
         <span class="self">self</span>.<span class="ident">outputs</span>.<span class="ident">iter</span>().<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">layer_map_for_output</span>(<span class="ident">o</span>);
             <span class="ident">map</span>.<span class="ident">layer_for_surface</span>(<span class="ident">surface</span>, <span class="ident">surface_type</span>).<span class="ident">cloned</span>()
@@ -1513,13 +1491,11 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Needs to be called periodically, at best before every</span>
     <span class="doccomment">/// wayland socket flush.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">refresh</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">alive</span>());
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">refresh</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>) {
+        <span class="self">self</span>.<span class="ident">windows</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">alive</span>());
 
         <span class="kw">for</span> <span class="ident">output</span> <span class="kw">in</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">outputs</span> {
-            <span class="ident">output_state</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output</span>)
-                .<span class="ident">surfaces</span>
-                .<span class="ident">retain</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">as_ref</span>().<span class="ident">is_alive</span>());
+            <span class="ident">output_state</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">output</span>).<span class="ident">surfaces</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">alive</span>());
         }
 
         <span class="kw">for</span> <span class="ident">window</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">windows</span> {
@@ -1536,40 +1512,35 @@
                 <span class="comment">// the output, if not no surface in the tree can intersect with</span>
                 <span class="comment">// the output.</span>
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">output_geometry</span>.<span class="ident">overlaps</span>(<span class="ident">bbox</span>) {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">kind</span>.<span class="ident">get_surface</span>() {
-                        <span class="ident">output_leave</span>(<span class="ident">output</span>, <span class="kw-2">&amp;mut</span> <span class="ident">output_state</span>.<span class="ident">surfaces</span>, <span class="ident">surface</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logger</span>);
-                    }
+                    <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">kind</span>.<span class="ident">wl_surface</span>();
+                    <span class="ident">output_leave</span>(<span class="ident">dh</span>, <span class="ident">output</span>, <span class="kw-2">&amp;mut</span> <span class="ident">output_state</span>.<span class="ident">surfaces</span>, <span class="ident">surface</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logger</span>);
                     <span class="kw">continue</span>;
                 }
 
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">kind</span>.<span class="ident">get_surface</span>() {
+                <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">kind</span>.<span class="ident">wl_surface</span>();
+                <span class="ident">output_update</span>(
+                    <span class="ident">dh</span>,
+                    <span class="ident">output</span>,
+                    <span class="ident">output_geometry</span>,
+                    <span class="kw-2">&amp;mut</span> <span class="ident">output_state</span>.<span class="ident">surfaces</span>,
+                    <span class="ident">surface</span>,
+                    <span class="ident">window_loc</span>(<span class="ident">window</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id</span>),
+                    <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logger</span>,
+                );
+
+                <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>) {
+                    <span class="kw">let</span> <span class="ident">surface</span> <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">wl_surface</span>();
+                    <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">window_loc</span>(<span class="ident">window</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id</span>) <span class="op">+</span> <span class="ident">window</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span>
+                        <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
                     <span class="ident">output_update</span>(
+                        <span class="ident">dh</span>,
                         <span class="ident">output</span>,
                         <span class="ident">output_geometry</span>,
                         <span class="kw-2">&amp;mut</span> <span class="ident">output_state</span>.<span class="ident">surfaces</span>,
                         <span class="ident">surface</span>,
-                        <span class="ident">window_loc</span>(<span class="ident">window</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id</span>),
+                        <span class="ident">location</span>,
                         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logger</span>,
                     );
-
-                    <span class="kw">for</span> (<span class="ident">popup</span>, <span class="ident">location</span>) <span class="kw">in</span> <span class="ident">PopupManager::popups_for_surface</span>(<span class="ident">surface</span>)
-                        .<span class="ident">ok</span>()
-                        .<span class="ident">into_iter</span>()
-                        .<span class="ident">flatten</span>()
-                    {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">surface</span>) <span class="op">=</span> <span class="ident">popup</span>.<span class="ident">get_surface</span>() {
-                            <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="ident">window_loc</span>(<span class="ident">window</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id</span>) <span class="op">+</span> <span class="ident">window</span>.<span class="ident">geometry</span>().<span class="ident">loc</span> <span class="op">+</span> <span class="ident">location</span>
-                                <span class="op">-</span> <span class="ident">popup</span>.<span class="ident">geometry</span>().<span class="ident">loc</span>;
-                            <span class="ident">output_update</span>(
-                                <span class="ident">output</span>,
-                                <span class="ident">output_geometry</span>,
-                                <span class="kw-2">&amp;mut</span> <span class="ident">output_state</span>.<span class="ident">surfaces</span>,
-                                <span class="ident">surface</span>,
-                                <span class="ident">location</span>,
-                                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logger</span>,
-                            );
-                        }
-                    }
                 }
             }
         }
@@ -1585,7 +1556,7 @@
         <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">parent</span>) <span class="op">=</span> <span class="ident">get_parent</span>(<span class="kw-2">&amp;</span><span class="ident">root</span>) {
             <span class="ident">root</span> <span class="op">=</span> <span class="ident">parent</span>;
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">get_surface</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">root</span>)) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">window</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">toplevel</span>().<span class="ident">wl_surface</span>() <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">root</span>) {
             <span class="ident">window</span>.<span class="ident">refresh</span>();
         }
     }
@@ -1611,6 +1582,7 @@
     <span class="doccomment">/// (or `None` if that list would be empty) in case of success.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">render_output</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">E</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
         <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">R</span>,
         <span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">Output</span>,
         <span class="ident">age</span>: <span class="ident">usize</span>,
@@ -1782,6 +1754,7 @@
                             <span class="ident">damage</span>
                         );
                         <span class="ident">element</span>.<span class="ident">draw</span>(
+                            <span class="ident">dh</span>,
                             <span class="self">self</span>.<span class="ident">id</span>,
                             <span class="ident">renderer</span>,
                             <span class="ident">frame</span>,
@@ -1986,6 +1959,7 @@
     (@<span class="ident">draw</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span>:<span class="ident">ty</span><span class="op">&gt;</span>; $($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">ident</span><span class="op">=</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>:<span class="ident">ty</span> $(<span class="kw">as</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>:<span class="ident">ty</span><span class="op">&gt;</span>)<span class="question-mark">?</span>),<span class="op">*</span> $(,)<span class="question-mark">?</span>) =&gt; {
         <span class="kw">fn</span> <span class="ident">draw</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
+            <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_server::DisplayHandle</span>,
             <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span>,
             <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::renderer::Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
             <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -2007,7 +1981,7 @@
                     $(
                         <span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>]</span>
                     )<span class="op">*</span>
-                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">draw</span>; <span class="ident">x</span>, <span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)
+                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">draw</span>; <span class="ident">x</span>, <span class="ident">dh</span>, <span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)
                 ),<span class="kw-2">*</span>,
                 <span class="ident"><span class="self">Self</span>::_GenericCatcher</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             }
@@ -2016,6 +1990,7 @@
     (@<span class="ident">draw</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span>:<span class="ident">ty</span>; $($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>:<span class="ident">ident</span><span class="op">=</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>:<span class="ident">ty</span> $(<span class="kw">as</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>:<span class="ident">ty</span><span class="op">&gt;</span>)<span class="question-mark">?</span>),<span class="op">*</span> $(,)<span class="question-mark">?</span>) =&gt; {
         <span class="kw">fn</span> <span class="ident">draw</span>(
             <span class="kw-2">&amp;</span><span class="self">self</span>,
+            <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_server::DisplayHandle</span>,
             <span class="ident">renderer</span>: <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span>,
             <span class="ident">frame</span>: <span class="kw-2">&amp;mut</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::renderer::Renderer</span><span class="op">&gt;</span><span class="ident">::Frame</span>,
             <span class="ident">scale</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::utils::Scale</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -2029,7 +2004,7 @@
                     $(
                         <span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>]</span>
                     )<span class="op">*</span>
-                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">draw</span>; <span class="ident">x</span>, <span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)
+                    <span class="self">Self</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">body</span>(<span class="ident">x</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::custom_elements_internal!</span>(@<span class="macro-nonterminal">call</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">renderer</span> $(<span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_renderer</span>)<span class="question-mark">?</span>; <span class="ident">draw</span>; <span class="ident">x</span>, <span class="ident">dh</span>, <span class="ident">renderer</span>, <span class="ident">frame</span>, <span class="ident">scale</span>, <span class="ident">location</span>, <span class="ident">damage</span>, <span class="ident">log</span>)
                 ),<span class="kw-2">*</span>,
                 <span class="ident"><span class="self">Self</span>::_GenericCatcher</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             }
@@ -2094,11 +2069,12 @@
     };
 }
 
-<span class="doccomment">/// Macro to collate multiple [`smithay::desktop::RenderElement`]-implementations</span>
+<span class="doccomment">/// Macro to collate multiple [`crate::desktop::space::RenderElement`]-implementations</span>
 <span class="doccomment">/// into one type to be used with [`Space::render_output`].</span>
 <span class="doccomment">/// ## Example</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
+<span class="doccomment">/// # use wayland_server::{Display, DisplayHandle};</span>
 <span class="doccomment">/// use smithay::{</span>
 <span class="doccomment">///     backend::renderer::{Texture, Renderer, ImportAll},</span>
 <span class="doccomment">///     desktop::space::{SurfaceTree, Space, SpaceOutputTuple, RenderElement},</span>
@@ -2139,6 +2115,7 @@
 <span class="doccomment">/// # impl ImportAll for DummyRenderer {</span>
 <span class="doccomment">/// #    fn import_buffer(</span>
 <span class="doccomment">/// #        &amp;mut self,</span>
+<span class="doccomment">/// #        dh: &amp;DisplayHandle,</span>
 <span class="doccomment">/// #        buffer: &amp;wl_buffer::WlBuffer,</span>
 <span class="doccomment">/// #        surface: Option&lt;&amp;SurfaceData&gt;,</span>
 <span class="doccomment">/// #        damage: &amp;[Rectangle&lt;i32, Buffer&gt;],</span>
@@ -2241,6 +2218,7 @@
 <span class="doccomment">///#</span>
 <span class="doccomment">///#    fn draw(</span>
 <span class="doccomment">///#        &amp;self,</span>
+<span class="doccomment">///#        dh: &amp;DisplayHandle,</span>
 <span class="doccomment">///#        _renderer: &amp;mut R,</span>
 <span class="doccomment">///#        frame: &amp;mut &lt;R as Renderer&gt;::Frame,</span>
 <span class="doccomment">///#        scale: impl Into&lt;Scale&lt;f64&gt;&gt;,</span>
@@ -2258,9 +2236,11 @@
 <span class="doccomment">///# let surface_tree: SurfaceTree = unsafe { std::mem::zeroed() };</span>
 <span class="doccomment">///# let mut space = Space::new(None);</span>
 <span class="doccomment">///# let age = 0;</span>
+<span class="doccomment">///# let display = Display::&lt;()&gt;::new().unwrap();</span>
+<span class="doccomment">///# let dh = display.handle();</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let elements = [CustomElem::from(surface_tree)];</span>
-<span class="doccomment">/// space.render_output(&amp;mut renderer, &amp;output, age, [0.0, 0.0, 0.0, 1.0], &amp;elements);</span>
+<span class="doccomment">/// space.render_output(&amp;dh, &amp;mut renderer, &amp;output, age, [0.0, 0.0, 0.0, 1.0], &amp;elements);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">custom_elements</span> {
@@ -2282,5 +2262,5 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

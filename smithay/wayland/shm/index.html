@@ -3,10 +3,8 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"><a href="#">Module shm</a></h2><div class="sidebar-elems"><section><div class="block"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li></ul></div></section><div id="sidebar-vars" data-name="shm" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Module <a href="../../index.html">smithay</a>::<wbr><a href="../index.html">wayland</a>::<wbr><a class="mod" href="#">shm</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../src/smithay/wayland/shm/mod.rs.html#1-315">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>SHM handling helpers</p>
+        </a><h2 class="location"><a href="#">Module shm</a></h2><div class="sidebar-elems"><section><div class="block"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div></section><div id="sidebar-vars" data-name="shm" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../smithay/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
+    <h1 class="fqn"><span class="in-band">Module <a href="../../index.html">smithay</a>::<wbr><a href="../index.html">wayland</a>::<wbr><a class="mod" href="#">shm</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../src/smithay/wayland/shm/mod.rs.html#1-268">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>SHM handling helpers</p>
 <p>This module provides helpers to handle SHM-based buffers from wayland clients.</p>
 <p>SHM (Shared Memory) is the most basic way wayland clients can send content to
 the compositor: by sending a file descriptor to some (likely RAM-backed) storage
@@ -22,17 +20,36 @@ as specified by the wayland protocol).</p>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">wayland_server</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">smithay</span>;
 
-<span class="kw">use</span> <span class="ident">smithay::wayland::shm::init_shm_global</span>;
+<span class="kw">use</span> <span class="ident">smithay::wayland::buffer::BufferHandler</span>;
+<span class="kw">use</span> <span class="ident">smithay::wayland::shm</span>::{<span class="ident">ShmState</span>, <span class="ident">ShmHandler</span>};
+<span class="kw">use</span> <span class="ident">smithay::delegate_shm</span>;
 <span class="kw">use</span> <span class="ident">wayland_server::protocol::wl_shm::Format</span>;
 
-<span class="comment">// Insert the ShmGlobal into your event loop</span>
+<span class="comment">// Create the ShmState.</span>
 <span class="comment">// Here, we specify that Yuyv and C8 format are supported</span>
 <span class="comment">// additionally to the standard Argb8888 and Xrgb8888.</span>
-<span class="ident">init_shm_global</span>(
-    <span class="kw-2">&amp;mut</span> <span class="ident">display</span>,
+<span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">ShmState::new</span>::<span class="op">&lt;</span><span class="ident">State</span>, <span class="kw">_</span><span class="op">&gt;</span>(
+    <span class="kw-2">&amp;</span><span class="ident">display</span>.<span class="ident">handle</span>(),
     <span class="macro">vec!</span>[<span class="ident">Format::Yuyv</span>, <span class="ident">Format::C8</span>],
     <span class="prelude-val">None</span> <span class="comment">// we don&#39;t provide a logger here</span>
-);</code></pre></div>
+);
+
+<span class="comment">// insert the shmstate into your compositor state.</span>
+<span class="comment">// ..</span>
+
+<span class="comment">// provide the necessary trait implementations</span>
+<span class="kw">impl</span> <span class="ident">BufferHandler</span> <span class="kw">for</span> <span class="ident">State</span> {
+    <span class="kw">fn</span> <span class="ident">buffer_destroyed</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::protocol::wl_buffer::WlBuffer</span>) {
+        <span class="comment">// All renderers can handle buffer destruction at this point.</span>
+        <span class="comment">// Some parts of window management may also use this function.</span>
+    }
+}
+<span class="kw">impl</span> <span class="ident">ShmHandler</span> <span class="kw">for</span> <span class="ident">State</span> {
+    <span class="kw">fn</span> <span class="ident">shm_state</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">ShmState</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">shm_state</span>
+    }
+}
+<span class="macro">delegate_shm!</span>(<span class="ident">State</span>);</code></pre></div>
 <p>Then, when you have a <a href="../../../wayland_server/protocol/wl_buffer/struct.WlBuffer.html"><code>WlBuffer</code></a>
 and need to retrieve its contents, use the
 <a href="fn.with_buffer_contents.html" title="with_buffer_contents"><code>with_buffer_contents</code></a> function to do it:</p>
@@ -64,10 +81,14 @@ by using a SIGBUS handler.</p>
 <p>If you are already using an handler for this signal, you probably don’t want to use this handler.</p>
 </div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BufferData.html" title="smithay::wayland::shm::BufferData struct">BufferData</a></div><div class="item-right docblock-short"><p>Details of the contents of a buffer relative to its pool</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ShmBufferUserData.html" title="smithay::wayland::shm::ShmBufferUserData struct">ShmBufferUserData</a></div><div class="item-right docblock-short"><p>User data of shm WlBuffer</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ShmPoolUserData.html" title="smithay::wayland::shm::ShmPoolUserData struct">ShmPoolUserData</a></div><div class="item-right docblock-short"><p>User data of WlShmPool</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ShmState.html" title="smithay::wayland::shm::ShmState struct">ShmState</a></div><div class="item-right docblock-short"><p>State of SHM module</p>
 </div></div></div><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.BufferAccessError.html" title="smithay::wayland::shm::BufferAccessError enum">BufferAccessError</a></div><div class="item-right docblock-short"><p>Error that can occur when accessing an SHM buffer</p>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.ShmHandler.html" title="smithay::wayland::shm::ShmHandler trait">ShmHandler</a></div><div class="item-right docblock-short"><p>Shm global handler</p>
 </div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.init_shm_global.html" title="smithay::wayland::shm::init_shm_global fn">init_shm_global</a></div><div class="item-right docblock-short"><p>Create a new SHM global advertizing given supported formats.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.with_buffer_contents.html" title="smithay::wayland::shm::with_buffer_contents fn">with_buffer_contents</a></div><div class="item-right docblock-short"><p>Call given closure with the contents of the given buffer</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.with_buffer_contents.html" title="smithay::wayland::shm::with_buffer_contents fn">with_buffer_contents</a></div><div class="item-right docblock-short"><p>Call given closure with the contents of the given buffer</p>
+</div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

@@ -3,38 +3,48 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"><a href="#">Module decoration</a></h2><div class="sidebar-elems"><section><div class="block"><ul><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li></ul></div></section><div id="sidebar-vars" data-name="decoration" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../smithay/index.html"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Module <a href="../../../../index.html">smithay</a>::<wbr><a href="../../../index.html">wayland</a>::<wbr><a href="../../index.html">shell</a>::<wbr><a href="../index.html">xdg</a>::<wbr><a class="mod" href="#">decoration</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../../../src/smithay/wayland/shell/xdg/decoration.rs.html#1-153">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>XDG Window decoration manager</p>
+        </a><h2 class="location"><a href="#">Module decoration</a></h2><div class="sidebar-elems"><section><div class="block"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li></ul></div></section><div id="sidebar-vars" data-name="decoration" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../smithay/index.html"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
+    <h1 class="fqn"><span class="in-band">Module <a href="../../../../index.html">smithay</a>::<wbr><a href="../../../index.html">wayland</a>::<wbr><a href="../../index.html">shell</a>::<wbr><a href="../index.html">xdg</a>::<wbr><a class="mod" href="#">decoration</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../../../src/smithay/wayland/shell/xdg/decoration.rs.html#1-258">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>XDG Window decoration manager</p>
 <p>This interface allows a compositor to announce support for server-side decorations.</p>
 <p>A client can use this protocol to request being decorated by a supporting compositor.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">smithay::wayland::shell::xdg::decoration</span>::{<span class="ident">init_xdg_decoration_manager</span>, <span class="ident">XdgDecorationRequest</span>};
-<span class="kw">use</span> <span class="ident">smithay::reexports::wayland_protocols::unstable::xdg_decoration::v1::server::zxdg_toplevel_decoration_v1::Mode</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">smithay</span>::{<span class="ident">delegate_xdg_decoration</span>, <span class="ident">delegate_xdg_shell</span>};
+<span class="kw">use</span> <span class="ident">smithay::wayland::shell::xdg</span>::{<span class="ident">ToplevelSurface</span>, <span class="ident">XdgShellHandler</span>};
+<span class="kw">use</span> <span class="ident">smithay::wayland::shell::xdg::decoration</span>::{<span class="ident">XdgDecorationState</span>, <span class="ident">XdgDecorationHandler</span>};
+<span class="kw">use</span> <span class="ident">smithay::reexports::wayland_protocols::xdg::decoration::zv1::server::zxdg_toplevel_decoration_v1::Mode</span>;
 
 
-<span class="ident">init_xdg_decoration_manager</span>(
-    <span class="kw-2">&amp;mut</span> <span class="ident">display</span>,
-    <span class="op">|</span><span class="ident">req</span>, <span class="ident">_ddata</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">req</span> {
-        <span class="ident">XdgDecorationRequest::NewToplevelDecoration</span> { <span class="ident">toplevel</span> } =&gt; {
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">toplevel</span>.<span class="ident">with_pending_state</span>(<span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
-                  <span class="comment">// Advertise server side decoration</span>
-                <span class="ident">state</span>.<span class="ident">decoration_mode</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Mode::ServerSide</span>);
-            });
-
-            <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_ok</span>() {
-                <span class="ident">toplevel</span>.<span class="ident">send_configure</span>();
-            }
-        }
-        <span class="ident">XdgDecorationRequest::SetMode</span> { .. } =&gt; {}
-        <span class="ident">XdgDecorationRequest::UnsetMode</span> { .. } =&gt; {}
-    },
+<span class="comment">// Create a decoration state</span>
+<span class="kw">let</span> <span class="ident">decoration_state</span> <span class="op">=</span> <span class="ident">XdgDecorationState::new</span>::<span class="op">&lt;</span><span class="ident">State</span>, <span class="kw">_</span><span class="op">&gt;</span>(
+    <span class="kw-2">&amp;</span><span class="ident">display</span>.<span class="ident">handle</span>(),
     <span class="prelude-val">None</span>,
-);</code></pre></div>
-</div></details><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.XdgDecorationRequest.html" title="smithay::wayland::shell::xdg::decoration::XdgDecorationRequest enum">XdgDecorationRequest</a></div><div class="item-right docblock-short"><p>Events generated by xdg decoration manager</p>
-</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.init_xdg_decoration_manager.html" title="smithay::wayland::shell::xdg::decoration::init_xdg_decoration_manager fn">init_xdg_decoration_manager</a></div><div class="item-right docblock-short"><p>Create a new XDG Decoration Manager global</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+);
+
+<span class="comment">// store that state inside your compositor state</span>
+<span class="comment">// ...</span>
+
+<span class="comment">// implement the necessary traits</span>
+<span class="kw">impl</span> <span class="ident">XdgShellHandler</span> <span class="kw">for</span> <span class="ident">State</span> {
+    <span class="comment">// ...</span>
+}
+<span class="kw">impl</span> <span class="ident">XdgDecorationHandler</span> <span class="kw">for</span> <span class="ident">State</span> {
+    <span class="kw">fn</span> <span class="ident">new_decoration</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::DisplayHandle</span>, <span class="ident">toplevel</span>: <span class="ident">ToplevelSurface</span>) {
+        <span class="ident">toplevel</span>.<span class="ident">with_pending_state</span>(<span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
+            <span class="comment">// Advertise server side decoration</span>
+            <span class="ident">state</span>.<span class="ident">decoration_mode</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Mode::ServerSide</span>);
+        });
+        <span class="ident">toplevel</span>.<span class="ident">send_configure</span>();
+    }
+    <span class="kw">fn</span> <span class="ident">request_mode</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::DisplayHandle</span>, <span class="ident">toplevel</span>: <span class="ident">ToplevelSurface</span>, <span class="ident">mode</span>: <span class="ident">Mode</span>) { <span class="comment">/* ... */</span> }
+    <span class="kw">fn</span> <span class="ident">unset_mode</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::DisplayHandle</span>, <span class="ident">toplevel</span>: <span class="ident">ToplevelSurface</span>) { <span class="comment">/* ... */</span> }
+}
+<span class="macro">delegate_xdg_shell!</span>(<span class="ident">State</span>);
+<span class="macro">delegate_xdg_decoration!</span>(<span class="ident">State</span>);
+
+<span class="comment">// You are ready to go!  </span></code></pre></div>
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.XdgDecorationState.html" title="smithay::wayland::shell::xdg::decoration::XdgDecorationState struct">XdgDecorationState</a></div><div class="item-right docblock-short"><p>Delegate type for handling xdg decoration events.</p>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.XdgDecorationHandler.html" title="smithay::wayland::shell::xdg::decoration::XdgDecorationHandler trait">XdgDecorationHandler</a></div><div class="item-right docblock-short"><p>Handler trait for xdg decoration events.</p>
+</div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

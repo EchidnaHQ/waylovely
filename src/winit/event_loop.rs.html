@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/event_loop.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_loop.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/event_loop.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_loop.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../winit/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../winit/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -241,6 +239,141 @@
 <span id="234">234</span>
 <span id="235">235</span>
 <span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The `EventLoop` struct and assorted supporting types, including `ControlFlow`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! If you want to send custom events to the event loop, use [`EventLoop::create_proxy()`][create_proxy]</span>
@@ -253,6 +386,7 @@
 <span class="doccomment">//! [event_loop_proxy]: crate::event_loop::EventLoopProxy</span>
 <span class="doccomment">//! [send_event]: crate::event_loop::EventLoopProxy::send_event</span>
 <span class="kw">use</span> <span class="ident">instant::Instant</span>;
+<span class="kw">use</span> <span class="ident">std::marker::PhantomData</span>;
 <span class="kw">use</span> <span class="ident">std::ops::Deref</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">error</span>, <span class="ident">fmt</span>};
 
@@ -274,7 +408,7 @@
 <span class="doccomment">///</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">event_loop</span>: <span class="ident">platform_impl::EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">_marker</span>: <span class="ident">::std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">*mut</span> ()<span class="op">&gt;</span>, <span class="comment">// Not Send nor Sync</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">_marker</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw-2">*mut</span> ()<span class="op">&gt;</span>, <span class="comment">// Not Send nor Sync</span>
 }
 
 <span class="doccomment">/// Target that associates windows with an `EventLoop`.</span>
@@ -285,7 +419,62 @@
 <span class="doccomment">/// `&amp;EventLoop`.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventLoopWindowTarget</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">p</span>: <span class="ident">platform_impl::EventLoopWindowTarget</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">_marker</span>: <span class="ident">::std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">*mut</span> ()<span class="op">&gt;</span>, <span class="comment">// Not Send nor Sync</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">_marker</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw-2">*mut</span> ()<span class="op">&gt;</span>, <span class="comment">// Not Send nor Sync</span>
+}
+
+<span class="doccomment">/// Object that allows building the event loop.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is used to make specifying options that affect the whole application</span>
+<span class="doccomment">/// easier. But note that constructing multiple event loops is not supported.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EventLoopBuilder</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">platform_specific</span>: <span class="ident">platform_impl::PlatformSpecificEventLoopAttributes</span>,
+    <span class="ident">_p</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">EventLoopBuilder</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// Start building a new event loop.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+        <span class="ident"><span class="self">Self</span>::with_user_event</span>()
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">EventLoopBuilder</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Start building a new event loop, with the given type as the user event</span>
+    <span class="doccomment">/// type.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_user_event</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">platform_specific</span>: <span class="ident">Default::default</span>(),
+            <span class="ident">_p</span>: <span class="ident">PhantomData</span>,
+        }
+    }
+
+    <span class="doccomment">/// Builds a new event loop.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ***For cross-platform compatibility, the `EventLoop` must be created on the main thread.***</span>
+    <span class="doccomment">/// Attempting to create the event loop on a different thread will panic. This restriction isn&#39;t</span>
+    <span class="doccomment">/// strictly necessary on all platforms, but is imposed to eliminate any nasty surprises when</span>
+    <span class="doccomment">/// porting to platforms that require it. `EventLoopBuilderExt::any_thread` functions are exposed</span>
+    <span class="doccomment">/// in the relevant `platform` module if the target platform supports creating an event loop on</span>
+    <span class="doccomment">/// any thread.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Calling this function will result in display backend initialisation.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ## Platform-specific</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - **Linux:** Backend type can be controlled using an environment variable</span>
+    <span class="doccomment">///   `WINIT_UNIX_BACKEND`. Legal values are `x11` and `wayland`.</span>
+    <span class="doccomment">///   If it is not set, winit will try to connect to a Wayland connection, and if that fails,</span>
+    <span class="doccomment">///   will fall back on X11. If this variable is set with any other value, winit will panic.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="ident">EventLoop</span> {
+            <span class="ident">event_loop</span>: <span class="ident">platform_impl::EventLoop::new</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">platform_specific</span>),
+            <span class="ident">_marker</span>: <span class="ident">PhantomData</span>,
+        }
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
@@ -307,9 +496,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## Persistency</span>
 <span class="doccomment">/// Almost every change is persistent between multiple calls to the event loop closure within a</span>
-<span class="doccomment">/// given run loop. The only exception to this is `Exit` which, once set, cannot be unset. Changes</span>
-<span class="doccomment">/// are **not** persistent between multiple calls to `run_return` - issuing a new call will reset</span>
-<span class="doccomment">/// the control flow to `Poll`.</span>
+<span class="doccomment">/// given run loop. The only exception to this is `ExitWithCode` which, once set, cannot be unset.</span>
+<span class="doccomment">/// Changes are **not** persistent between multiple calls to `run_return` - issuing a new call will</span>
+<span class="doccomment">/// reset the control flow to `Poll`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [events_cleared]: crate::event::Event::RedrawEventsCleared</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
@@ -327,11 +516,70 @@
     <span class="ident">Wait</span>,
     <span class="doccomment">/// When the current loop iteration finishes, suspend the thread until either another event</span>
     <span class="doccomment">/// arrives or the given time is reached.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Useful for implementing efficient timers. Applications which want to render at the display&#39;s</span>
+    <span class="doccomment">/// native refresh rate should instead use `Poll` and the VSync functionality of a graphics API</span>
+    <span class="doccomment">/// to reduce odds of missed frames.</span>
     <span class="ident">WaitUntil</span>(<span class="ident">Instant</span>),
     <span class="doccomment">/// Send a `LoopDestroyed` event and stop the event loop. This variant is *sticky* - once set,</span>
-    <span class="doccomment">/// `control_flow` cannot be changed from `Exit`, and any future attempts to do so will result</span>
-    <span class="doccomment">/// in the `control_flow` parameter being reset to `Exit`.</span>
-    <span class="ident">Exit</span>,
+    <span class="doccomment">/// `control_flow` cannot be changed from `ExitWithCode`, and any future attempts to do so will</span>
+    <span class="doccomment">/// result in the `control_flow` parameter being reset to `ExitWithCode`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The contained number will be used as exit code. The [`Exit`] constant is a shortcut for this</span>
+    <span class="doccomment">/// with exit code 0.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ## Platform-specific</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - **Android / iOS / WASM**: The supplied exit code is unused.</span>
+    <span class="doccomment">/// - **Unix**: On most Unix-like platforms, only the 8 least significant bits will be used,</span>
+    <span class="doccomment">///   which can cause surprises with negative exit values (`-42` would end up as `214`). See</span>
+    <span class="doccomment">///   [`std::process::exit`].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`Exit`]: ControlFlow::Exit</span>
+    <span class="ident">ExitWithCode</span>(<span class="ident">i32</span>),
+}
+
+<span class="kw">impl</span> <span class="ident">ControlFlow</span> {
+    <span class="doccomment">/// Alias for [`ExitWithCode`]`(0)`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`ExitWithCode`]: ControlFlow::ExitWithCode</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_upper_case_globals</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">Exit</span>: <span class="self">Self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::ExitWithCode</span>(<span class="number">0</span>);
+
+    <span class="doccomment">/// Sets this to [`Poll`].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`Poll`]: ControlFlow::Poll</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_poll</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Poll</span>;
+    }
+
+    <span class="doccomment">/// Sets this to [`Wait`].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`Wait`]: ControlFlow::Wait</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_wait</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Wait</span>;
+    }
+
+    <span class="doccomment">/// Sets this to [`WaitUntil`]`(instant)`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`WaitUntil`]: ControlFlow::WaitUntil</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_wait_until</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">instant</span>: <span class="ident">Instant</span>) {
+        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::WaitUntil</span>(<span class="ident">instant</span>);
+    }
+
+    <span class="doccomment">/// Sets this to [`ExitWithCode`]`(code)`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`ExitWithCode`]: ControlFlow::ExitWithCode</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_exit_with_code</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">code</span>: <span class="ident">i32</span>) {
+        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::ExitWithCode</span>(<span class="ident">code</span>);
+    }
+
+    <span class="doccomment">/// Sets this to [`Exit`].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`Exit`]: ControlFlow::Exit</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_exit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Exit</span>;
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ControlFlow</span> {
@@ -342,41 +590,17 @@
 }
 
 <span class="kw">impl</span> <span class="ident">EventLoop</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="doccomment">/// Builds a new event loop with a `()` as the user event type.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ***For cross-platform compatibility, the `EventLoop` must be created on the main thread.***</span>
-    <span class="doccomment">/// Attempting to create the event loop on a different thread will panic. This restriction isn&#39;t</span>
-    <span class="doccomment">/// strictly necessary on all platforms, but is imposed to eliminate any nasty surprises when</span>
-    <span class="doccomment">/// porting to platforms that require it. `EventLoopExt::new_any_thread` functions are exposed</span>
-    <span class="doccomment">/// in the relevant `platform` module if the target platform supports creating an event loop on</span>
-    <span class="doccomment">/// any thread.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Usage will result in display backend initialisation, this can be controlled on linux</span>
-    <span class="doccomment">/// using an environment variable `WINIT_UNIX_BACKEND`. Legal values are `x11` and `wayland`.</span>
-    <span class="doccomment">/// If it is not set, winit will try to connect to a wayland connection, and if it fails will</span>
-    <span class="doccomment">/// fallback on x11. If this variable is set with any other value, winit will panic.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ## Platform-specific</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - **iOS:** Can only be called on the main thread.</span>
+    <span class="doccomment">/// Alias for `EventLoopBuilder::new().build()`.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">EventLoop</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="ident">EventLoop</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span><span class="ident">::with_user_event</span>()
+        <span class="ident">EventLoopBuilder::new</span>().<span class="ident">build</span>()
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Builds a new event loop.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// All caveats documented in [`EventLoop::new`] apply to this function.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ## Platform-specific</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - **iOS:** Can only be called on the main thread.</span>
+    <span class="attribute">#[<span class="ident">deprecated</span> <span class="op">=</span> <span class="string">&quot;Use `EventLoopBuilder::&lt;T&gt;::with_user_event().build()` instead.&quot;</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_user_event</span>() -&gt; <span class="ident">EventLoop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="ident">EventLoop</span> {
-            <span class="ident">event_loop</span>: <span class="ident">platform_impl::EventLoop::new</span>(),
-            <span class="ident">_marker</span>: <span class="ident">::std::marker::PhantomData</span>,
-        }
+        <span class="ident">EventLoopBuilder</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::with_user_event</span>().<span class="ident">build</span>()
     }
 
     <span class="doccomment">/// Hijacks the calling thread and initializes the winit event loop with the provided</span>
@@ -387,6 +611,11 @@
     <span class="doccomment">/// event loop&#39;s behavior.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Any values not passed to this function will *not* be dropped.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ## Platform-specific</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - **X11 / Wayland**: The program terminates with exit code 1 if the display server</span>
+    <span class="doccomment">///   disconnects.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`ControlFlow`]: crate::event_loop::ControlFlow</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -433,6 +662,28 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">primary_monitor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MonitorHandle</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">p</span>.<span class="ident">primary_monitor</span>()
     }
+
+    <span class="doccomment">/// Change [`DeviceEvent`] filter mode.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Since the [`DeviceEvent`] capture can lead to high CPU usage for unfocused windows, winit</span>
+    <span class="doccomment">/// will ignore them by default for unfocused windows on Linux/BSD. This method allows changing</span>
+    <span class="doccomment">/// this filter at runtime to explicitly capture them again.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ## Platform-specific</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - **Wayland / Windows / macOS / iOS / Android / Web**: Unsupported.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`DeviceEvent`]: crate::event::DeviceEvent</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_device_event_filter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_filter</span>: <span class="ident">DeviceEventFilter</span>) {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>
+        ))]</span>
+        <span class="self">self</span>.<span class="ident">p</span>.<span class="ident">set_device_event_filter</span>(<span class="ident">_filter</span>);
+    }
 }
 
 <span class="doccomment">/// Used to send custom events to `EventLoop`.</span>
@@ -477,6 +728,23 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">fmt::Debug</span><span class="op">&gt;</span> <span class="ident">error::Error</span> <span class="kw">for</span> <span class="ident">EventLoopClosed</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {}
+
+<span class="doccomment">/// Fiter controlling the propagation of device events.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DeviceEventFilter</span> {
+    <span class="doccomment">/// Always filter out device events.</span>
+    <span class="ident">Always</span>,
+    <span class="doccomment">/// Filter out device events while the window is not focused.</span>
+    <span class="ident">Unfocused</span>,
+    <span class="doccomment">/// Report all device events regardless of window focus.</span>
+    <span class="ident">Never</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">DeviceEventFilter</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="ident"><span class="self">Self</span>::Unfocused</span>
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

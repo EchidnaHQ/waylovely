@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EVT_FINISHED_SINCE","The minimal object version supporting this event"],["EVT_LEASE_FD_SINCE","The minimal object version supporting this event"],["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["WpDrmLeaseV1","a DRM lease"]]});

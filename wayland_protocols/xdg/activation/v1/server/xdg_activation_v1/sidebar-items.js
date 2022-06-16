@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["REQ_ACTIVATE_SINCE","The minimal object version supporting this request"],["REQ_DESTROY_SINCE","The minimal object version supporting this request"],["REQ_GET_ACTIVATION_TOKEN_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["XdgActivationV1","interface for activating surfaces"]]});

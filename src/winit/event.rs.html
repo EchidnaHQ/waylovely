@@ -1,11 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/winit-0.26.1/src/event.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/winit-c2fdb27092aba5a7/4c39b31/src/event.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../winit/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../winit/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../winit/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1077,6 +1075,93 @@
 <span id="1070">1070</span>
 <span id="1071">1071</span>
 <span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
+<span id="1118">1118</span>
+<span id="1119">1119</span>
+<span id="1120">1120</span>
+<span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The `Event` enum and assorted supporting types.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! These are sent to the closure given to [`EventLoop::run(...)`][event_loop_run], where they get</span>
@@ -1115,6 +1200,8 @@
 <span class="kw">use</span> <span class="ident">instant::Instant</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">doc</span>)]</span>
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::window::Window</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">dpi</span>::{<span class="ident">PhysicalPosition</span>, <span class="ident">PhysicalSize</span>},
     <span class="ident">platform_impl</span>,
@@ -1172,8 +1259,7 @@
     <span class="doccomment">/// This gets triggered in two scenarios:</span>
     <span class="doccomment">/// - The OS has performed an operation that&#39;s invalidated the window&#39;s contents (such as</span>
     <span class="doccomment">///   resizing the window).</span>
-    <span class="doccomment">/// - The application has explicitly requested a redraw via</span>
-    <span class="doccomment">///   [`Window::request_redraw`](crate::window::Window::request_redraw).</span>
+    <span class="doccomment">/// - The application has explicitly requested a redraw via [`Window::request_redraw`].</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// During each iteration of the event loop, Winit will aggregate duplicate redraw requests</span>
     <span class="doccomment">/// into a single event, to help avoid duplicating rendering work.</span>
@@ -1285,7 +1371,7 @@
     <span class="ident">Init</span>,
 }
 
-<span class="doccomment">/// Describes an event from a `Window`.</span>
+<span class="doccomment">/// Describes an event from a [`Window`].</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">WindowEvent</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The size of the window has changed. Contains the client area&#39;s new dimensions.</span>
@@ -1319,6 +1405,8 @@
     <span class="ident">HoveredFileCancelled</span>,
 
     <span class="doccomment">/// The window received a unicode character.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// See also the [`Ime`](Self::Ime) event for more complex character sequences.</span>
     <span class="ident">ReceivedCharacter</span>(<span class="ident">char</span>),
 
     <span class="doccomment">/// The window gained or lost focus.</span>
@@ -1348,6 +1436,14 @@
     <span class="doccomment">/// - **Web**: This API is currently unimplemented on the web. This isn&#39;t by design - it&#39;s an</span>
     <span class="doccomment">///   issue, and it should get fixed - but it&#39;s the current state of the API.</span>
     <span class="ident">ModifiersChanged</span>(<span class="ident">ModifiersState</span>),
+
+    <span class="doccomment">/// An event from input method.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Note :** You have to explicitly enable this event using [`Window::set_ime_allowed`].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Platform-specific behavior:</span>
+    <span class="doccomment">/// - **iOS / Android / Web :** Unsupported.</span>
+    <span class="ident">Ime</span>(<span class="ident">Ime</span>),
 
     <span class="doccomment">/// The cursor has moved on the window.</span>
     <span class="ident">CursorMoved</span> {
@@ -1455,7 +1551,7 @@
                 <span class="ident">input</span>: <span class="kw-2">*</span><span class="ident">input</span>,
                 <span class="ident">is_synthetic</span>: <span class="kw-2">*</span><span class="ident">is_synthetic</span>,
             },
-
+            <span class="ident">Ime</span>(<span class="ident">preedit_state</span>) =&gt; <span class="ident">Ime</span>(<span class="ident">preedit_state</span>.<span class="ident">clone</span>()),
             <span class="ident">ModifiersChanged</span>(<span class="ident">modifiers</span>) =&gt; <span class="ident">ModifiersChanged</span>(<span class="kw-2">*</span><span class="ident">modifiers</span>),
             <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
             <span class="ident">CursorMoved</span> {
@@ -1547,6 +1643,7 @@
                 <span class="ident">is_synthetic</span>,
             }),
             <span class="ident">ModifiersChanged</span>(<span class="ident">modifiers</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">ModifiersChanged</span>(<span class="ident">modifiers</span>)),
+            <span class="ident">Ime</span>(<span class="ident">event</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">Ime</span>(<span class="ident">event</span>)),
             <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
             <span class="ident">CursorMoved</span> {
                 <span class="ident">device_id</span>,
@@ -1706,6 +1803,73 @@
     <span class="kw">pub</span> <span class="ident">modifiers</span>: <span class="ident">ModifiersState</span>,
 }
 
+<span class="doccomment">/// Describes [input method](https://en.wikipedia.org/wiki/Input_method) events.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is also called a &quot;composition event&quot;.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Most keypresses using a latin-like keyboard layout simply generate a [`WindowEvent::ReceivedCharacter`].</span>
+<span class="doccomment">/// However, one couldn&#39;t possibly have a key for every single unicode character that the user might want to type</span>
+<span class="doccomment">/// - so the solution operating systems employ is to allow the user to type these using _a sequence of keypresses_ instead.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// A prominent example of this is accents - many keyboard layouts allow you to first click the &quot;accent key&quot;, and then</span>
+<span class="doccomment">/// the character you want to apply the accent to. This will generate the following event sequence:</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // Press &quot;`&quot; key</span>
+<span class="doccomment">/// Ime::Preedit(&quot;`&quot;, Some(0), Some(0))</span>
+<span class="doccomment">/// // Press &quot;E&quot; key</span>
+<span class="doccomment">/// Ime::Commit(&quot;é&quot;)</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Additionally, certain input devices are configured to display a candidate box that allow the user to select the</span>
+<span class="doccomment">/// desired character interactively. (To properly position this box, you must use [`Window::set_ime_position`].)</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An example of a keyboard layout which uses candidate boxes is pinyin. On a latin keybaord the following event</span>
+<span class="doccomment">/// sequence could be obtained:</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // Press &quot;A&quot; key</span>
+<span class="doccomment">/// Ime::Preedit(&quot;a&quot;, Some(1), Some(1))</span>
+<span class="doccomment">/// // Press &quot;B&quot; key</span>
+<span class="doccomment">/// Ime::Preedit(&quot;a b&quot;, Some(3), Some(3))</span>
+<span class="doccomment">/// // Press left arrow key</span>
+<span class="doccomment">/// Ime::Preedit(&quot;a b&quot;, Some(1), Some(1))</span>
+<span class="doccomment">/// // Press space key</span>
+<span class="doccomment">/// Ime::Preedit(&quot;啊b&quot;, Some(3), Some(3))</span>
+<span class="doccomment">/// // Press space key</span>
+<span class="doccomment">/// Ime::Commit(&quot;啊不&quot;)</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Ime</span> {
+    <span class="doccomment">/// Notifies when the IME was enabled.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// After getting this event you could receive [`Preedit`](Self::Preedit) and</span>
+    <span class="doccomment">/// [`Commit`](Self::Commit) events. You should also start performing IME related requests</span>
+    <span class="doccomment">/// like [`Window::set_ime_position`].</span>
+    <span class="ident">Enabled</span>,
+
+    <span class="doccomment">/// Notifies when a new composing text should be set at the cursor position.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The value represents a pair of the preedit string and the cursor begin position and end</span>
+    <span class="doccomment">/// position. When it&#39;s `None`, the cursor should be hidden.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The cursor position is byte-wise indexed.</span>
+    <span class="ident">Preedit</span>(<span class="ident">String</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>),
+
+    <span class="doccomment">/// Notifies when text should be inserted into the editor widget.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Any pending [`Preedit`](Self::Preedit) must be cleared.</span>
+    <span class="ident">Commit</span>(<span class="ident">String</span>),
+
+    <span class="doccomment">/// Notifies when the IME was disabled.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// After receiving this event you won&#39;t get any more [`Preedit`](Self::Preedit) or</span>
+    <span class="doccomment">/// [`Commit`](Self::Commit) events until the next [`Enabled`](Self::Enabled) event. You can</span>
+    <span class="doccomment">/// also stop issuing IME related requests like [`Window::set_ime_position`] and clear pending</span>
+    <span class="doccomment">/// preedit text.</span>
+    <span class="ident">Disabled</span>,
+}
+
 <span class="doccomment">/// Describes touch-screen input state.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
@@ -1838,15 +2002,23 @@
     <span class="doccomment">/// Amount in lines or rows to scroll in the horizontal</span>
     <span class="doccomment">/// and vertical directions.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Positive values indicate movement forward</span>
-    <span class="doccomment">/// (away from the user) or rightwards.</span>
+    <span class="doccomment">/// Positive values indicate that the content that is being scrolled should move</span>
+    <span class="doccomment">/// right and down (revealing more content left and up).</span>
     <span class="ident">LineDelta</span>(<span class="ident">f32</span>, <span class="ident">f32</span>),
+
     <span class="doccomment">/// Amount in pixels to scroll in the horizontal and</span>
     <span class="doccomment">/// vertical direction.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Scroll events are expressed as a PixelDelta if</span>
     <span class="doccomment">/// supported by the device (eg. a touchpad) and</span>
     <span class="doccomment">/// platform.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Positive values indicate that the content being scrolled should</span>
+    <span class="doccomment">/// move right/down.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// For a &#39;natural scrolling&#39; touch pad (that acts like a touch screen)</span>
+    <span class="doccomment">/// this means moving your fingers right and down should give positive values,</span>
+    <span class="doccomment">/// and move the content right and down (to reveal more things left and up).</span>
     <span class="ident">PixelDelta</span>(<span class="ident">PhysicalPosition</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>),
 }
 
@@ -2150,5 +2322,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="winit" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

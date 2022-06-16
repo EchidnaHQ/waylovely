@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -633,6 +631,23 @@
 <span id="626">626</span>
 <span id="627">627</span>
 <span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rendering functionality and abstractions</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Collection of common traits and implementations</span>
@@ -645,13 +660,16 @@
 <span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
 <span class="kw">use</span> <span class="ident">std::error::Error</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">Buffer</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>, <span class="ident">Size</span>, <span class="ident">Transform</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">Buffer</span> <span class="kw">as</span> <span class="ident">BufferCoord</span>, <span class="ident">Physical</span>, <span class="ident">Point</span>, <span class="ident">Rectangle</span>, <span class="ident">Scale</span>, <span class="ident">Size</span>, <span class="ident">Transform</span>};
+<span class="kw">use</span> <span class="ident">cgmath::Matrix3</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland_frontend&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wayland::compositor::SurfaceData</span>;
-<span class="kw">use</span> <span class="ident">cgmath::Matrix3</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland_frontend&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">wayland_server::protocol</span>::{<span class="ident">wl_buffer</span>, <span class="ident">wl_shm</span>};
+<span class="kw">use</span> <span class="ident">wayland_server</span>::{
+    <span class="ident">protocol</span>::{<span class="ident">wl_buffer</span>, <span class="ident">wl_shm</span>},
+    <span class="ident">DisplayHandle</span>,
+};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;renderer_gl&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gles2</span>;
@@ -740,7 +758,7 @@
 <span class="doccomment">/// A two dimensional texture</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Texture</span> {
     <span class="doccomment">/// Size of the texture plane</span>
-    <span class="kw">fn</span> <span class="ident">size</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">size</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span> {
         <span class="ident">Size::from</span>((<span class="self">self</span>.<span class="ident">width</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="self">self</span>.<span class="ident">height</span>() <span class="kw">as</span> <span class="ident">i32</span>))
     }
 
@@ -789,7 +807,7 @@
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">render_texture_from_to</span>(
             <span class="ident">texture</span>,
-            <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">Point</span>::<span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span><span class="ident">::from</span>((<span class="number">0</span>, <span class="number">0</span>)), <span class="ident">texture</span>.<span class="ident">size</span>()).<span class="ident">to_f64</span>(),
+            <span class="ident">Rectangle::from_loc_and_size</span>(<span class="ident">Point</span>::<span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span><span class="ident">::from</span>((<span class="number">0</span>, <span class="number">0</span>)), <span class="ident">texture</span>.<span class="ident">size</span>()).<span class="ident">to_f64</span>(),
             <span class="ident">Rectangle::from_loc_and_size</span>(
                 <span class="ident">pos</span>,
                 <span class="ident">texture</span>
@@ -809,7 +827,7 @@
     <span class="kw">fn</span> <span class="ident">render_texture_from_to</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">texture</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::TextureId</span>,
-        <span class="ident">src</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>,
+        <span class="ident">src</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>,
         <span class="ident">dst</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span>,
         <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">Physical</span><span class="op">&gt;</span>],
         <span class="ident">src_transform</span>: <span class="ident">Transform</span>,
@@ -864,7 +882,7 @@
     <span class="doccomment">/// This call *may* fail, if (but not limited to):</span>
     <span class="doccomment">/// - The maximum amount of framebuffers for this renderer would be exceeded</span>
     <span class="doccomment">/// - The size is too large for a framebuffer</span>
-    <span class="kw">fn</span> <span class="ident">create_buffer</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Target</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">create_buffer</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Target</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
 }
 
 <span class="doccomment">/// Trait for Renderers supporting importing wl_buffers using shared memory.</span>
@@ -889,7 +907,7 @@
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
         <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::wayland::compositor::SurfaceData</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>],
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>],
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Returns supported formats for shared memory buffers.</span>
@@ -921,7 +939,7 @@
     <span class="kw">fn</span> <span class="ident">import_memory</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
-        <span class="ident">size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>,
+        <span class="ident">size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>,
         <span class="ident">flipped</span>: <span class="ident">bool</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
 
@@ -933,7 +951,7 @@
     <span class="doccomment">/// Anything beyond will be truncated, if the buffer is too small an error will be returned.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function *may* error, if (but not limited to):</span>
-    <span class="doccomment">/// - The texture was not created using either [`ImportMem::import_shm_buffer`] or [`ImportMem::import_memory`].</span>
+    <span class="doccomment">/// - The texture was not created using either [`ImportMemWl::import_shm_buffer`] or [`ImportMem::import_memory`].</span>
     <span class="doccomment">///   External textures imported by other means (e.g. via ImportDma) may not be writable. This property is defined</span>
     <span class="doccomment">///   by the implementation.</span>
     <span class="doccomment">/// - The region is out of bounds of the initial size the texture was created with. Implementations are not required</span>
@@ -942,7 +960,7 @@
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">texture</span>: <span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>,
         <span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
-        <span class="ident">region</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>,
+        <span class="ident">region</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
 }
 
@@ -966,7 +984,7 @@
     <span class="doccomment">/// This might return [`OtherEGLDisplayAlreadyBound`](super::egl::Error::OtherEGLDisplayAlreadyBound)</span>
     <span class="doccomment">/// if called for the same [`Display`](wayland_server::Display) multiple times, as only one egl</span>
     <span class="doccomment">/// display may be bound at any given time.</span>
-    <span class="kw">fn</span> <span class="ident">bind_wl_display</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">display</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::Display</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">EglError</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">bind_wl_display</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">display</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_server::DisplayHandle</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">EglError</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Unbinds a previously bound egl display, if existing.</span>
     <span class="doccomment">///</span>
@@ -995,9 +1013,10 @@
     <span class="doccomment">/// to avoid relying on implementation details, keep the buffer alive, until you destroyed this texture again.</span>
     <span class="kw">fn</span> <span class="ident">import_egl_buffer</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
         <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
         <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::wayland::compositor::SurfaceData</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>],
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>],
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
 }
 
@@ -1006,7 +1025,7 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ImportDmaWl</span>: <span class="ident">ImportDma</span> {
     <span class="doccomment">/// Import a given dmabuf-based buffer into the renderer (see [`buffer_type`]).</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns a texture_id, which can be used with [`Frame::render_texture`] (or [`Frame::render_texture_at`])</span>
+    <span class="doccomment">/// Returns a texture_id, which can be used with [`Frame::render_texture_from_to`] (or [`Frame::render_texture_at`])</span>
     <span class="doccomment">/// or implementation-specific functions.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// If not otherwise defined by the implementation, this texture id is only valid for the renderer, that created it.</span>
@@ -1018,16 +1037,12 @@
     <span class="kw">fn</span> <span class="ident">import_dma_buffer</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
-        <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::wayland::compositor::SurfaceData</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>],
+        <span class="ident">_surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::wayland::compositor::SurfaceData</span><span class="op">&gt;</span>,
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>],
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">surface</span>;
-        <span class="kw">let</span> <span class="ident">dmabuf</span> <span class="op">=</span> <span class="ident">buffer</span>
-            .<span class="ident">as_ref</span>()
-            .<span class="ident">user_data</span>()
-            .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Dmabuf</span><span class="op">&gt;</span>()
+        <span class="kw">let</span> <span class="ident">dmabuf</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::wayland::dmabuf::get_dmabuf</span>(<span class="ident">buffer</span>)
             .<span class="ident">expect</span>(<span class="string">&quot;import_dma_buffer without checking buffer type?&quot;</span>);
-        <span class="self">self</span>.<span class="ident">import_dmabuf</span>(<span class="ident">dmabuf</span>, <span class="prelude-val">Some</span>(<span class="ident">damage</span>))
+        <span class="self">self</span>.<span class="ident">import_dmabuf</span>(<span class="kw-2">&amp;</span><span class="ident">dmabuf</span>, <span class="prelude-val">Some</span>(<span class="ident">damage</span>))
     }
 }
 
@@ -1052,7 +1067,7 @@
     <span class="kw">fn</span> <span class="ident">import_dmabuf</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">dmabuf</span>: <span class="kw-2">&amp;</span><span class="ident">Dmabuf</span>,
-        <span class="ident">damage</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>]<span class="op">&gt;</span>,
+        <span class="ident">damage</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>]<span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
 }
 
@@ -1082,9 +1097,10 @@
     <span class="doccomment">/// Returns `None`, if the buffer type cannot be determined.</span>
     <span class="kw">fn</span> <span class="ident">import_buffer</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
         <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
         <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::wayland::compositor::SurfaceData</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>],
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>],
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 }
 
@@ -1097,13 +1113,14 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Renderer</span> <span class="op">+</span> <span class="ident">ImportMemWl</span> <span class="op">+</span> <span class="ident">ImportEgl</span> <span class="op">+</span> <span class="ident">ImportDmaWl</span><span class="op">&gt;</span> <span class="ident">ImportAll</span> <span class="kw">for</span> <span class="ident">R</span> {
     <span class="kw">fn</span> <span class="ident">import_buffer</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
         <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
         <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">SurfaceData</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>],
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>],
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">buffer_type</span>(<span class="ident">buffer</span>) {
+        <span class="kw">match</span> <span class="ident">buffer_type</span>(<span class="ident">dh</span>, <span class="ident">buffer</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">BufferType::Shm</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">import_shm_buffer</span>(<span class="ident">buffer</span>, <span class="ident">surface</span>, <span class="ident">damage</span>)),
-            <span class="prelude-val">Some</span>(<span class="ident">BufferType::Egl</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">import_egl_buffer</span>(<span class="ident">buffer</span>, <span class="ident">surface</span>, <span class="ident">damage</span>)),
+            <span class="prelude-val">Some</span>(<span class="ident">BufferType::Egl</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">import_egl_buffer</span>(<span class="ident">dh</span>, <span class="ident">buffer</span>, <span class="ident">surface</span>, <span class="ident">damage</span>)),
             <span class="prelude-val">Some</span>(<span class="ident">BufferType::Dma</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">import_dma_buffer</span>(<span class="ident">buffer</span>, <span class="ident">surface</span>, <span class="ident">damage</span>)),
             <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
@@ -1117,11 +1134,12 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Renderer</span> <span class="op">+</span> <span class="ident">ImportMemWl</span> <span class="op">+</span> <span class="ident">ImportDmaWl</span><span class="op">&gt;</span> <span class="ident">ImportAll</span> <span class="kw">for</span> <span class="ident">R</span> {
     <span class="kw">fn</span> <span class="ident">import_buffer</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
         <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
         <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">SurfaceData</span><span class="op">&gt;</span>,
-        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>],
+        <span class="ident">damage</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>],
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::TextureId</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">buffer_type</span>(<span class="ident">buffer</span>) {
+        <span class="kw">match</span> <span class="ident">buffer_type</span>(<span class="ident">dh</span>, <span class="ident">buffer</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">BufferType::Shm</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">import_shm_buffer</span>(<span class="ident">buffer</span>, <span class="ident">surface</span>, <span class="ident">damage</span>)),
             <span class="prelude-val">Some</span>(<span class="ident">BufferType::Dma</span>) =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">import_dma_buffer</span>(<span class="ident">buffer</span>, <span class="ident">surface</span>, <span class="ident">damage</span>)),
             <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
@@ -1144,7 +1162,7 @@
     <span class="doccomment">/// - There is not enough space to create the mapping</span>
     <span class="kw">fn</span> <span class="ident">copy_framebuffer</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">region</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>,
+        <span class="ident">region</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::TextureMapping</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
     <span class="doccomment">/// Copies the contents of the passed texture.</span>
     <span class="doccomment">/// *Note*: This function may change or invalidate the current bind.</span>
@@ -1157,7 +1175,7 @@
     <span class="kw">fn</span> <span class="ident">copy_texture</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">texture</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::TextureId</span>,
-        <span class="ident">region</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>,
+        <span class="ident">region</span>: <span class="ident">Rectangle</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::TextureMapping</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span>;
     <span class="doccomment">/// Returns a read-only pointer to a previously created texture mapping.</span>
     <span class="doccomment">///</span>
@@ -1181,7 +1199,10 @@
     <span class="doccomment">/// - The framebuffer is not readable</span>
     <span class="doccomment">/// - The size is larger than the framebuffer</span>
     <span class="doccomment">/// - There is not enough space to create a copy</span>
-    <span class="kw">fn</span> <span class="ident">export_framebuffer</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Dmabuf</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">export_framebuffer</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">size</span>: <span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Dmabuf</span>, <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Renderer</span><span class="op">&gt;</span><span class="ident">::Error</span><span class="op">&gt;</span>;
     <span class="doccomment">/// Exports the given texture as a dmabuf.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This operation is not destructive, the contents of the texture keep being valid.</span>
@@ -1213,25 +1234,26 @@
 <span class="doccomment">/// Returns `None` if the type is not known to smithay</span>
 <span class="doccomment">/// or otherwise not supported (e.g. not initialized using one of smithays [`crate::wayland`]-handlers).</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland_frontend&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">buffer_type</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BufferType</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">buffer</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Dmabuf</span><span class="op">&gt;</span>().<span class="ident">is_some</span>() {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">buffer_type</span>(<span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BufferType</span><span class="op">&gt;</span> {
+    <span class="kw">if</span> <span class="ident"><span class="kw">crate</span>::wayland::dmabuf::get_dmabuf</span>(<span class="ident">buffer</span>).<span class="ident">is_ok</span>() {
         <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">BufferType::Dma</span>);
     }
 
+    <span class="kw">if</span> <span class="ident"><span class="kw">crate</span>::wayland::shm::with_buffer_contents</span>(<span class="ident">buffer</span>, <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> ()).<span class="ident">is_ok</span>() {
+        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">BufferType::Shm</span>);
+    }
+
+    <span class="comment">// Not managed, check if this is an EGLBuffer</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;backend_egl&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
     <span class="kw">if</span> <span class="ident">BUFFER_READER</span>
         .<span class="ident">lock</span>()
         .<span class="ident">unwrap</span>()
         .<span class="ident">as_ref</span>()
         .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">upgrade</span>())
-        .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">egl_buffer_dimensions</span>(<span class="ident">buffer</span>))
+        .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">egl_buffer_dimensions</span>(<span class="ident">_dh</span>, <span class="ident">buffer</span>))
         .<span class="ident">is_some</span>()
     {
         <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">BufferType::Egl</span>);
-    }
-
-    <span class="kw">if</span> <span class="ident"><span class="kw">crate</span>::wayland::shm::with_buffer_contents</span>(<span class="ident">buffer</span>, <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> ()).<span class="ident">is_ok</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">BufferType::Shm</span>);
     }
 
     <span class="prelude-val">None</span>
@@ -1241,26 +1263,36 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// *Note*: This will only return dimensions for buffer types known to smithay (see [`buffer_type`])</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wayland_frontend&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">buffer_dimensions</span>(<span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">Buffer</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::backend::allocator::Buffer</span>;
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">buffer_dimensions</span>(
+    <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+    <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">wl_buffer::WlBuffer</span>,
+) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Size</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">BufferCoord</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">backend::allocator::Buffer</span>, <span class="ident">wayland::shm</span>};
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">buf</span>) <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Dmabuf</span><span class="op">&gt;</span>() {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">buf</span>) <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::wayland::dmabuf::get_dmabuf</span>(<span class="ident">buffer</span>) {
         <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">buf</span>.<span class="ident">width</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">buf</span>.<span class="ident">height</span>() <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into</span>());
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;backend_egl&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="ident">BUFFER_READER</span>
-        .<span class="ident">lock</span>()
-        .<span class="ident">unwrap</span>()
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">upgrade</span>())
-        .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">egl_buffer_dimensions</span>(<span class="ident">buffer</span>))
-    {
-        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>);
-    }
+    <span class="kw">match</span> <span class="ident">shm::with_buffer_contents</span>(<span class="ident">buffer</span>, <span class="op">|</span><span class="kw">_</span>, <span class="ident">data</span><span class="op">|</span> (<span class="ident">data</span>.<span class="ident">width</span>, <span class="ident">data</span>.<span class="ident">height</span>).<span class="ident">into</span>()) {
+        <span class="prelude-val">Ok</span>(<span class="ident">data</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">data</span>),
 
-    <span class="ident"><span class="kw">crate</span>::wayland::shm::with_buffer_contents</span>(<span class="ident">buffer</span>, <span class="op">|</span><span class="kw">_</span>, <span class="ident">data</span><span class="op">|</span> (<span class="ident">data</span>.<span class="ident">width</span>, <span class="ident">data</span>.<span class="ident">height</span>).<span class="ident">into</span>()).<span class="ident">ok</span>()
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
+            <span class="comment">// Not managed, check if this is an EGLBuffer</span>
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;backend_egl&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="ident">BUFFER_READER</span>
+                .<span class="ident">lock</span>()
+                .<span class="ident">unwrap</span>()
+                .<span class="ident">as_ref</span>()
+                .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">upgrade</span>())
+                .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">egl_buffer_dimensions</span>(<span class="ident">_dh</span>, <span class="ident">buffer</span>))
+            {
+                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>);
+            }
+
+            <span class="prelude-val">None</span>
+        }
+    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

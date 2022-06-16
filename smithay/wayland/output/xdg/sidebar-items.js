@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["init_xdg_output_manager","Initialize a xdg output manager global."]]});

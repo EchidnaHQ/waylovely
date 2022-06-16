@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -194,27 +192,95 @@
 <span id="187">187</span>
 <span id="188">188</span>
 <span id="189">189</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">wayland_protocols::unstable::tablet::v2::server::zwp_tablet_seat_v2::ZwpTabletSeatV2</span>;
-<span class="kw">use</span> <span class="ident">wayland_server</span>::{<span class="ident">Filter</span>, <span class="ident">Main</span>};
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">wayland_protocols::wp::tablet::zv2::server</span>::{
+    <span class="ident">zwp_tablet_seat_v2</span>::{<span class="self">self</span>, <span class="ident">ZwpTabletSeatV2</span>},
+    <span class="ident">zwp_tablet_tool_v2::ZwpTabletToolV2</span>,
+    <span class="ident">zwp_tablet_v2::ZwpTabletV2</span>,
+};
+<span class="kw">use</span> <span class="ident">wayland_server</span>::{
+    <span class="ident">backend</span>::{<span class="ident">ClientId</span>, <span class="ident">ObjectId</span>},
+    <span class="ident">Client</span>, <span class="ident">DataInit</span>, <span class="ident">DelegateDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>, <span class="ident">Resource</span>,
+};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::backend::input::TabletToolDescriptor</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wayland::seat::CursorImageStatus</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::tablet</span>::{<span class="ident">TabletDescriptor</span>, <span class="ident">TabletHandle</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::tablet_tool::TabletToolHandle</span>;
+<span class="kw">use</span> <span class="kw">super</span>::{
+    <span class="ident">tablet::TabletUserData</span>,
+    <span class="ident">tablet_tool</span>::{<span class="ident">TabletToolHandle</span>, <span class="ident">TabletToolUserData</span>},
+};
+<span class="kw">use</span> <span class="kw">super</span>::{
+    <span class="ident">tablet</span>::{<span class="ident">TabletDescriptor</span>, <span class="ident">TabletHandle</span>},
+    <span class="ident">TabletManagerState</span>,
+};
 
-<span class="kw">use</span> <span class="ident">std::convert::AsRef</span>;
+<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 <span class="kw">use</span> <span class="ident">std::ops::Deref</span> <span class="kw">as</span> <span class="kw">_</span>;
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cell::RefCell</span>, <span class="ident">collections::HashMap</span>, <span class="ident">rc::Rc</span>};
+<span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
-<span class="kw">struct</span> <span class="ident">TabletSeat</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">TabletSeat</span> {
     <span class="ident">instances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ZwpTabletSeatV2</span><span class="op">&gt;</span>,
     <span class="ident">tablets</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">TabletDescriptor</span>, <span class="ident">TabletHandle</span><span class="op">&gt;</span>,
     <span class="ident">tools</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">TabletToolDescriptor</span>, <span class="ident">TabletToolHandle</span><span class="op">&gt;</span>,
 
-    <span class="ident">cursor_callback</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>, <span class="ident">CursorImageStatus</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">cursor_callback</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>, <span class="ident">CursorImageStatus</span>) <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">TabletSeat</span> {
@@ -242,45 +308,42 @@
 <span class="doccomment">/// TabletSeatHandle can be used to advertise available graphics tablets and tools to wayland clients</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TabletSeatHandle</span> {
-    <span class="ident">inner</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">TabletSeat</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">TabletSeat</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">TabletSeatHandle</span> {
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">add_instance</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">seat</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwpTabletSeatV2</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>();
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">add_instance</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">seat</span>: <span class="kw-2">&amp;</span><span class="ident">ZwpTabletSeatV2</span>, <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>)
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">ZwpTabletV2</span>, <span class="ident">TabletUserData</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">ZwpTabletToolV2</span>, <span class="ident">TabletToolUserData</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
 
         <span class="comment">// Notify new instance about available tablets</span>
         <span class="kw">for</span> (<span class="ident">desc</span>, <span class="ident">tablet</span>) <span class="kw">in</span> <span class="ident">inner</span>.<span class="ident">tablets</span>.<span class="ident">iter_mut</span>() {
-            <span class="ident">tablet</span>.<span class="ident">new_instance</span>(<span class="ident">seat</span>.<span class="ident">deref</span>(), <span class="ident">desc</span>);
+            <span class="ident">tablet</span>.<span class="ident">new_instance</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>, <span class="ident">dh</span>, <span class="ident">seat</span>, <span class="ident">desc</span>);
         }
 
         <span class="comment">// Notify new instance about available tools</span>
         <span class="kw">for</span> (<span class="ident">desc</span>, <span class="ident">tool</span>) <span class="kw">in</span> <span class="ident">inner</span>.<span class="ident">tools</span>.<span class="ident">iter_mut</span>() {
             <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
-            <span class="ident">tool</span>.<span class="ident">new_instance</span>(<span class="ident">seat</span>.<span class="ident">deref</span>(), <span class="ident">desc</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">desc</span>, <span class="ident">status</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cursor_callback</span>) <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">cursor_callback</span> {
+            <span class="ident">tool</span>.<span class="ident">new_instance</span>::<span class="op">&lt;</span><span class="ident">D</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="ident">client</span>, <span class="ident">dh</span>, <span class="ident">seat</span>.<span class="ident">deref</span>(), <span class="ident">desc</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">desc</span>, <span class="ident">status</span><span class="op">|</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cursor_callback</span>) <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">cursor_callback</span> {
                     <span class="ident">cursor_callback</span>(<span class="ident">desc</span>, <span class="ident">status</span>);
                 }
             });
         }
 
-        <span class="ident">inner</span>.<span class="ident">instances</span>.<span class="ident">push</span>(<span class="ident">seat</span>.<span class="ident">deref</span>().<span class="ident">clone</span>());
-
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
-        <span class="ident">seat</span>.<span class="ident">assign_destructor</span>(<span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">seat</span>: <span class="ident">ZwpTabletSeatV2</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">inner</span>
-                .<span class="ident">borrow_mut</span>()
-                .<span class="ident">instances</span>
-                .<span class="ident">retain</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="op">!</span><span class="ident">i</span>.<span class="ident">as_ref</span>().<span class="ident">equals</span>(<span class="ident">seat</span>.<span class="ident">as_ref</span>()));
-        }));
+        <span class="ident">inner</span>.<span class="ident">instances</span>.<span class="ident">push</span>(<span class="ident">seat</span>.<span class="ident">clone</span>());
     }
 
     <span class="doccomment">/// Add a callback to SetCursor event</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">on_cursor_surface</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">cb</span>: <span class="ident">F</span>)
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>, <span class="ident">CursorImageStatus</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>, <span class="ident">CursorImageStatus</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">cursor_callback</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">cb</span>));
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">cursor_callback</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">cb</span>));
     }
 
     <span class="doccomment">/// Add a new tablet to a seat.</span>
@@ -289,8 +352,12 @@
     <span class="doccomment">/// or you can add tablet based on tool event, then clients will not know about devices that are not being used</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Returns new [TabletHandle] if tablet was not know by this seat, if tablet was already know it returns existing handle.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_tablet</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tablet_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletDescriptor</span>) -&gt; <span class="ident">TabletHandle</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>();
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_tablet</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">tablet_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletDescriptor</span>) -&gt; <span class="ident">TabletHandle</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">ZwpTabletV2</span>, <span class="ident">TabletUserData</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
 
         <span class="kw">let</span> <span class="ident">tablets</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">inner</span>.<span class="ident">tablets</span>;
         <span class="kw">let</span> <span class="ident">instances</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">inner</span>.<span class="ident">instances</span>;
@@ -299,7 +366,9 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tablet</span> <span class="op">=</span> <span class="ident">TabletHandle::default</span>();
             <span class="comment">// Create new tablet instance for every seat instance</span>
             <span class="kw">for</span> <span class="ident">seat</span> <span class="kw">in</span> <span class="ident">instances</span>.<span class="ident">iter</span>() {
-                <span class="ident">tablet</span>.<span class="ident">new_instance</span>(<span class="ident">seat</span>, <span class="ident">tablet_desc</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">client</span>) <span class="op">=</span> <span class="ident">dh</span>.<span class="ident">get_client</span>(<span class="ident">seat</span>.<span class="ident">id</span>()) {
+                    <span class="ident">tablet</span>.<span class="ident">new_instance</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">dh</span>, <span class="ident">seat</span>, <span class="ident">tablet_desc</span>);
+                }
             }
             <span class="ident">tablet</span>
         });
@@ -309,12 +378,12 @@
 
     <span class="doccomment">/// Get a handle to a tablet</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_tablet</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tablet_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletDescriptor</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TabletHandle</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow</span>().<span class="ident">tablets</span>.<span class="ident">get</span>(<span class="ident">tablet_desc</span>).<span class="ident">cloned</span>()
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tablets</span>.<span class="ident">get</span>(<span class="ident">tablet_desc</span>).<span class="ident">cloned</span>()
     }
 
     <span class="doccomment">/// Count all tablet devices</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">count_tablets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">tablets</span>.<span class="ident">len</span>()
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tablets</span>.<span class="ident">len</span>()
     }
 
     <span class="doccomment">/// Remove tablet device</span>
@@ -322,12 +391,12 @@
     <span class="doccomment">/// Called when tablet is no longer available</span>
     <span class="doccomment">/// For example on [input::Event::DeviceRemoved](crate::backend::input::InputEvent::DeviceRemoved) event.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_tablet</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tablet_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletDescriptor</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">tablets</span>.<span class="ident">remove</span>(<span class="ident">tablet_desc</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tablets</span>.<span class="ident">remove</span>(<span class="ident">tablet_desc</span>);
     }
 
     <span class="doccomment">/// Remove all tablet devices</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear_tablets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">tablets</span>.<span class="ident">clear</span>();
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tablets</span>.<span class="ident">clear</span>();
     }
 
     <span class="doccomment">/// Add a new tool to a seat.</span>
@@ -336,8 +405,12 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Returns new [TabletToolHandle] if tool was not know by this seat, if tool was already know it returns existing handle,</span>
     <span class="doccomment">/// it allows you to send tool input events to clients.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_tool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tool_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>) -&gt; <span class="ident">TabletToolHandle</span> {
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>();
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_tool</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">tool_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>) -&gt; <span class="ident">TabletToolHandle</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">ZwpTabletToolV2</span>, <span class="ident">TabletToolUserData</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
 
         <span class="kw">let</span> <span class="ident">tools</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">inner</span>.<span class="ident">tools</span>;
         <span class="kw">let</span> <span class="ident">instances</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">inner</span>.<span class="ident">instances</span>;
@@ -347,11 +420,14 @@
             <span class="comment">// Create new tool instance for every seat instance</span>
             <span class="kw">for</span> <span class="ident">seat</span> <span class="kw">in</span> <span class="ident">instances</span>.<span class="ident">iter</span>() {
                 <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
-                <span class="ident">tool</span>.<span class="ident">new_instance</span>(<span class="ident">seat</span>.<span class="ident">deref</span>(), <span class="ident">tool_desc</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">desc</span>, <span class="ident">status</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cursor_callback</span>) <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">cursor_callback</span> {
-                        <span class="ident">cursor_callback</span>(<span class="ident">desc</span>, <span class="ident">status</span>);
-                    }
-                });
+
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">client</span>) <span class="op">=</span> <span class="ident">dh</span>.<span class="ident">get_client</span>(<span class="ident">seat</span>.<span class="ident">id</span>()) {
+                    <span class="ident">tool</span>.<span class="ident">new_instance</span>::<span class="op">&lt;</span><span class="ident">D</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">client</span>, <span class="ident">dh</span>, <span class="ident">seat</span>, <span class="ident">tool_desc</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">desc</span>, <span class="ident">status</span><span class="op">|</span> {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cursor_callback</span>) <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">cursor_callback</span> {
+                            <span class="ident">cursor_callback</span>(<span class="ident">desc</span>, <span class="ident">status</span>);
+                        }
+                    });
+                }
             }
             <span class="ident">tool</span>
         });
@@ -361,12 +437,12 @@
 
     <span class="doccomment">/// Get a handle to a tablet tool</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_tool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tool_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TabletToolHandle</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow</span>().<span class="ident">tools</span>.<span class="ident">get</span>(<span class="ident">tool_desc</span>).<span class="ident">cloned</span>()
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tools</span>.<span class="ident">get</span>(<span class="ident">tool_desc</span>).<span class="ident">cloned</span>()
     }
 
     <span class="doccomment">/// Count all tablet tool devices</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">count_tools</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">tools</span>.<span class="ident">len</span>()
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tools</span>.<span class="ident">len</span>()
     }
 
     <span class="doccomment">/// Remove tablet tool device</span>
@@ -375,14 +451,46 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// One possible policy would be to remove a tool when all tablets the tool was used on are removed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_tool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tool_desc</span>: <span class="kw-2">&amp;</span><span class="ident">TabletToolDescriptor</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">tools</span>.<span class="ident">remove</span>(<span class="ident">tool_desc</span>);
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tools</span>.<span class="ident">remove</span>(<span class="ident">tool_desc</span>);
     }
 
     <span class="doccomment">/// Remove all tablet tool devices</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear_tools</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">borrow_mut</span>().<span class="ident">tools</span>.<span class="ident">clear</span>();
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">tools</span>.<span class="ident">clear</span>();
+    }
+}
+
+<span class="doccomment">/// User data of ZwpTabletSeatV2 object</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TabletSeatUserData</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">handle</span>: <span class="ident">TabletSeatHandle</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">ZwpTabletSeatV2</span>, <span class="ident">TabletSeatUserData</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TabletManagerState</span>
+<span class="kw">where</span>
+    <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">ZwpTabletSeatV2</span>, <span class="ident">TabletSeatUserData</span><span class="op">&gt;</span>,
+    <span class="ident">D</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">fn</span> <span class="ident">request</span>(
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+        <span class="ident">_client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>,
+        <span class="ident">_seat</span>: <span class="kw-2">&amp;</span><span class="ident">ZwpTabletSeatV2</span>,
+        <span class="ident">_request</span>: <span class="ident">zwp_tablet_seat_v2::Request</span>,
+        <span class="ident">_data</span>: <span class="kw-2">&amp;</span><span class="ident">TabletSeatUserData</span>,
+        <span class="ident">_dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">_data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    ) {
+    }
+
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>, <span class="ident">_client</span>: <span class="ident">ClientId</span>, <span class="ident">seat</span>: <span class="ident">ObjectId</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">TabletSeatUserData</span>) {
+        <span class="ident">data</span>.<span class="ident">handle</span>
+            .<span class="ident">inner</span>
+            .<span class="ident">lock</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">instances</span>
+            .<span class="ident">retain</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">id</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">seat</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>

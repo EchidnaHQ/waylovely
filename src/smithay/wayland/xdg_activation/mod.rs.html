@@ -3,9 +3,7 @@
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../smithay/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../smithay/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -262,58 +260,134 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Utilities for handling activation requests with the `xdg_activation` protocol</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! ### Example</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```no_run</span>
 <span class="doccomment">//! # extern crate wayland_server;</span>
 <span class="doccomment">//! #</span>
-<span class="doccomment">//! use smithay::wayland::xdg_activation::{init_xdg_activation_global, XdgActivationEvent};</span>
+<span class="doccomment">//! use wayland_server::{protocol::wl_surface::WlSurface, DisplayHandle};</span>
+<span class="doccomment">//! use smithay::{</span>
+<span class="doccomment">//!     delegate_xdg_activation,</span>
+<span class="doccomment">//!     wayland::xdg_activation::{XdgActivationHandler, XdgActivationState, XdgActivationToken, XdgActivationTokenData}</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! # let mut display = wayland_server::Display::new();</span>
-<span class="doccomment">//! let (state, _) = init_xdg_activation_global(</span>
-<span class="doccomment">//!     &amp;mut display,</span>
-<span class="doccomment">//!     // your implementation</span>
-<span class="doccomment">//!     |state, req, dispatch_data| {</span>
-<span class="doccomment">//!         match req{</span>
-<span class="doccomment">//!             XdgActivationEvent::RequestActivation { token, token_data, surface } =&gt; {</span>
-<span class="doccomment">//!                 if token_data.timestamp.elapsed().as_secs() &lt; 10 {</span>
-<span class="doccomment">//!                     // Request surface activation</span>
-<span class="doccomment">//!                 } else{</span>
-<span class="doccomment">//!                     // Discard the request</span>
-<span class="doccomment">//!                     state.lock().unwrap().remove_request(&amp;token);</span>
-<span class="doccomment">//!                 }</span>
-<span class="doccomment">//!             },</span>
-<span class="doccomment">//!             XdgActivationEvent::DestroyActivationRequest {..} =&gt; {</span>
-<span class="doccomment">//!                 // The request is canceled</span>
-<span class="doccomment">//!             },</span>
+<span class="doccomment">//! pub struct State {</span>
+<span class="doccomment">//!     activation_state: XdgActivationState,</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! impl XdgActivationHandler for State {</span>
+<span class="doccomment">//!     fn activation_state(&amp;mut self) -&gt; &amp;mut XdgActivationState {</span>
+<span class="doccomment">//!         &amp;mut self.activation_state</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     fn request_activation(</span>
+<span class="doccomment">//!         &amp;mut self,</span>
+<span class="doccomment">//!         dh: &amp;DisplayHandle,</span>
+<span class="doccomment">//!         token: XdgActivationToken,</span>
+<span class="doccomment">//!         token_data: XdgActivationTokenData,</span>
+<span class="doccomment">//!         surface: WlSurface</span>
+<span class="doccomment">//!     ) {</span>
+<span class="doccomment">//!         if token_data.timestamp.elapsed().as_secs() &lt; 10 {</span>
+<span class="doccomment">//!             // Request surface activation</span>
+<span class="doccomment">//!         } else{</span>
+<span class="doccomment">//!             // Discard the request</span>
+<span class="doccomment">//!             self.activation_state.remove_request(&amp;token);</span>
 <span class="doccomment">//!         }</span>
-<span class="doccomment">//!     },</span>
-<span class="doccomment">//!     None  // put a logger if you want</span>
-<span class="doccomment">//! );</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     fn destroy_activation(</span>
+<span class="doccomment">//!         &amp;mut self,</span>
+<span class="doccomment">//!         token: XdgActivationToken,</span>
+<span class="doccomment">//!         token_data: XdgActivationTokenData,</span>
+<span class="doccomment">//!         surface: WlSurface</span>
+<span class="doccomment">//!     ) {</span>
+<span class="doccomment">//!         // The request is cancelled</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // Delegate xdg activation handling for State to XdgActivationState.</span>
+<span class="doccomment">//! delegate_xdg_activation!(State);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # let mut display = wayland_server::Display::&lt;State&gt;::new().unwrap();</span>
+<span class="doccomment">//! # let display_handle = display.handle();</span>
+<span class="doccomment">//! let state = State {</span>
+<span class="doccomment">//!     activation_state: XdgActivationState::new::&lt;State, _&gt;(&amp;display_handle, None),</span>
+<span class="doccomment">//! };</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // Rest of the compositor goes here...</span>
 <span class="doccomment">//! ```</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">cell::RefCell</span>,
     <span class="ident">collections::HashMap</span>,
     <span class="ident">ops</span>,
-    <span class="ident">rc::Rc</span>,
-    <span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>},
+    <span class="ident">sync</span>::{<span class="ident">atomic::AtomicBool</span>, <span class="ident">Mutex</span>},
     <span class="ident">time::Instant</span>,
 };
 
-<span class="kw">use</span> <span class="ident">wayland_protocols::staging::xdg_activation::v1::server::xdg_activation_v1</span>;
+<span class="kw">use</span> <span class="ident">wayland_protocols::xdg::activation::v1::server::xdg_activation_v1</span>;
 <span class="kw">use</span> <span class="ident">wayland_server</span>::{
+    <span class="ident">backend::GlobalId</span>,
     <span class="ident">protocol</span>::{<span class="ident">wl_seat::WlSeat</span>, <span class="ident">wl_surface::WlSurface</span>},
-    <span class="ident">DispatchData</span>, <span class="ident">Display</span>, <span class="ident">Filter</span>, <span class="ident">Global</span>, <span class="ident">Main</span>, <span class="ident">UserDataMap</span>,
+    <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>, <span class="ident">GlobalDispatch</span>,
 };
 
 <span class="kw">use</span> <span class="ident">rand::distributions</span>::{<span class="ident">Alphanumeric</span>, <span class="ident">DistString</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wayland::Serial</span>;
 
-<span class="kw">mod</span> <span class="ident">handlers</span>;
+<span class="kw">mod</span> <span class="ident">dispatch</span>;
 
 <span class="doccomment">/// Contains the unique string token of activation request</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
@@ -397,18 +471,38 @@
 <span class="doccomment">/// Tracks the list of pending and current activation requests</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">XdgActivationState</span> {
-    <span class="ident">_log</span>: <span class="ident">::slog::Logger</span>,
-    <span class="ident">user_data</span>: <span class="ident">UserDataMap</span>,
-
+    <span class="ident">_logger</span>: <span class="ident">::slog::Logger</span>,
+    <span class="ident">global</span>: <span class="ident">GlobalId</span>,
     <span class="ident">pending_tokens</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">XdgActivationToken</span>, <span class="ident">XdgActivationTokenData</span><span class="op">&gt;</span>,
-
     <span class="ident">activation_requests</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">XdgActivationToken</span>, (<span class="ident">XdgActivationTokenData</span>, <span class="ident">WlSurface</span>)<span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">XdgActivationState</span> {
+    <span class="doccomment">/// Creates a new xdg activation global.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// In order to use this abstraction, your `D` type needs to implement [`XdgActivationHandler`].</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">L</span><span class="op">&gt;</span>(<span class="ident">display</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>, <span class="ident">logger</span>: <span class="ident">L</span>) -&gt; <span class="ident">XdgActivationState</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">xdg_activation_v1::XdgActivationV1</span>, ()<span class="op">&gt;</span>
+            <span class="op">+</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">xdg_activation_v1::XdgActivationV1</span>, ()<span class="op">&gt;</span>
+            <span class="op">+</span> <span class="ident">XdgActivationHandler</span>
+            <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">L</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">::slog::Logger</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::slog_or_fallback</span>(<span class="ident">logger</span>);
+        <span class="kw">let</span> <span class="ident">global</span> <span class="op">=</span> <span class="ident">display</span>.<span class="ident">create_global</span>::<span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">xdg_activation_v1::XdgActivationV1</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="number">1</span>, ());
+
+        <span class="ident">XdgActivationState</span> {
+            <span class="ident">_logger</span>: <span class="ident">logger</span>.<span class="ident">new</span>(<span class="macro">slog::o!</span>(<span class="string">&quot;smithay_module&quot;</span> =&gt; <span class="string">&quot;xdg_activation_handler&quot;</span>)),
+            <span class="ident">global</span>,
+            <span class="ident">pending_tokens</span>: <span class="ident">HashMap::new</span>(),
+            <span class="ident">activation_requests</span>: <span class="ident">HashMap::new</span>(),
+        }
+    }
+
     <span class="doccomment">/// Get current activation requests</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// HashMap contains token data and target surface</span>
+    <span class="doccomment">/// HashMap contains token data and target surface.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">requests</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">XdgActivationToken</span>, (<span class="ident">XdgActivationTokenData</span>, <span class="ident">WlSurface</span>)<span class="op">&gt;</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">activation_requests</span>
     }
@@ -443,82 +537,86 @@
         <span class="self">self</span>.<span class="ident">pending_tokens</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">k</span>, <span class="ident">v</span><span class="op">|</span> <span class="ident">f</span>(<span class="ident">k</span>, <span class="ident">v</span>))
     }
 
-    <span class="doccomment">/// Access the `UserDataMap` associated with this `XdgActivationState `</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">user_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">UserDataMap</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">user_data</span>
+    <span class="doccomment">/// Returns the xdg activation global.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">GlobalId</span> {
+        <span class="self">self</span>.<span class="ident">global</span>.<span class="ident">clone</span>()
     }
 }
 
-<span class="doccomment">/// Creates new `xdg-activation` global.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">init_xdg_activation_global</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">Impl</span><span class="op">&gt;</span>(
-    <span class="ident">display</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Display</span>,
-    <span class="ident">implementation</span>: <span class="ident">Impl</span>,
-    <span class="ident">logger</span>: <span class="ident">L</span>,
-) -&gt; (
-    <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">XdgActivationState</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">xdg_activation_v1::XdgActivationV1</span><span class="op">&gt;</span>,
-)
-<span class="kw">where</span>
-    <span class="ident">L</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">::slog::Logger</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">Impl</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">XdgActivationState</span><span class="op">&gt;</span>, <span class="ident">XdgActivationEvent</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-{
-    <span class="kw">let</span> <span class="ident">log</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::slog_or_fallback</span>(<span class="ident">logger</span>);
+<span class="doccomment">/// A trait implemented to be notified of activation requests using the xdg activation protocol.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">XdgActivationHandler</span> {
+    <span class="doccomment">/// Returns the activation state.</span>
+    <span class="kw">fn</span> <span class="ident">activation_state</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">XdgActivationState</span>;
 
-    <span class="kw">let</span> <span class="ident">implementation</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">implementation</span>));
-
-    <span class="kw">let</span> <span class="ident">activation_state</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">XdgActivationState</span> {
-        <span class="ident">_log</span>: <span class="ident">log</span>.<span class="ident">new</span>(<span class="macro">slog::o!</span>(<span class="string">&quot;smithay_module&quot;</span> =&gt; <span class="string">&quot;xdg_activation_handler&quot;</span>)),
-        <span class="ident">user_data</span>: <span class="ident">UserDataMap::new</span>(),
-        <span class="ident">pending_tokens</span>: <span class="ident">HashMap::new</span>(),
-        <span class="ident">activation_requests</span>: <span class="ident">HashMap::new</span>(),
-    }));
-
-    <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">activation_state</span>.<span class="ident">clone</span>();
-    <span class="kw">let</span> <span class="ident">global</span> <span class="op">=</span> <span class="ident">display</span>.<span class="ident">create_global</span>(
-        <span class="number">1</span>,
-        <span class="ident">Filter::new</span>(
-            <span class="kw">move</span> <span class="op">|</span>(<span class="ident">global</span>, <span class="ident">_version</span>): (<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">xdg_activation_v1::XdgActivationV1</span><span class="op">&gt;</span>, <span class="kw">_</span>), <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">handlers::implement_activation_global</span>(<span class="ident">global</span>, <span class="ident">state</span>.<span class="ident">clone</span>(), <span class="ident">implementation</span>.<span class="ident">clone</span>());
-            },
-        ),
+    <span class="doccomment">/// A client has requested surface activation.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The compositor may know which client requested this by checking the token data and may decide whether</span>
+    <span class="doccomment">/// or not to follow through with the activation if it&#39;s considered unwanted.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If a request is unwanted, you can discard the request using [`XdgActivationState::remove_request`] to</span>
+    <span class="doccomment">/// ignore any future requests.</span>
+    <span class="kw">fn</span> <span class="ident">request_activation</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">dh</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
+        <span class="ident">token</span>: <span class="ident">XdgActivationToken</span>,
+        <span class="ident">token_data</span>: <span class="ident">XdgActivationTokenData</span>,
+        <span class="ident">surface</span>: <span class="ident">WlSurface</span>,
     );
 
-    (<span class="ident">activation_state</span>, <span class="ident">global</span>)
+    <span class="doccomment">/// The activation token was destroyed.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The compositor may cancel any activation requests coming from the token.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// For example if your compositor blinks or highlights a window when it requests activation then the</span>
+    <span class="doccomment">/// animation should stop when this function is called.</span>
+    <span class="kw">fn</span> <span class="ident">destroy_activation</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">token</span>: <span class="ident">XdgActivationToken</span>,
+        <span class="ident">token_data</span>: <span class="ident">XdgActivationTokenData</span>,
+        <span class="ident">surface</span>: <span class="ident">WlSurface</span>,
+    );
 }
 
-<span class="doccomment">/// Xdg activation related events</span>
+<span class="doccomment">/// Data assoicated with an activation token protocol object.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">XdgActivationEvent</span> {
-    <span class="doccomment">/// Requests surface activation.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The compositor may know who requested this by checking the token data</span>
-    <span class="doccomment">/// and might decide not to follow through with the activation if it&#39;s considered unwanted.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If you consider a request to be unwanted you can use [`XdgActivationState::remove_request`]</span>
-    <span class="doccomment">/// to discard it and don&#39;t track it any futher.</span>
-    <span class="ident">RequestActivation</span> {
-        <span class="doccomment">/// Token of the request</span>
-        <span class="ident">token</span>: <span class="ident">XdgActivationToken</span>,
-        <span class="doccomment">/// Data asosiated with the token</span>
-        <span class="ident">token_data</span>: <span class="ident">XdgActivationTokenData</span>,
-        <span class="doccomment">/// Target surface</span>
-        <span class="ident">surface</span>: <span class="ident">WlSurface</span>,
-    },
-    <span class="doccomment">/// The activation token just got destroyed</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In response to that activation request should be canceled.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For example if your compostior blinks a window when it requests activation,</span>
-    <span class="doccomment">/// after this request the animation should stop.</span>
-    <span class="ident">DestroyActivationRequest</span> {
-        <span class="doccomment">/// Token of the request that just died</span>
-        <span class="ident">token</span>: <span class="ident">XdgActivationToken</span>,
-        <span class="doccomment">/// Data asosiated with the token</span>
-        <span class="ident">token_data</span>: <span class="ident">XdgActivationTokenData</span>,
-        <span class="doccomment">/// Target surface</span>
-        <span class="ident">surface</span>: <span class="ident">WlSurface</span>,
-    },
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ActivationTokenData</span> {
+    <span class="ident">constructed</span>: <span class="ident">AtomicBool</span>,
+    <span class="ident">build</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">TokenBuilder</span><span class="op">&gt;</span>,
+    <span class="ident">token</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">XdgActivationToken</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+}
+
+<span class="doccomment">/// Macro to delegate implementation of the xdg activation to [`XdgActivationState`].</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// You must also implement [`XdgActivationHandler`] to use this.</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules!</span> <span class="ident">delegate_xdg_activation</span> {
+    ($(@<span class="op">&lt;</span>$( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">tt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span>:<span class="ident">tt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span>:<span class="ident">tt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span><span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: <span class="ident">ty</span>) =&gt; {
+        <span class="kw">type</span> <span class="ident">__XdgActivationV1</span> <span class="op">=</span>
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::xdg::activation::v1::server::xdg_activation_v1::XdgActivationV1</span>;
+        <span class="kw">type</span> <span class="ident">__XdgActivationTokenV1</span> <span class="op">=</span>
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::reexports::wayland_protocols::xdg::activation::v1::server::xdg_activation_token_v1::XdgActivationTokenV1</span>;
+
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="ident">__XdgActivationV1</span>: ()
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::xdg_activation::XdgActivationState</span>);
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: [
+            <span class="ident">__XdgActivationTokenV1</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::xdg_activation::ActivationTokenData</span>
+        ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::xdg_activation::XdgActivationState</span>);
+
+        <span class="macro-nonterminal">$</span><span class="macro">crate::reexports::wayland_server::delegate_global_dispatch!</span>($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:
+            [
+                <span class="ident">__XdgActivationV1</span>: ()
+            ] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::wayland::xdg_activation::XdgActivationState</span>
+        );
+    };
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">struct</span> <span class="ident">TokenBuilder</span> {
+    <span class="ident">serial</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Serial</span>, <span class="ident">WlSeat</span>)<span class="op">&gt;</span>,
+    <span class="ident">app_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">surface</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">WlSurface</span><span class="op">&gt;</span>,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (99930ac7f 2022-06-11)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="smithay" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>
