@@ -45,15 +45,17 @@ use std::{
 };
 
 #[cfg(feature = "wayland_frontend")]
-use crate::reexports::wayland_server::protocol::wl_surface::WlSurface;
+use crate::wayland::{dmabuf::get_dmabuf, shm};
 use crate::{
     backend::{
-        allocator::{dmabuf::WeakDmabuf, Buffer, Format},
+        allocator::{dmabuf::WeakDmabuf, Buffer as BufferTrait, Format},
         drm::DrmNode,
         SwapBuffersError,
     },
     utils::{Buffer as BufferCoords, Physical, Size},
 };
+#[cfg(feature = "wayland_frontend")]
+use wayland_server::protocol::{wl_buffer, wl_surface::WlSurface};
 #[cfg(all(feature = "backend_egl", feature = "renderer_gl"))]
 pub mod egl;
 
@@ -336,6 +338,7 @@ impl<A: GraphicsApi> GpuManager<A> {
     #[cfg(feature = "wayland_frontend")]
     pub fn early_import(
         &mut self,
+        dh: &DisplayHandle,
         source: Option<DrmNode>,
         target: DrmNode,
         surface: &WlSurface,
@@ -346,7 +349,7 @@ impl<A: GraphicsApi> GpuManager<A> {
         <<A::Device as ApiDevice>::Renderer as ExportMem>::TextureMapping: 'static,
     {
         use crate::{
-            backend::renderer::utils::SurfaceState,
+            backend::renderer::utils::RendererSurfaceState,
             wayland::compositor::{with_surface_tree_upward, Damage, SurfaceAttributes, TraversalAction},
         };
 
@@ -355,12 +358,14 @@ impl<A: GraphicsApi> GpuManager<A> {
             surface,
             (),
             |_surface, states, _| {
-                if let Some(data) = states.data_map.get::<RefCell<SurfaceState>>() {
+                if let Some(data) = states.data_map.get::<RefCell<RendererSurfaceState>>() {
                     let mut data_ref = data.borrow_mut();
                     let data = &mut *data_ref;
                     let attributes = states.cached_state.current::<SurfaceAttributes>();
                     // Import a new buffer if available
-                    let surface_size = data.surface_size();
+                    let surface_size = data
+                        .buffer_dimensions
+                        .map(|d| d.to_logical(data.buffer_scale, data.buffer_transform));
                     if let Some(buffer) = data.buffer.as_ref() {
                         let surface_size = surface_size.unwrap();
                         let buffer_damage = attributes
@@ -393,7 +398,7 @@ impl<A: GraphicsApi> GpuManager<A> {
                             });
 
                         if let Err(err) =
-                            self.early_import_buffer(source, target, buffer, states, &*buffer_damage)
+                            self.early_import_buffer(dh, source, target, buffer, states, &*buffer_damage)
                         {
                             result = Err(err);
                         }
@@ -419,6 +424,7 @@ impl<A: GraphicsApi> GpuManager<A> {
     #[cfg(feature = "wayland_frontend")]
     fn early_import_buffer(
         &mut self,
+        dh: &DisplayHandle,
         source: Option<DrmNode>,
         target: DrmNode,
         buffer: &wl_buffer::WlBuffer,
@@ -430,18 +436,17 @@ impl<A: GraphicsApi> GpuManager<A> {
         <A::Device as ApiDevice>::Renderer: ImportMemWl + ImportDmaWl + ExportMem,
         <<A::Device as ApiDevice>::Renderer as ExportMem>::TextureMapping: 'static,
     {
-        match buffer_type(buffer) {
+        match buffer_type(dh, buffer) {
             Some(BufferType::Dma) => {
                 let (mut target_device, others) = self
                     .devices
                     .iter_mut()
                     .partition::<Vec<_>, _>(|device| device.node() == &target);
                 let target_device = target_device.get_mut(0).ok_or(Error::DeviceMissing)?;
-                let format = buffer.as_ref().user_data().get::<Dmabuf>().unwrap().format();
+                let dmabuf = get_dmabuf(buffer).unwrap();
+                let format = dmabuf.format();
 
-                let dma_source = self
-                    .dma_source
-                    .entry(buffer.as_ref().user_data().get::<Dmabuf>().unwrap().weak());
+                let dma_source = self.dma_source.entry(dmabuf.weak());
                 if matches!(dma_source, Entry::Vacant(_))
                     || matches!(dma_source, Entry::Occupied(ref x) if x.get() == &target)
                 {
@@ -924,7 +929,7 @@ where
                                 .render(size, dst_transform, |_renderer, frame| {
                                     frame.render_texture_from_to(
                                         &texture,
-                                        Rectangle::from_loc_and_size((0, 0), buffer_size),
+                                        Rectangle::from_loc_and_size((0, 0), buffer_size).to_f64(),
                                         Rectangle::from_loc_and_size((0, 0), size).to_f64(),
                                         &damage,
                                         dst_transform.invert(),
@@ -1011,7 +1016,7 @@ where
                         frame
                             .render_texture_from_to(
                                 &texture,
-                                Rectangle::from_loc_and_size((0, 0), mapping.1.size),
+                                Rectangle::from_loc_and_size((0, 0), mapping.1.size).to_f64(),
                                 dst.to_f64(),
                                 &[Rectangle::from_loc_and_size((0, 0), dst.size).to_f64()],
                                 Transform::Normal,
@@ -1204,7 +1209,7 @@ where
     fn render_texture_from_to(
         &mut self,
         texture: &Self::TextureId,
-        src: Rectangle<i32, BufferCoords>,
+        src: Rectangle<f64, BufferCoords>,
         dst: Rectangle<f64, Physical>,
         damage: &[Rectangle<f64, Physical>],
         src_transform: Transform,
@@ -1212,7 +1217,6 @@ where
     ) -> Result<(), Self::Error> {
         if let Some(texture) = texture.get::<R>(&self.node) {
             self.damage.extend(damage.iter().map(|rect| {
-                let src = src.to_f64();
                 let (x, y, w, h) = (rect.loc.x, rect.loc.y, rect.size.w, rect.size.h);
                 Rectangle::from_loc_and_size(
                     (
@@ -1263,8 +1267,10 @@ where
             .render
             .renderer_mut()
             .import_shm_buffer(buffer, surface, damage)
-            .map_err(Error::Render)?;
-        let mut texture = MultiTexture::from_surface(surface, buffer_dimensions(buffer).unwrap());
+            .expect("import_shm_buffer without checking buffer type?");
+        let dimensions = shm::with_buffer_contents(buffer, |_, data| (data.width, data.height).into())
+            .map_err(|_| Error::ImportFailed)?;
+        let mut texture = MultiTexture::from_surface(surface, dimensions);
         texture.insert_texture::<R>(*self.render.node(), shm_texture);
         Ok(texture)
     }
@@ -1340,14 +1346,10 @@ where
         surface: Option<&SurfaceData>,
         damage: &[Rectangle<i32, BufferCoords>],
     ) -> Result<<Self as Renderer>::TextureId, <Self as Renderer>::Error> {
-        let dmabuf = buffer
-            .as_ref()
-            .user_data()
-            .get::<Dmabuf>()
-            .expect("import_dma_buffer without checking buffer type?");
+        let dmabuf = get_dmabuf(buffer).expect("import_dma_buffer without checking buffer type?");
         let texture = MultiTexture::from_surface(surface, dmabuf.size());
         let texture_ref = texture.0.clone();
-        let res = self.import_dmabuf_internal(None, dmabuf, texture, Some(damage));
+        let res = self.import_dmabuf_internal(None, &dmabuf, texture, Some(damage));
         if res.is_ok() {
             if let Some(surface) = surface {
                 surface.data_map.insert_if_missing(|| texture_ref);
