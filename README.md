@@ -10,7 +10,7 @@ Also, the original README is available at [`README-smithay.md`](./README-smithay
 ## Getting your environment ready
 I use Toolbox for this project, to get started, create a Fedora 36-based container in Toolbox and run: 
 ```sh
-# dnf install libxkbcommon-devel weston-devel xorg-x11-server-Xwayland
+sudo dnf install libxkbcommon-devel weston-devel xorg-x11-server-Xwayland
 ```
 Voilaa!! you can now run `cargo run` inside of the [`anvil`](./anvil) directory inside of your new containerr! <3
 
