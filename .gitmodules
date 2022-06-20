@@ -1,9 +1,12 @@
-[submodule "packages/android-meson"]
-	path = packages/android-meson
+[submodule "packages/tools/android-meson"]
+	path = packages/tools/android-meson
 	url = https://aur.archlinux.org/android-meson.git
-[submodule "packages/android-environment"]
-	path = packages/android-environment
+[submodule "packages/tools/android-environment"]
+	path = packages/tools/android-environment
 	url = https://aur.archlinux.org/android-environment.git
-[submodule "packages/android-pkg-config"]
-	path = packages/android-pkg-config
+[submodule "packages/tools/android-pkg-config"]
+	path = packages/tools/android-pkg-config
 	url = https://aur.archlinux.org/android-pkg-config.git
+[submodule "packages/libxkbcommon"]
+	path = packages/libxkbcommon
+	url = https://github.com/xkbcommon/libxkbcommon
