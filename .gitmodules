@@ -1,0 +1,9 @@
+[submodule "packages/android-meson"]
+	path = packages/android-meson
+	url = https://aur.archlinux.org/android-meson.git
+[submodule "packages/android-environment"]
+	path = packages/android-environment
+	url = https://aur.archlinux.org/android-environment.git
+[submodule "packages/android-pkg-config"]
+	path = packages/android-pkg-config
+	url = https://aur.archlinux.org/android-pkg-config.git
