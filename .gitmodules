@@ -1,12 +1,9 @@
-[submodule "packages/tools/android-meson"]
-	path = packages/tools/android-meson
-	url = https://aur.archlinux.org/android-meson.git
-[submodule "packages/tools/android-environment"]
-	path = packages/tools/android-environment
-	url = https://aur.archlinux.org/android-environment.git
-[submodule "packages/tools/android-pkg-config"]
-	path = packages/tools/android-pkg-config
-	url = https://aur.archlinux.org/android-pkg-config.git
-[submodule "packages/libxkbcommon"]
-	path = packages/libxkbcommon
-	url = https://github.com/xkbcommon/libxkbcommon
+[submodule "app/jni/dbus"]
+	path = app/jni/dbus
+	url = https://gitlab.freedesktop.org/dbus/dbus.git
+[submodule "app/jni/libexpat"]
+	path = app/jni/libexpat
+	url = https://github.com/libexpat/libexpat
+[submodule "app/jni/glib"]
+	path = app/jni/glib
+	url = https://gitlab.gnome.org/GNOME/glib
