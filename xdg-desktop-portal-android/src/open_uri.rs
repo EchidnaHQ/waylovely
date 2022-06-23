@@ -66,7 +66,7 @@ impl OpenURI {
         env.call_static_method(
             "android/app/Activity",
             "startActivity",
-            "(Landroid/content/Intent;)",
+            "(Landroid/content/Intent;)V",
             &[JValue::from(intent)],
         )
         .unwrap();
