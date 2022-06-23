@@ -7,8 +7,8 @@ plugins {
 apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
 
 cargo {
-    module  = "../xdg-desktop-portal-android"       // Or whatever directory contains your Cargo.toml
-    libname = "xdg-desktop-portal-android"          // Or whatever matches Cargo.toml's [package] name.
+    module  = "../compositor/anvil"       // Or whatever directory contains your Cargo.toml
+    libname = "anvil"          // Or whatever matches Cargo.toml's [package] name.
     targets = ["arm", "x86"]  // See bellow for a longer list of options
 }
 
