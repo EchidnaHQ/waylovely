@@ -16,3 +16,12 @@
 [submodule "app/jni/libbacktrace"]
 	path = app/jni/libbacktrace
 	url = https://github.com/ianlancetaylor/libbacktrace
+[submodule "app/jni/libxml2"]
+	path = app/jni/libxml2
+	url = http://gitlab.gnome.org/GNOME/libxml2
+[submodule "app/jni/liblzma"]
+	path = app/jni/liblzma
+	url = https://github.com/kobolabs/liblzma
+[submodule "app/jni/xz"]
+	path = app/jni/xz
+	url = https://git.tukaani.org/xz.git
