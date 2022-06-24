@@ -7,9 +7,12 @@
 [submodule "app/jni/glib"]
 	path = app/jni/glib
 	url = https://gitlab.gnome.org/GNOME/glib
-[submodule "app/jni/libffi"]
-	path = app/jni/libffi
-	url = https://github.com/libffi/libffi.git
 [submodule "app/jni/wayland"]
 	path = app/jni/wayland
 	url = https://gitlab.freedesktop.org/wayland/wayland
+[submodule "app/jni/libffi"]
+	path = app/jni/libffi
+	url = https://github.com/libffi/libffi
+[submodule "app/jni/libbacktrace"]
+	path = app/jni/libbacktrace
+	url = https://github.com/ianlancetaylor/libbacktrace
