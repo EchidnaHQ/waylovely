@@ -28,6 +28,6 @@
 [submodule "app/jni/pcre2"]
 	path = app/jni/pcre2
 	url = https://github.com/PCRE2Project/pcre2.git
-[submodule "app/jni/elfutils"]
-	path = app/jni/elfutils
-	url = https://sourceware.org/git/elfutils.git
+[submodule "app/jni/zlib-ng"]
+	path = app/jni/zlib-ng
+	url = https://github.com/zlib-ng/zlib-ng
