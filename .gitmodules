@@ -25,3 +25,9 @@
 [submodule "app/jni/xz"]
 	path = app/jni/xz
 	url = https://git.tukaani.org/xz.git
+[submodule "app/jni/pcre2"]
+	path = app/jni/pcre2
+	url = https://github.com/PCRE2Project/pcre2.git
+[submodule "app/jni/elfutils"]
+	path = app/jni/elfutils
+	url = https://sourceware.org/git/elfutils.git
