@@ -31,3 +31,9 @@
 [submodule "app/jni/zlib-ng"]
 	path = app/jni/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng
+[submodule "app/jni/libxkbcommon"]
+	path = app/jni/libxkbcommon
+	url = https://github.com/xkbcommon/libxkbcommon
+[submodule "app/jni/wayland-protocols"]
+	path = app/jni/wayland-protocols
+	url = https://gitlab.freedesktop.org/wayland/wayland-protocols
