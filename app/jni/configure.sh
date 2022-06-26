@@ -36,4 +36,4 @@ export CFLAGS="${CFLAGS} --sysroot=${SYSROOT} -I${SYSROOT}/usr/include"
 export CPPFLAGS="${CFLAGS}"
 export LDFLAGS="${LDFLAGS} -L$SYSROOT/usr/lib/"
 
-./configure CC=$ANDROID_PREFIX/${CROSS_COMPILE}29-clang CXX=$ANDROID_PREFIX/${CROSS_COMPILE}29-clang++ --host=${CROSS_COMPILE} --target=${CROSS_COMPILE} --with-sysroot=${SYSROOT} --prefix=${PREFIX} "$@"
+./configure  --host=${CROSS_COMPILE} --target=${CROSS_COMPILE} --with-sysroot=${SYSROOT} --prefix=${PREFIX} "$@"
