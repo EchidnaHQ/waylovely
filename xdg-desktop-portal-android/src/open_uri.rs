@@ -1,10 +1,14 @@
-use crate::helpers::get_object_path;
+use crate::bindings::activity::Activity;
+use crate::bindings::intent::{Intent, Action, self};
+use crate::bindings::uri::Uri;
+use crate::helpers::{get_object_path, get_env};
 use crate::JVM;
 use jni::objects::{JString, JValue};
 use zbus::dbus_interface;
 use zbus::fdo::Result;
-use zbus::zvariant::{DeserializeDict, ObjectPath, OwnedObjectPath, SerializeDict, Type};
-
+use zbus::zvariant::{DeserializeDict, ObjectPath, OwnedObjectPath, SerializeDict, Type, Fd};
+use std::fs::File;
+use std::os::unix::prelude::*;
 use super::handle_token::HandleToken;
 
 //  This lovelyyy codee is copieed from https://github.com/bilelmoussaoui/ashpd/blob/master/src/desktop/open_uri.rs#L125
@@ -39,18 +43,16 @@ impl OpenURI {
         uri: &str,
         options: OpenFileOptions,
     ) -> Result<OwnedObjectPath> {
-        let jvm = JVM.get().unwrap();
+        let env = get_env();
 
-        let env = jvm.get_env().unwrap();
+        let juri = Uri::from_string(uri);
+        let intent = Intent::new(Action::VIEW, &juri);
 
-        let juri = env
-            .call_static_method(
-                "android/net/Uri",
-                "path",
-                "(Ljava/lang/String;)Landroid/net/Uri;",
-                &[JValue::from(env.new_string(uri).unwrap())],
-            )
-            .unwrap();
+        Activity::start_activity(&intent);
+
+        Ok(get_object_path(options.handle_token.clone()))
+    }
+
 
         let intent = env
             .new_object(

@@ -1,8 +1,12 @@
-use zbus::zvariant::{ObjectPath, OwnedObjectPath};
-
+use zbus::zvariant::{ OwnedObjectPath};
+use jni::{JNIEnv, JavaVM};
+use crate::JVM;
 use crate::{handle_token::HandleToken, CONNECTION};
 
-
+pub fn get_env<'a>() -> JNIEnv<'a> {
+    let vm: &JavaVM = JVM.get().unwrap();
+    vm.get_env().unwrap()
+}
 /**
  *
  * Copied from https://github.com/bilelmoussaoui/ashpd/blob/master/src/desktop/request.rs#L191-L197
