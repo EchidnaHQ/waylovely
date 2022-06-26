@@ -6,7 +6,7 @@
 	url = https://github.com/libexpat/libexpat
 [submodule "app/jni/glib"]
 	path = app/jni/glib
-	url = https://gitlab.gnome.org/GNOME/glib
+	url = https://github.com/GNOME/glib
 [submodule "app/jni/wayland"]
 	path = app/jni/wayland
 	url = https://gitlab.freedesktop.org/wayland/wayland
@@ -18,7 +18,7 @@
 	url = https://github.com/ianlancetaylor/libbacktrace
 [submodule "app/jni/libxml2"]
 	path = app/jni/libxml2
-	url = http://gitlab.gnome.org/GNOME/libxml2
+	url = http://github.com/GNOME/libxml2
 [submodule "app/jni/liblzma"]
 	path = app/jni/liblzma
 	url = https://github.com/kobolabs/liblzma
