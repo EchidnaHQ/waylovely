@@ -13,6 +13,6 @@ export PROJECT_NAME=${PWD##*/}
 export PREFIX=${PACKAGES_FOLDER}$PROJECT_NAME
 #export INCLUDE_DIRS=$(find $PACKAGES_FOLDER -wholename "**/include" -print0 | xargs -0)
 #export INCLUDE_FLAGS=-I${INCLUDE_DIRS// / -I}
-export PKG_CONFIG_SYSROOT_DIR=""
+export PKG_CONFIG_SYSROOT_DIR="$ANDROID_NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/"
 #export LIB_DIRS=$(find $PACKAGES_FOLDER -wholename "**/lib" -print0 | xargs -0)
 #export LIB_FLAGS=-L${LIB_DIRS// / -L}
