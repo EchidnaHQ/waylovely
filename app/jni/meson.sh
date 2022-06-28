@@ -1,6 +1,6 @@
 #/bin/bash
 
-. ../shared.sh
+. "$(dirname $0)/shared.sh"
 
 meson _build --pkg-config-path="$PKG_CONFIG_PATH" \
     --cross-file ../meson-crossfiles/armv7.ini \
