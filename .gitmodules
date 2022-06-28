@@ -37,3 +37,12 @@
 [submodule "app/jni/wayland-protocols"]
 	path = app/jni/wayland-protocols
 	url = https://gitlab.freedesktop.org/wayland/wayland-protocols
+[submodule "app/jni/xserver"]
+	path = app/jni/xserver
+	url = https://gitlab.freedesktop.org/xorg/xserver.git
+[submodule "app/jni/libepoxy"]
+	path = app/jni/libepoxy
+	url = https://github.com/anholt/libepoxy
+[submodule "app/jni/libxtrans"]
+	path = app/jni/libxtrans
+	url = https://gitlab.freedesktop.org/xorg/lib/libxtrans
