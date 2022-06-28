@@ -76,7 +76,7 @@ pkg-config = { version = "0.3.17", optional = true }
 cfg-if = "1.0.0"
 
 [features]
-default = [  "backend_winit", "desktop", "renderer_gl", "xwayland", "wayland_frontend", "slog-stdlog"]
+default = [  "backend_winit", "desktop", "renderer_gl",  "wayland_frontend", "slog-stdlog"]
 backend_winit = ["winit", "backend_egl", "wayland-egl", "renderer_gl"]
 backend_x11 = ["x11rb", "x11rb/dri3", "x11rb/xfixes", "x11rb/present", "x11rb_event_source", "backend_gbm", "backend_drm", "backend_egl"]
 backend_drm = ["drm", "drm-ffi"]
