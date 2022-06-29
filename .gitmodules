@@ -19,12 +19,6 @@
 [submodule "app/jni/libxml2"]
 	path = app/jni/libxml2
 	url = http://github.com/GNOME/libxml2
-[submodule "app/jni/liblzma"]
-	path = app/jni/liblzma
-	url = https://github.com/kobolabs/liblzma
-[submodule "app/jni/xz"]
-	path = app/jni/xz
-	url = https://git.tukaani.org/xz.git
 [submodule "app/jni/zlib-ng"]
 	path = app/jni/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng
