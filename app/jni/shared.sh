@@ -1,4 +1,8 @@
 
+if [ -z $ANDROID_ABI ]; then
+    export ANDROID_ABI=arm64-v8a
+fi
+
 if [ $ANDROID_ABI = "arm64-v8a" ]; then
     export ABI_FULL=aarch64-linux-android
     elif [ $ANDROID_ABI = "armv7a-eabi" ]; then
