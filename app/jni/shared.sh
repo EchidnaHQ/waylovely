@@ -1,3 +1,4 @@
+#/bin/sh
 
 if [ -z $ANDROID_ABI ]; then
     export ANDROID_ABI=arm64-v8a
