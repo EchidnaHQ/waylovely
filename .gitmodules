@@ -1,39 +1,39 @@
-[submodule "app/jni/dbus"]
+[submodule "dbus"]
 	path = deps/dbus
 	url = https://gitlab.freedesktop.org/dbus/dbus.git
-[submodule "app/jni/libexpat"]
+[submodule "libexpat"]
 	path = deps/libexpat
 	url = https://github.com/libexpat/libexpat
-[submodule "app/jni/glib"]
+[submodule "glib"]
 	path = deps/glib
 	url = https://github.com/GNOME/glib
-[submodule "app/jni/wayland"]
+[submodule "wayland"]
 	path = deps/wayland
 	url = https://gitlab.freedesktop.org/wayland/wayland
-[submodule "app/jni/libffi"]
+[submodule "libffi"]
 	path = deps/libffi
 	url = https://github.com/libffi/libffi
-[submodule "app/jni/libbacktrace"]
+[submodule "libbacktrace"]
 	path = deps/libbacktrace
 	url = https://github.com/ianlancetaylor/libbacktrace
-[submodule "app/jni/libxml2"]
+[submodule "libxml2"]
 	path = deps/libxml2
 	url = http://github.com/GNOME/libxml2
-[submodule "app/jni/zlib-ng"]
+[submodule "zlib-ng"]
 	path = deps/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng
-[submodule "app/jni/libxkbcommon"]
+[submodule "libxkbcommon"]
 	path = deps/libxkbcommon
 	url = https://github.com/xkbcommon/libxkbcommon
-[submodule "app/jni/wayland-protocols"]
+[submodule "wayland-protocols"]
 	path = deps/wayland-protocols
 	url = https://gitlab.freedesktop.org/wayland/wayland-protocols
-[submodule "app/jni/xserver"]
+[submodule "xserver"]
 	path = deps/xserver
 	url = https://gitlab.freedesktop.org/xorg/xserver.git
-[submodule "app/jni/libepoxy"]
+[submodule "libepoxy"]
 	path = deps/libepoxy
 	url = https://github.com/anholt/libepoxy
-[submodule "app/jni/libxtrans"]
+[submodule "libxtrans"]
 	path = deps/libxtrans
 	url = https://gitlab.freedesktop.org/xorg/lib/libxtrans
