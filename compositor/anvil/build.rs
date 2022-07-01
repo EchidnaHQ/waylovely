@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2022 Victor Berger <victor.berger@m4x.org>
+// SPDX-FileCopyrightText: 2022 Victoria Brekenfeld
+//
+// SPDX-License-Identifier: MIT
+
 use cfg_if::cfg_if;
 use std::env::var;
 fn main() {

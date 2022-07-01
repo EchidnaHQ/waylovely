@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2022 Victor Berger <victor.berger@m4x.org>
+// SPDX-FileCopyrightText: 2022 Victoria Brekenfeld <4404502+Drakulix@users.noreply.github.com>
+//
+// SPDX-License-Identifier: MIT
+
 use std::sync::Arc;
 
 use smithay::delegate_compositor;

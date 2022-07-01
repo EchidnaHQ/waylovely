@@ -1,5 +1,11 @@
+// SPDX-FileCopyrightText: 2022 Victor Berger <victor.berger@m4x.org>
+// SPDX-FileCopyrightText: 2022 Victoria Brekenfeld <4404502+Drakulix@users.noreply.github.com>
+//
+// SPDX-License-Identifier: MIT
+
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(missing_docs, missing_debug_implementations, rust_2018_idioms)]
+
 // Allow acronyms like EGL
 #![allow(clippy::upper_case_acronyms)]
 
