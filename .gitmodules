@@ -37,6 +37,6 @@
 [submodule "libxtrans"]
 	path = deps/libxtrans
 	url = https://gitlab.freedesktop.org/xorg/lib/libxtrans
-[submodule "pcre1"]
-	path = deps/old-and-unmaintained-version-of-pcre1-that-likely-has-a-0day-vulnerability
-	url = "https://github.com/EchidnaHQ/pcre1"
+[submodule "deps/pcre1"]
+	path = deps/pcre1
+	url = https://github.com/EchidnaHQ/pcre1
