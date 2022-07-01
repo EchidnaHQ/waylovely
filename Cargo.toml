@@ -3,6 +3,5 @@ members = [
     "compositor/smallvil",
     "compositor/anvil",
     "compositor/wlcs_anvil",
-    "compositor",
-    "xdg-desktop-portal-android"
+    "compositor"
 ]
