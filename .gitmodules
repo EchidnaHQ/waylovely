@@ -1,42 +1,45 @@
 [submodule "dbus"]
-	path = deps/dbus
+	path = kawaii-deps/dbus
 	url = https://gitlab.freedesktop.org/dbus/dbus.git
 [submodule "libexpat"]
-	path = deps/libexpat
+	path = kawaii-deps/libexpat
 	url = https://github.com/libexpat/libexpat
 [submodule "glib"]
-	path = deps/glib
+	path = kawaii-deps/glib
 	url = https://github.com/GNOME/glib
 [submodule "wayland"]
-	path = deps/wayland
+	path = kawaii-deps/wayland
 	url = https://gitlab.freedesktop.org/wayland/wayland
 [submodule "libffi"]
-	path = deps/libffi
+	path = kawaii-deps/libffi
 	url = https://github.com/libffi/libffi
 [submodule "libbacktrace"]
-	path = deps/libbacktrace
+	path = kawaii-deps/libbacktrace
 	url = https://github.com/ianlancetaylor/libbacktrace
 [submodule "libxml2"]
-	path = deps/libxml2
+	path = kawaii-deps/libxml2
 	url = http://github.com/GNOME/libxml2
 [submodule "zlib-ng"]
-	path = deps/zlib-ng
+	path = kawaii-deps/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng
 [submodule "libxkbcommon"]
-	path = deps/libxkbcommon
+	path = kawaii-deps/libxkbcommon
 	url = https://github.com/xkbcommon/libxkbcommon
 [submodule "wayland-protocols"]
-	path = deps/wayland-protocols
+	path = kawaii-deps/wayland-protocols
 	url = https://gitlab.freedesktop.org/wayland/wayland-protocols
 [submodule "xserver"]
-	path = deps/xserver
+	path = kawaii-deps/xserver
 	url = https://gitlab.freedesktop.org/xorg/xserver.git
 [submodule "libepoxy"]
-	path = deps/libepoxy
+	path = kawaii-deps/libepoxy
 	url = https://github.com/anholt/libepoxy
 [submodule "libxtrans"]
-	path = deps/libxtrans
+	path = kawaii-deps/libxtrans
 	url = https://gitlab.freedesktop.org/xorg/lib/libxtrans
 [submodule "deps/pcre1"]
-	path = deps/pcre1
+	path = kawaii-deps/pcre1
 	url = https://github.com/EchidnaHQ/pcre1
+[submodule "kawaii-deps/libelf-lfg-win32"]
+	path = kawaii-deps/libelf
+	url = https://github.com/LagFreeGames/libelf-lfg-win32
