@@ -28,7 +28,11 @@ pub mod xwayland;
 pub use state::{AnvilState, CalloopData, ClientState};
 // main.rs
 
-use slog::{crit, o, Drain};
+use slog::{o, Drain};
+
+#[cfg(not(target_os = "android"))]
+use slog::crit;
+
 cfg_if! {
     if #[cfg(not(target_os = "android"))] {
         static POSSIBLE_BACKENDS: &[&str] = &[
@@ -57,9 +61,11 @@ pub fn main() {
     let _guard = slog_scope::set_global_logger(log.clone());
     slog_stdlog::init().expect("Could not setup log backend");
 
-    let arg = ::std::env::args().nth(1);
+
     cfg_if! {
         if #[cfg(not(target_os = "android"))] {
+            let arg = ::std::env::args().nth(1);
+            
             match arg.as_ref().map(|s| &s[..]) {
                 #[cfg(feature = "winit")]
                 Some("--winit") => {
