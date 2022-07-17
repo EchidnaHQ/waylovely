@@ -30,9 +30,10 @@ pub use state::{AnvilState, CalloopData, ClientState};
 
 use slog::{o, Drain};
 
+#[cfg(target_os = "android")]
+use jni_android_sys::android::content::Context;
 #[cfg(not(target_os = "android"))]
 use slog::crit;
-
 cfg_if! {
     if #[cfg(not(target_os = "android"))] {
         static POSSIBLE_BACKENDS: &[&str] = &[
@@ -46,7 +47,10 @@ cfg_if! {
     }
 }
 
-#[cfg_attr(target_os = "android", ndk_glue::main(backtrace = "on"))]
+#[cfg_attr(
+    target_os = "android",
+    ndk_glue::main(logger(level = "debug", tag = "waylovely"), backtrace = "on")
+)]
 pub fn main() {
     // A logger facility, here we use the terminal here
     let log = if std::env::var("ANVIL_MUTEX_LOG").is_ok() {
@@ -59,13 +63,11 @@ pub fn main() {
     };
 
     let _guard = slog_scope::set_global_logger(log.clone());
-    slog_stdlog::init().expect("Could not setup log backend");
-
 
     cfg_if! {
         if #[cfg(not(target_os = "android"))] {
             let arg = ::std::env::args().nth(1);
-            
+            slog_stdlog::init().expect("Could not setup log backend");
             match arg.as_ref().map(|s| &s[..]) {
                 #[cfg(feature = "winit")]
                 Some("--winit") => {
@@ -95,6 +97,11 @@ pub fn main() {
                 }
             }
         } else {
+            let android_context = ndk_context::android_context();
+            let vm = unsafe { jni::JavaVM::from_raw(android_context.vm().cast()) }.unwrap();
+            let env = vm.attach_current_thread().unwrap();
+            let context = unsafe { Context::from_ptr(jni_glue::Env::from_ptr(env.get_native_interface()), android_context.context() as jni::sys::jobject).unwrap() };
+            std::env::set_var("XDG_RUNTIME_DIR", context.getCacheDir().unwrap().unwrap().getCanonicalPath().unwrap().unwrap().to_string().unwrap());
             slog::info!(log, "Starting anvil with winit backend");
             crate::winit::run_winit(log);
         }
