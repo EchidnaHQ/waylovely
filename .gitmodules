@@ -43,3 +43,6 @@
 [submodule "kawaii-deps/libelf-lfg-win32"]
 	path = kawaii-deps/libelf
 	url = https://github.com/LagFreeGames/libelf-lfg-win32
+[submodule "kawaii-deps/xkeyboard-config"]
+	path = kawaii-deps/xkeyboard-config
+	url = https://github.com/freedesktop/xkeyboard-config/
