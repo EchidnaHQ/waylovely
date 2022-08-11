@@ -8,6 +8,14 @@
 
 #[macro_use]
 extern crate slog;
+use std::{
+    ffi::CString,
+    fs::{self, File},
+    io::{Read, Write},
+    path::PathBuf,
+   // ptr::NonNull,
+};
+
 use cfg_if::cfg_if;
 #[cfg(feature = "udev")]
 pub mod cursor;
@@ -25,13 +33,12 @@ pub mod x11;
 #[cfg(feature = "xwayland")]
 pub mod xwayland;
 
+use ndk::native_activity::NativeActivity;
 pub use state::{AnvilState, CalloopData, ClientState};
 // main.rs
 
 use slog::{o, Drain};
 
-#[cfg(target_os = "android")]
-use jni_android_sys::android::content::Context;
 #[cfg(not(target_os = "android"))]
 use slog::crit;
 cfg_if! {
@@ -97,12 +104,12 @@ pub fn main() {
                 }
             }
         } else {
-            let android_context = ndk_context::android_context();
-            let vm = unsafe { jni::JavaVM::from_raw(android_context.vm().cast()) }.unwrap();
-            let env = vm.attach_current_thread().unwrap();
-            let context = unsafe { Context::from_ptr(jni_glue::Env::from_ptr(env.get_native_interface()), android_context.context() as jni::sys::jobject).unwrap() };
-            std::env::set_var("XDG_RUNTIME_DIR", context.getCacheDir().unwrap().unwrap().getCanonicalPath().unwrap().unwrap().to_string().unwrap());
-            slog::info!(log, "Starting anvil with winit backend");
+            slog::info!(log, "Starting anvil with android+winit backend");
+            let activity = ndk_glue::native_activity();
+            // For ndk_sys 0.6.x
+            // let android_context = ndk_context::android_context();
+            // let activity = unsafe { NativeActivity::from_ptr(NonNull::new(android_context.context() as *mut ndk_sys::ANativeActivity).unwrap()) };
+           
             crate::winit::run_winit(log);
         }
     }
