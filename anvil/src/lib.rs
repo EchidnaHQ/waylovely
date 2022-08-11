@@ -13,7 +13,7 @@ use std::{
     fs::{self, File},
     io::{Read, Write},
     path::PathBuf,
-   // ptr::NonNull,
+    // ptr::NonNull,
 };
 
 use cfg_if::cfg_if;
@@ -109,7 +109,21 @@ pub fn main() {
             // For ndk_sys 0.6.x
             // let android_context = ndk_context::android_context();
             // let activity = unsafe { NativeActivity::from_ptr(NonNull::new(android_context.context() as *mut ndk_sys::ANativeActivity).unwrap()) };
-           
+            let data_dir = PathBuf::from(activity.internal_data_path().to_string_lossy().into_owned());
+            let cache_dir = data_dir.join("cache");
+
+            if !cache_dir.exists() {
+                fs::create_dir(&cache_dir).unwrap();
+            } else if !cache_dir.is_dir() {
+                panic!("Cache dir {} is not a directory!!!", cache_dir.display());
+            }
+            let runtime_dir = cache_dir.join("run");
+
+            if !runtime_dir.exists() {
+                fs::create_dir_all(runtime_dir).unwrap();
+            }
+            std::env::set_var("XDG_RUNTIME_DIR", cache_dir.join("run"));
+
             crate::winit::run_winit(log);
         }
     }

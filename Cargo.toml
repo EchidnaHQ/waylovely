@@ -31,7 +31,7 @@ calloop = "0.10.1"
 cgmath = "0.18.0"
 dbus = { version = "0.9.4", optional = true }
 downcast-rs = "1.2.0"
-
+cfg-if = "1.0.0"
 indexmap = { version = "1.7", optional = true }
 lazy_static = "1"
 libc = "0.2.103"
@@ -45,15 +45,16 @@ slog = "2"
 slog-stdlog = { version = "4", optional = true }
 tempfile = { version = "3.0", optional = true }
 thiserror = "1.0.25"
-wayland-egl = { version = "=0.30.0-beta.8", optional = true }
-wayland-protocols = { version = "=0.30.0-beta.8", features = ["unstable", "staging", "server"], optional = true }
-wayland-protocols-wlr = { version = "=0.1.0-beta.8", features = ["server"]}
-wayland-server = { version = "=0.30.0-beta.8", optional = true }
-wayland-sys = { version = "=0.30.0-beta.8", optional = true }
-wayland-backend = { version = "=0.1.0-beta.8", optional = true }
+wayland-egl = { path = "../wayland-rs/wayland-egl", optional = true }
+wayland-protocols = { path = "../wayland-rs/wayland-protocols", features = ["unstable", "staging", "server"], optional = true }
+wayland-protocols-wlr = { path = "../wayland-rs/wayland-protocols-wlr", features = ["server"]}
+wayland-server = { path = "../wayland-rs/wayland-server", optional = true }
+wayland-sys = { path = "../wayland-rs/wayland-sys", optional = true }
+wayland-backend = { path = "../wayland-rs/wayland-backend", optional = true }
 winit = { version = "0.26", optional = true }
 x11rb = { version = "0.10.0", optional = true }
 xkbcommon = "0.4.0"
+drm-fourcc = "^2.1.1"
 scan_fmt = { version = "0.2.3", default-features = false }
 # This dependency will only be included when targeting Android
 [target.'cfg(target_os = "android")'.dependencies]
@@ -64,7 +65,6 @@ ndk = "0.6.0"
 [target.'cfg(not(target_os = "android"))'.dependencies]
 udev = { version = "0.6", optional = true }
 libseat= { version = "0.1.1", optional = true }
-drm-fourcc = "^2.1.1"
 drm = { version = "0.6.1", optional = true }
 drm-ffi = { version = "0.2.1", optional = true }
 gbm = { version = "0.8.0", optional = true, default-features = false, features = ["drm-support"] }
@@ -78,7 +78,7 @@ gl_generator = { version = "0.14", optional = true }
 pkg-config = { version = "0.3.17", optional = true }
 cfg-if = "1.0.0"
 [features]
-default = ["backend_winit", "desktop", "renderer_gl", "renderer_multi",  "wayland_frontend", "slog-stdlog", "backend_vulkan"]
+default = ["backend_winit", "desktop", "renderer_gl", "wayland_frontend", "slog-stdlog", "backend_vulkan"]
 backend_winit = ["winit", "backend_egl", "wayland-egl", "renderer_gl"]
 backend_x11 = ["x11rb", "x11rb/dri3", "x11rb/xfixes", "x11rb/present", "x11rb_event_source", "backend_gbm", "backend_drm", "backend_egl"]
 backend_drm = ["drm", "drm-ffi"]
