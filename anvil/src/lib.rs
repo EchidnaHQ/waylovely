@@ -124,6 +124,43 @@ pub fn main() {
             }
             std::env::set_var("XDG_RUNTIME_DIR", cache_dir.join("run"));
 
+            let assets = activity.asset_manager();
+            let version = env!("CARGO_PKG_VERSION");
+            let lockfile_path = cache_dir.join(".version-lockfile");
+            if {
+                match File::open(lockfile_path) {
+                        Ok(mut file) => {
+                            let mut contents = String::new();
+                file.read_to_string(&mut contents).unwrap();
+
+                &contents != version
+                        },
+                        Err(err) => {
+                            use std::io::ErrorKind::NotFound;
+
+                            if err.kind() == NotFound {
+                                false
+                            } else {
+                                panic!("{:#?}", err)
+                            }
+                        }
+                }
+
+            } {
+                let x11_assets = assets.open_dir(&CString::new("x11").unwrap()).unwrap();
+                let x11_path = cache_dir.join("x11");
+                for path in x11_assets {
+                    let mut asset = assets.open(&path).unwrap();
+                    let mut file = File::create(x11_path.join(path.to_string_lossy().into_owned())).unwrap();
+                    file.write(asset.get_buffer().unwrap()).unwrap();
+                }
+
+                let mut lockfile = File::create(cache_dir.join(".version-lockfile")).unwrap();
+
+                write!(lockfile, "{version}").unwrap();
+            }
+
+
             crate::winit::run_winit(log);
         }
     }
