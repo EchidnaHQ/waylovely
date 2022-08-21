@@ -133,7 +133,8 @@ pub fn main() {
                             let mut contents = String::new();
                 file.read_to_string(&mut contents).unwrap();
 
-                &contents != version
+                    contents != version
+
                         },
                         Err(err) => {
                             use std::io::ErrorKind::NotFound;
